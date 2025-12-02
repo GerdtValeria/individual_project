@@ -12,5 +12,5 @@ class BookingsModel(Base):
  date_end = Column(Date) 
  cost = Column(Integer) 
 
- users = relationship("UserModel", back_populates="bookings")
- rents = relationship("RentsModel", back_populates="bookings")
+ user = relationship("UserModel", back_populates="bookings")
+ rent = relationship("RentsModel", back_populates="bookings")

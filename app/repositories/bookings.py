@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from sqlalchemy import insert, select, and_
 from typing import List, Optional
 from datetime import date
-from app.exceptions import ObjectAlreadyExistsException
+from exceptions.base import ObjectAlreadyExistsException
 from app.models.bookings import BookingsModel
 from app.repositories.base import BaseRepository
 

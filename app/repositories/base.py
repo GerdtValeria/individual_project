@@ -5,14 +5,13 @@ from pydantic import BaseModel
 from sqlalchemy import delete, insert, select, update
 from sqlalchemy.exc import IntegrityError
 
-from app.exceptions import ObjectAlreadyExistsException
-from app.repositories.mapper.base import DataMapper
+from app.database.database import Base
+from exceptions.base import ObjectAlreadyExistsException
 
 
 class BaseRepository:
-    model = None
-    schema = None
-    mapper: DataMapper = None
+    model: Base = None
+    schema: BaseModel = None
 
     def __init__(self, session):
         self.session = session
@@ -34,7 +33,8 @@ class BaseRepository:
         # print(query.compile(bind=engine, compile_kwargs={"literal_binds": True}))
         result = await self.session.execute(query)
         result = [
-            self.mapper.map_to_schema(model) for model in result.scalars().all()
+            self.schema.model_validate(model, from_attributes=True)
+            for model in result.scalars().all()
         ]
 
         return result
@@ -51,14 +51,13 @@ class BaseRepository:
         model = result.scalars().one_or_none()
         if model is None:
             return None
-        return self.mapper.map_to_schema(model)
+        result = self.schema.model_validate(model, from_attributes=True)
+        return result
 
     async def add(self, data: BaseModel):
         try:
             add_stmt = (
-                insert(self.model)
-                .values(**data.model_dump())
-                .returning(self.model)
+                insert(self.model).values(**data.model_dump()).returning(self.model)
             )
             # print(add_stmt.compile(compile_kwargs={"literal_binds": True}))
 
@@ -67,43 +66,20 @@ class BaseRepository:
             model = result.scalars().one_or_none()
             if model is None:
                 return None
-            return self.mapper.map_to_schema(model)
+            return self.schema.model_validate(model, from_attributes=True)
 
-        except IntegrityError as ex:
-            logging.error(
-                f"Не удалось добавить данные в БД тип ошибки:{type(ex.orig.__cause__)=}"
-            )
-
-            if isinstance(ex.orig.__cause__, UniqueViolationError):
-                raise ObjectAlreadyExistsException from ex
-            else:
-                logging.error(
-                    f"Не незнакомая ошибка: тип ошибки:{type(ex.orig.__cause__)=}"
-                )
-                raise ex
+        except IntegrityError as exc:
+            raise ObjectAlreadyExistsException from exc
 
     async def add_bulk(self, data: list[BaseModel]) -> None | BaseModel:
         """
         Метод для множественного добавления данных в таблицу
         """
-        add_stmt = insert(self.model).values(
-            [item.model_dump() for item in data]
-        )
+        add_stmt = insert(self.model).values([item.model_dump() for item in data])
         # print(add_stmt.compile(compile_kwargs={"literal_binds": True}))
         await self.session.execute(add_stmt)
 
     async def delete(self, *filters, **filter_by) -> None:
-        query = select(self.model)
-        if filters:
-            query = query.where(*filters)
-        if filter_by:
-            query = query.filter_by(**filter_by)
-
-        result = await self.session.execute(query)
-        existing_records = result.scalars().all()
-        # if not existing_records:
-        #     raise ObjectNotFoundException()
-
         delete_stmt = delete(self.model)
         if filters:
             delete_stmt = delete_stmt.where(*filters)
@@ -116,8 +92,6 @@ class BaseRepository:
     async def edit(
         self, data: BaseModel, exclude_unset: bool = False, **filter_by
     ) -> None:
-        # if not await self.get_one_or_none(**filter_by):
-        #     raise ObjectNotFoundException()
         edit_stmt = (
             update(self.model)
             .filter_by(**filter_by)
