@@ -33,3 +33,4 @@ class RentsRepository(BaseRepository):
             select(RentsModel).where(RentsModel.title.ilike(f"%{title}%"))
         )
         return result.scalars().all()
+

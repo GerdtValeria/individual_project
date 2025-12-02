@@ -1,7 +1,9 @@
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from typing import List, Optional
 from app.models.roles import RoleModel
 from app.repositories.base import BaseRepository
+from app.schemas.relations_users_roles import SRoleGetWithRels
 from app.schemas.roles import SRoleGet
 
 class RolesRepository(BaseRepository):

@@ -1,4 +1,4 @@
-from exceptions.base import MyAppError, MyAppHTTPError
+from app.exceptions.base import MyAppError, MyAppHTTPError
 
 
 class UserAlreadyExistsError(MyAppError):
