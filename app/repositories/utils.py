@@ -2,7 +2,7 @@ from datetime import date
 
 from sqlalchemy import func, select
 
-from app.exceptions import InvalidDateRangeException
+from exceptions.base import InvalidDateRangeException
 from app.models.bookings import BookingsModel
 from app.models.rents import RentsModel
 

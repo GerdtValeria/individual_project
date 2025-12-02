@@ -2,16 +2,24 @@ from sqlalchemy import select
 from typing import List, Optional
 from app.models.roles import RoleModel
 from app.repositories.base import BaseRepository
+from app.schemas.roles import SRoleGet
 
 class RolesRepository(BaseRepository):
-    def __init__(self, session):
-        super().__init__(session, RoleModel)
+    model = RoleModel
+    schema = SRoleGet
 
-    async def get_all(self) -> List[RoleModel]:
-        return await super().get_all()
-
-    async def get_by_name(self, name: str) -> Optional[RoleModel]:
-        result = await self.session.execute(
-            select(RoleModel).where(RoleModel.name == name)
+    async def get_one_or_none_with_users(self, **filter_by):
+        query = (
+            select(self.model)
+            .filter_by(**filter_by)
+            .options(selectinload(self.model.users))
         )
-        return result.scalar_one_or_none()
+
+        result = await self.session.execute(query)
+
+        model = result.scalars().one_or_none()
+        if model is None:
+            return None
+
+        result = SRoleGetWithRels.model_validate(model, from_attributes=True)
+        return result
