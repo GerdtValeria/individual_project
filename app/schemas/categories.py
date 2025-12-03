@@ -7,3 +7,6 @@ class SCategories(BaseModel):
 
 class SCategoriesAdd(BaseModel):
     name: str = Field(...)
+    
+class SCategoriesGet(SCategoriesAdd):
+    id: int

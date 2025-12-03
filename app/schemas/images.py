@@ -8,3 +8,6 @@ class SImages(BaseModel):
 class SImagesAdd(BaseModel):
     id: int
     image_url: str = Field(..., description="Адрес фотографии")
+    
+class SImagesGet(SImagesAdd):
+    id: int

@@ -6,6 +6,7 @@ from app.repositories.images import ImagesRepository
 from app.repositories.rents import RentsRepository
 from app.repositories.roles import RolesRepository
 from app.repositories.users import UsersRepository
+from app.repositories.favorites import FavoritesRepository
 
 
 class DBManager:

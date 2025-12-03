@@ -1,51 +1,51 @@
-from exceptions.base import MyAppError, MyAppHTTPError
+from exceptions.base import MyAppException, MyAppHTTPException
 
 
-class UserAlreadyExistsError(MyAppError):
+class UserAlreadyExistsError(MyAppException):
     detail = "Пользователь с таким email уже существует"
 
 
-class InvalidJWTTokenError(MyAppError):
+class InvalidJWTTokenError(MyAppException):
     detail = "Неверный токен"
 
 
-class JWTTokenExpiredError(MyAppError):
+class JWTTokenExpiredError(MyAppException):
     detail = "Токен истек, необходимо снова авторизоваться"
 
 
-class InvalidPasswordError(MyAppError):
+class InvalidPasswordError(MyAppException):
     detail = "Неверный пароль"
 
 
-class UserNotFoundError(MyAppError):
+class UserNotFoundError(MyAppException):
     detail = "Пользователя не существует"
 
 
-class InvalidTokenHTTPError(MyAppHTTPError):
+class InvalidTokenHTTPError(MyAppHTTPException):
     status_code = 401
     detail = "Неверный токен доступа"
 
 
-class JWTTokenExpiredHTTPError(MyAppHTTPError):
+class JWTTokenExpiredHTTPError(MyAppHTTPException):
     status_code = 401
     detail = "Токен истек, необходимо снова авторизоваться"
 
 
-class NoAccessTokenHTTPError(MyAppHTTPError):
+class NoAccessTokenHTTPError(MyAppHTTPException):
     detail = "Вы не предоставили токен доступа"
     status_code = 401
 
 
-class UserAlreadyExistsHTTPError(MyAppHTTPError):
+class UserAlreadyExistsHTTPError(MyAppHTTPException):
     status_code = 409
     detail = "Пользователь с таким email уже существует"
 
 
-class UserNotFoundHTTPError(MyAppHTTPError):
+class UserNotFoundHTTPError(MyAppHTTPException):
     status_code = 401
     detail = "Пользователя не существует"
 
 
-class InvalidPasswordHTTPError(MyAppHTTPError):
+class InvalidPasswordHTTPError(MyAppHTTPException):
     status_code = 401
     detail = "Неверный пароль"

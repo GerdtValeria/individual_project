@@ -10,7 +10,7 @@ class RentService(BaseService):
         return await RentsRepository.add_rent()
     
     async def edit_rent(self):
-        return await RentsRepository.gedit_rent()
+        return await RentsRepository.edit_rent()
     
     async def delete_rent(self):
         return await RentsRepository.delete_rent()

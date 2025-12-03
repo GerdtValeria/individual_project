@@ -2,10 +2,11 @@ from sqlalchemy import select, and_
 from typing import List, Optional
 from app.models.rents import RentsModel
 from app.repositories.base import BaseRepository
+from app.schemas.favorites import SRentGet
 
 class RentsRepository(BaseRepository):
-    def __init__(self, session):
-        super().__init__(session, RentsModel)
+    model = RentsModel
+    schema = SRentGet
 
     async def get_all(self) -> List[RentsModel]:
         return await super().get_all()

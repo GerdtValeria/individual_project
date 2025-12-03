@@ -5,7 +5,7 @@ from app.api.comments import router as router_comments
 from app.api.images import router as router_images
 from app.api.rents import router as router_rents
 from app.api.roles import router as router_roles
-from app.api.users import router as router_users
+from app.api.auth import router as router_users
 
 
 app = FastAPI()

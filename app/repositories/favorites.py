@@ -1,17 +1,17 @@
 from sqlalchemy import select, desc
 from typing import List, Optional
-from app.schemas.comments import SCommentGet
+from app.schemas.favorites import SRentGet
 from exceptions.bookings import RealtyNotAvailableException
-from app.models.comments import CommentsModel
+from app.models.favorites import FavoritesModel
 from app.repositories.base import BaseRepository
 from app.repositories.utils import rooms_ids_free
 from app.schemas.bookings import SBookingAdd
 
-class CommentsRepository(BaseRepository):
-    model = CommentsModel
-    schema = SCommentGet
+class FavoritesRepository(BaseRepository):
+    model = FavoritesModel
+    schema = SRentGet
 
-    async def get_all(self) -> List[CommentsModel]:
+    async def get_all(self) -> List[FavoritesModel]:
         return await super().get_all()
     
     async def add_booking(self, booking_data: SBookingAdd, hotel_id: int):
@@ -29,20 +29,20 @@ class CommentsRepository(BaseRepository):
         else:
             raise RealtyNotAvailableException()
 
-    async def get_by_user_id(self, user_id: int) -> List[CommentsModel]:
+    async def get_by_user_id(self, user_id: int) -> List[FavoritesModel]:
         result = await self.session.execute(
-            select(CommentsModel).where(CommentsModel.id_user == user_id)
+            select(FavoritesModel).where(FavoritesModel.id_user == user_id)
         )
         return result.scalars().all()
 
-    async def get_by_rent_id(self, rent_id: int) -> List[CommentsModel]:
+    async def get_by_rent_id(self, rent_id: int) -> List[FavoritesModel]:
         result = await self.session.execute(
-            select(CommentsModel).where(CommentsModel.id_rent == rent_id)
+            select(FavoritesModel).where(FavoritesModel.id_rent == rent_id)
         )
         return result.scalars().all()
 
-    async def get_recent_comments(self, limit: int = 10) -> List[CommentsModel]:
+    async def get_recent_comments(self, limit: int = 10) -> List[FavoritesModel]:
         result = await self.session.execute(
-            select(CommentsModel).order_by(desc(CommentsModel.id)).limit(limit)
+            select(FavoritesModel).order_by(desc(FavoritesModel.id)).limit(limit)
         )
         return result.scalars().all()

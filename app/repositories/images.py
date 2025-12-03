@@ -2,10 +2,11 @@ from sqlalchemy import select
 from typing import List
 from app.models.images import ImagesModel
 from app.repositories.base import BaseRepository
+from app.schemas.images import SImagesGet
 
 class ImagesRepository(BaseRepository):
-    def __init__(self, session):
-        super().__init__(session, ImagesModel)
+    model = ImagesModel
+    schema = SImagesGet
 
     async def get_all(self) -> List[ImagesModel]:
         return await super().get_all()

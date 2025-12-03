@@ -28,3 +28,4 @@ class SBookingPatchRequest(BaseModel):
 class SBookingPatch(SBookingPatchRequest):
     user_id: int | None = None
     price: int | None = None
+    

@@ -5,13 +5,14 @@ from pydantic import BaseModel
 from sqlalchemy import insert, select, and_
 from typing import List, Optional
 from datetime import date
+from app.schemas.bookings import SBookingGet
 from exceptions.base import ObjectAlreadyExistsException
 from app.models.bookings import BookingsModel
 from app.repositories.base import BaseRepository
 
 class BookingsRepository(BaseRepository):
-    def __init__(self, session):
-        super().__init__(session, BookingsModel)
+    model = BookingsModel
+    schema = SBookingGet
 
     async def get_all(self) -> List[BookingsModel]:
         return await super().get_all()
