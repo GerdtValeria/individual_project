@@ -2,8 +2,7 @@ from sqlalchemy import select, and_
 from typing import List, Optional
 from app.models.rents import RentsModel
 from app.repositories.base import BaseRepository
-from app.schemas.favorites import SRentGet
-from app.schemas.rents import SRentAdd
+from app.schemas.rents import SRentAdd, SRentGet
 
 class RentsRepository(BaseRepository):
     model = RentsModel
