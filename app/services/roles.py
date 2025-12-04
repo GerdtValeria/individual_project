@@ -1,51 +1,42 @@
-from exceptions.base import MyAppException, MyAppHTTPException
+from exceptions.base import ObjectAlreadyExistsException
+from exceptions.roles import RoleNotFoundError, RoleAlreadyExistsError
+from app.schemas.roles import SRoleAdd
+from app.schemas.relations_users_roles import SRoleGetWithRels
+from app.services.base import BaseService
 
 
-class UserAlreadyExistsError(MyAppException):
-    detail = "Пользователь с таким email уже существует"
+class RoleService(BaseService):
 
+    async def create_role(self, role_data: SRoleAdd):
+        try:
+            await self.db.roles.add(role_data)
+        except ObjectAlreadyExistsException:
+            raise RoleAlreadyExistsError
+        await self.db.commit()
 
-class InvalidJWTTokenError(MyAppException):
-    detail = "Неверный токен"
+    async def get_role(self, role_id: int):
+        role: SRoleGetWithRels | None = await self.db.roles.get_one_or_none_with_users(
+            id=role_id
+        )
+        if not role:
+            raise RoleNotFoundError
+        return role
 
+    async def edit_role(self, role_id: int, role_data: SRoleAdd):
+        role: SRoleGetWithRels | None = await self.db.roles.get_one_or_none(id=role_id)
+        if not role:
+            raise RoleNotFoundError
+        await self.db.roles.edit(role_data)
+        await self.db.commit()
+        return
 
-class JWTTokenExpiredError(MyAppException):
-    detail = "Токен истек, необходимо снова авторизоваться"
+    async def delete_role(self, role_id: int):
+        role: SRoleGetWithRels | None = await self.db.roles.get_one_or_none(id=role_id)
+        if not role:
+            raise RoleNotFoundError
+        await self.db.roles.delete(id=role_id)
+        await self.db.commit()
+        return
 
-
-class InvalidPasswordError(MyAppException):
-    detail = "Неверный пароль"
-
-
-class UserNotFoundError(MyAppException):
-    detail = "Пользователя не существует"
-
-
-class InvalidTokenHTTPError(MyAppHTTPException):
-    status_code = 401
-    detail = "Неверный токен доступа"
-
-
-class JWTTokenExpiredHTTPError(MyAppHTTPException):
-    status_code = 401
-    detail = "Токен истек, необходимо снова авторизоваться"
-
-
-class NoAccessTokenHTTPError(MyAppHTTPException):
-    detail = "Вы не предоставили токен доступа"
-    status_code = 401
-
-
-class UserAlreadyExistsHTTPError(MyAppHTTPException):
-    status_code = 409
-    detail = "Пользователь с таким email уже существует"
-
-
-class UserNotFoundHTTPError(MyAppHTTPException):
-    status_code = 401
-    detail = "Пользователя не существует"
-
-
-class InvalidPasswordHTTPError(MyAppHTTPException):
-    status_code = 401
-    detail = "Неверный пароль"
+    async def get_roles(self):
+        return await self.db.roles.get_all()

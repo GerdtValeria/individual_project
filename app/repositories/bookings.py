@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from sqlalchemy import insert, select, and_
 from typing import List, Optional
 from datetime import date
-from app.schemas.bookings import SBookingGet
+from app.schemas.bookings import SBookingAdd, SBookingGet
 from exceptions.base import ObjectAlreadyExistsException
 from app.models.bookings import BookingsModel
 from app.repositories.base import BaseRepository
@@ -63,3 +63,12 @@ class BookingsRepository(BaseRepository):
             select(BookingsModel).where(BookingsModel.date_end >= date.today())
         )
         return result.scalars().all()
+    
+    async def get_user_bookings(self, user_id: int):
+        return await self.get_filtered(id_user=user_id)
+
+    async def get_rent_bookings(self, rent_id: int):
+        return await self.get_filtered(id_rents=rent_id)
+
+    async def add_booking(self, data: SBookingAdd) -> SBookingGet:
+        return await super().add(data)

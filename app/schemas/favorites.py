@@ -11,6 +11,6 @@ class SFavoriteRentAdd(BaseModel):
     id_rent: int
     id_user: int
 
-class SRentGet(SFavoriteRentAdd):
+class SFavoriteRentGet(SFavoriteRentAdd):
     id: int
     model_config = ConfigDict(from_attributes=True)

@@ -1,6 +1,6 @@
 from sqlalchemy import select, desc
 from typing import List, Optional
-from app.schemas.comments import SCommentGet
+from app.schemas.comments import SCommentAdd, SCommentGet
 from exceptions.bookings import RealtyNotAvailableException
 from app.models.comments import CommentsModel
 from app.repositories.base import BaseRepository
@@ -11,38 +11,17 @@ class CommentsRepository(BaseRepository):
     model = CommentsModel
     schema = SCommentGet
 
-    async def get_all(self) -> List[CommentsModel]:
-        return await super().get_all()
-    
-    async def add_booking(self, booking_data: SBookingAdd, hotel_id: int):
-        rooms_ids_to_get = rooms_ids_free(
-            date_from=booking_data.date_from,
-            date_to=booking_data.date_to,
-            hotel_id=hotel_id,
-        )
-        rooms_ids_to_booking: list[int] = (
-            (await self.session.execute(rooms_ids_to_get)).scalars().all()
-        )
+    async def get_rent_comments(self, rent_id: int):
+        return await self.get_filtered(id_rent=rent_id)
 
-        if booking_data.room_id in rooms_ids_to_booking:
-            return await self.add(booking_data)
-        else:
-            raise RealtyNotAvailableException()
+    async def get_user_comments(self, user_id: int):
+        return await self.get_filtered(id_user=user_id)
 
-    async def get_by_user_id(self, user_id: int) -> List[CommentsModel]:
-        result = await self.session.execute(
-            select(CommentsModel).where(CommentsModel.id_user == user_id)
-        )
-        return result.scalars().all()
+    async def add_comment(self, data: SCommentAdd) -> SCommentGet:
+        return await super().add(data)
 
-    async def get_by_rent_id(self, rent_id: int) -> List[CommentsModel]:
-        result = await self.session.execute(
-            select(CommentsModel).where(CommentsModel.id_rent == rent_id)
-        )
-        return result.scalars().all()
+    async def edit_comment(self, comment_id: int, data: SCommentAdd) -> None:
+        await super().edit(data, id=comment_id)
 
-    async def get_recent_comments(self, limit: int = 10) -> List[CommentsModel]:
-        result = await self.session.execute(
-            select(CommentsModel).order_by(desc(CommentsModel.id)).limit(limit)
-        )
-        return result.scalars().all()
+    async def delete_comment(self, comment_id: int) -> None:
+        await super().delete(id=comment_id)
