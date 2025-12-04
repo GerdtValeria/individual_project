@@ -8,7 +8,7 @@ from exceptions.auth import (
     InvalidJWTTokenError,
     JWTTokenExpiredError,
 )
-from exceptions.base import ObjectAlreadyExistsError
+from exceptions.base import ObjectAlreadyExistsException
 from app.schemas.users import (
     SUserAdd,
     SUserAddRequest,
@@ -60,7 +60,7 @@ class AuthService(BaseService):
                 role_id=user_data.role_id,
             )
             await self.db.users.add(new_user_data)
-        except ObjectAlreadyExistsError:
+        except ObjectAlreadyExistsException:
             raise UserAlreadyExistsError
         await self.db.commit()
 
