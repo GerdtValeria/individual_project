@@ -17,7 +17,7 @@ class CategoriesRepository(BaseRepository):
         )
         return result.scalar_one_or_none()
     
-    async def add_category(self, data: SCategoriesAdd) -> SCategoriesGet:
+    async def add_category(self, data: SCategoriesGet) -> SCategoriesGet:
         return await super().add(data)
 
     async def edit_category(self, category_id: int, data: SCategoriesAdd) -> None:
