@@ -1,6 +1,6 @@
 from sqlalchemy import and_, select, desc
 from typing import List, Optional
-from app.schemas.favorites import SFavoriteGet, SFavoriteRentAdd, SFavoriteRentGet, SRentGet
+from app.schemas.favorites import SFavoriteRentAdd, SFavoriteRentGet
 from exceptions.bookings import RealtyNotAvailableException
 from app.models.favorites import FavoritesModel
 from app.repositories.base import BaseRepository
@@ -10,11 +10,6 @@ from app.schemas.bookings import SBookingAdd
 class FavoritesRepository(BaseRepository):
     model = FavoritesModel
     schema = SFavoriteRentGet
-
-   
-class FavoritesRepository(BaseRepository):
-    model = FavoritesModel
-    schema = SFavoriteGet
 
     async def get_all_favorite_rents(self, user_id: int):
         return await self.get_filtered(id_user=user_id)
