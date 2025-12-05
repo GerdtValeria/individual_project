@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from app.database.database import Base
-from app.models.bookings import BookingsModel
+
 
 class UserModel(Base):
     __tablename__ = 'users'
