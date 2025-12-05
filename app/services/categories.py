@@ -1,10 +1,11 @@
 from app.schemas.categories import SCategoriesAdd, SCategoriesGet
 from app.services.base import BaseService
 from app.repositories.categories import CategoriesRepository
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class CategoryService(BaseService):
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession | None = None) -> None:
         self.repository = CategoriesRepository(session)
 
     async def get_all_categories(self) -> list[SCategoriesGet]:
