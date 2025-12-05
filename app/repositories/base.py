@@ -14,6 +14,8 @@ class BaseRepository:
     schema: BaseModel = None
 
     def __init__(self, session):
+        if not hasattr(session, 'execute'):
+            raise TypeError(f"Expected AsyncSession, got {type(session)}")
         self.session = session
 
     async def get_filtered(
