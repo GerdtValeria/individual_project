@@ -8,7 +8,7 @@ class CategoriesRepository(BaseRepository):
     model = CategoriesModel
     schema = SCategoriesGet
 
-    async def get_all(self) -> List[CategoriesModel]:
+    async def get_all(self) -> List[SCategoriesGet]:
         return await super().get_all()
 
     async def get_by_name(self, name: str) -> Optional[CategoriesModel]:

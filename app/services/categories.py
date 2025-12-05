@@ -1,13 +1,16 @@
+from app.database.db_manager import DBManager
 from app.schemas.categories import SCategoriesAdd, SCategoriesGet
 from app.services.base import BaseService
 from app.repositories.categories import CategoriesRepository
-from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class CategoryService(BaseService):
-    def __init__(self, session: AsyncSession):
-        super().__init__(session)
-        self.repository = CategoriesRepository(session)
+    def __init__(self, db: DBManager | None = None) -> None:
+        if db is None:
+            raise ValueError("DBManager cannot be None for CategoryService")
+      
+        super().__init__(db)
+        self.repository = CategoriesRepository(db)
 
     async def get_all_categories(self) -> list[SCategoriesGet]:
         return await self.repository.get_all()
