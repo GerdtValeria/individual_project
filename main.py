@@ -6,7 +6,7 @@ from app.api.images import router as router_images
 from app.api.rents import router as router_rents
 from app.api.roles import router as router_roles
 from app.api.auth import router as router_users
-
+from app.api.favorites import router as router_favorites
 
 app = FastAPI()
 
@@ -23,3 +23,4 @@ app.include_router(router_images)
 app.include_router(router_rents)
 app.include_router(router_roles)
 app.include_router(router_users)
+app.include_router(router_favorites)
