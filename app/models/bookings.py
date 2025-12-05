@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Date, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from app.database.database import Base
+from app.models.users import UserModel
 
 
 class BookingsModel(Base):
