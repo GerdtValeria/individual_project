@@ -6,10 +6,6 @@ from app.repositories.categories import CategoriesRepository
 
 class CategoryService(BaseService):
     def __init__(self, db: DBManager | None = None) -> None:
-        if db is None:
-            raise ValueError("DBManager cannot be None for CategoryService")
-    
-        self.repository = CategoriesRepository(db)
 
     async def get_all_categories(self) -> list[SCategoriesGet]:
         return await self.db.categories.get_all()
