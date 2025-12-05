@@ -6,6 +6,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 class CategoryService(BaseService):
     def __init__(self, session: AsyncSession | None = None) -> None:
+        if session is None:
+             raise ValueError("Session cannot be None for CategoryService")
+        
+        super().__init__(session)
         self.repository = CategoriesRepository(session)
 
     async def get_all_categories(self) -> list[SCategoriesGet]:
