@@ -5,7 +5,7 @@ from app.repositories.categories import CategoriesRepository
 
 
 class CategoryService(BaseService):
-    def __init__(self, db: DBManager | None = None) -> None:
+  def __init__(self, db: DBManager | None = None) -> None:
 
     async def get_all_categories(self) -> list[SCategoriesGet]:
         return await self.db.categories.get_all()
