@@ -15,6 +15,9 @@ class CategoryService(BaseService):
     async def get_all_categories(self) -> list[SCategoriesGet]:
         return await self.db.categories.get_all()
     
+    async def get_category(self) -> list[SCategoriesGet]:
+        return await self.db.categories.get_by_name()
+
     async def add_category(self, category_data: SCategoriesAdd) -> SCategoriesGet:
         return await self.db.categories.add_category(category_data)
     
