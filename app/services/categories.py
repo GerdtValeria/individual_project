@@ -9,13 +9,13 @@ class CategoryService(BaseService):
         self.repository = CategoriesRepository(session)
 
     async def get_all_categories(self) -> list[SCategoriesGet]:
-        return await CategoriesRepository.get_all()
+        return await self.repository.get_all()
     
     async def add_category(self, category_data: SCategoriesAdd) -> SCategoriesGet:
-        return await CategoriesRepository.add_category(category_data)
+        return await self.repository.add_category(category_data)
     
     async def edit_category(self, category_id: int, category_data: SCategoriesAdd) -> None:
-        return await CategoriesRepository.edit_category(category_id, category_data)
+        return await self.repository.edit_category(category_id, category_data)
     
     async def delete_category(self, category_id: int) -> None:
-        return await CategoriesRepository.delete_category(category_id)
+        return await self.repository.delete_category(category_id)
