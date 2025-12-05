@@ -1,44 +1,39 @@
 from fastapi import APIRouter, Depends
-from app.api.dependencies import get_db
+from app.api.dependencies import DBDep, get_db
 from app.database.db_manager import DBManager
 from app.schemas.categories import SCategoriesAdd, SCategoriesGet
 from app.services.categories import CategoryService
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from exceptions.base import ObjectAlreadyExistsException, ObjectAlreadyExistsHTTPException
+
 router = APIRouter(prefix="/categories",tags=["Category"])
 
 @router.get("/", response_model=list[SCategoriesGet])
-async def get_categories(session: AsyncSession = Depends(get_db)):
-
- db_manager = DBManager(session)
- service = CategoryService(db=db_manager)
- categories = await service.get_all_categories()   
+async def get_categories( db: DBDep,) -> list[SCategoriesGet]:
+ categories = await CategoryService(db).get_all_categories()   
  return categories
 
 @router.get("/{id}", response_model=SCategoriesGet)
-async def get_category(id:int, session: AsyncSession = Depends(get_db)):
-    db_manager = DBManager(session)
-    service = CategoryService(db=db_manager)
-    category = await service.get_all_categories(id=id)   
+async def get_category(id:int, db: DBDep,) -> dict[str, str]:
+    category = await CategoryService(db).get_all_categories(id=id)   
     return category
 
 @router.post("/", response_model=SCategoriesGet)
-async def add_category(category_data: SCategoriesAdd, session: AsyncSession = Depends(get_db)):
-    db_manager = DBManager(session)
-    service = CategoryService(db=db_manager)
-    result = await service.add_category(category_data)
-    return result 
+async def add_category(category_data: SCategoriesAdd, db: DBDep,) -> dict[str, str]:
+  try:
+      await CategoryService(db).add_category(category_data)
+  except ObjectAlreadyExistsException:
+       raise ObjectAlreadyExistsHTTPException
+  return {"status": "OK"}
+
 
 @router.put("/{id}")
-async def edit_category(id:int, category_data: SCategoriesAdd,session: AsyncSession = Depends(get_db)):
-    db_manager = DBManager(session)
-    service = CategoryService(db=db_manager)
-    await service.edit_category(id,category_data)
+async def edit_category(id:int, category_data: SCategoriesAdd,db: DBDep,) -> dict[str, str]:
+    await CategoryService(db).edit_category(id,category_data)
     return {"message": "Category updated successfully"}
 
 @router.delete("/{id}")
-async def delete_category(id:int, session: AsyncSession = Depends(get_db)):
-     db_manager = DBManager(session)
-     service = CategoryService(db=db_manager)
-     await service.delete_category(id=id)   
+async def delete_category(id:int, db: DBDep,) -> dict[str, str]:
+     await CategoryService(db).delete_category(id=id)   
      return {"message": "Category deleted successfully"}

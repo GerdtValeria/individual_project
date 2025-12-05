@@ -46,8 +46,19 @@ class MyAppHTTPException(HTTPException):
 class ObjectNotFoundException(MyAppException):
     detail = "Объект не найден"
 
+def __init__(self, *args, **kwargs):
+        super().__init__(self.detail, *args, **kwargs)
+
 
 class ObjectAlreadyExistsException(MyAppException):
+    detail = "Похожий объект уже существует"
+
+def __init__(self):
+        super().__init__(status_code=self.status_code, detail=self.detail)
+
+
+class ObjectAlreadyExistsHTTPException(MyAppException):
+    status_code = 500
     detail = "Похожий объект уже существует"
 
 
