@@ -1,6 +1,8 @@
 from sqlalchemy import Column, Date, Integer, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database.database import Base
+from app.models.rents import RentsModel
+from app.models.users import UserModel
 
 
 
@@ -13,5 +15,5 @@ class BookingsModel(Base):
  date_end = Column(Date) 
  cost = Column(Integer) 
 
- user = relationship("UserModel", back_populates="bookings")
- rent = relationship("RentsModel", back_populates="bookings")
+rent: Mapped["RentsModel"] = relationship(back_populates="booking")
+user: Mapped["UserModel"] = relationship(back_populates="bookings")

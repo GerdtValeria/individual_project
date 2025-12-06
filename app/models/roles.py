@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database.database import Base
 from app.models.users import UserModel
 
@@ -8,4 +8,4 @@ class RoleModel(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(50))
     
-users = relationship(list[UserModel], back_populates="role")
+users: Mapped[list["UserModel"]] = relationship(back_populates="role")

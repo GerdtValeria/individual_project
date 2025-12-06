@@ -1,6 +1,8 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database.database import Base
+from app.models.rents import RentsModel
+from app.models.users import UserModel
 
 class CommentsModel(Base):
     __tablename__ = 'comments'
@@ -9,5 +11,5 @@ class CommentsModel(Base):
     id_rent = Column(Integer, ForeignKey('rents.id'))
     content = Column(String(1000))
     
-rents = relationship("RentsModel", back_populates="comments")
-users = relationship("UserModel", back_populates="comments")
+rent: Mapped["RentsModel"] = relationship(back_populates="comments")
+user: Mapped["UserModel"] = relationship(back_populates="comments")
