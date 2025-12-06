@@ -21,12 +21,8 @@ async def get_category(id:int, db: DBDep,) -> dict[str, str]:
 
 @router.post("/", response_model=SCategoriesGet)
 async def add_category(category_data: SCategoriesAdd, db: DBDep,) -> dict[str, str]:
-  try:
-      await CategoryService(db).add_category(category_data)
-  except ObjectAlreadyExistsException:
-       raise ObjectAlreadyExistsHTTPException
-  return {"status": "OK"}
-
+    return await CategoryService(db).add_category(category_data)
+      
 
 @router.put("/{id}")
 async def edit_category(id:int, category_data: SCategoriesAdd,db: DBDep,) -> dict[str, str]:
