@@ -18,5 +18,5 @@ class CategoryService(BaseService):
       async def edit_category(self, category_id: int, category_data: SCategoriesAdd) -> None:
         return await self.db.categories.edit_category(category_id, category_data)
     
-      async def delete_category(self, category_id: int) -> None:
-        return await self.db.categories.delete_category(category_id)
+      async def delete_category(self, id: int) -> None:
+        return await self.db.categories.delete_category(id)
