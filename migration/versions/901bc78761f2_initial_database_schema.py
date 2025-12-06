@@ -1,8 +1,8 @@
 """Initial database schema
 
-Revision ID: 9e1631c76dfc
+Revision ID: 901bc78761f2
 Revises: 
-Create Date: 2025-12-06 13:39:17.871194
+Create Date: 2025-12-06 15:21:18.811237
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '9e1631c76dfc'
+revision: str = '901bc78761f2'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -44,13 +44,15 @@ def upgrade() -> None:
     )
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('email', sa.String(length=50), nullable=True),
-    sa.Column('role_id', sa.Integer(), nullable=True),
-    sa.Column('password', sa.String(length=50), nullable=True),
+    sa.Column('name', sa.String(length=100), nullable=False),
+    sa.Column('email', sa.String(length=100), nullable=False),
+    sa.Column('hashed_password', sa.String(length=300), nullable=False),
+    sa.Column('role_id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.ForeignKeyConstraint(['role_id'], ['roles.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('email')
     )
     op.create_table('rents',
     sa.Column('id', sa.Integer(), nullable=False),
