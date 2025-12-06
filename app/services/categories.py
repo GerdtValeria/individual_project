@@ -7,8 +7,9 @@ from app.repositories.categories import CategoriesRepository
 class CategoryService(BaseService):
     
       async def get_all_categories(self) -> list[SCategoriesGet]:
-        return await self.db.categories.get_all()
-    
+        await self.db.categories.get_all()
+         await self.db.commit()
+        
       async def get_category(self) -> list[SCategoriesGet]:
         return await self.db.categories.get_by_name()
 
@@ -16,7 +17,7 @@ class CategoryService(BaseService):
         return await self.db.categories.add_category(category_data)
     
       async def edit_category(self, category_id: int, category_data: SCategoriesAdd) -> None:
-        return await self.db.categories.edit_category(category_id, category_data)
+        await self.db.categories.edit_category(category_id, category_data)
     
       async def delete_category(self, id: int) -> None:
         return await self.db.categories.delete_category(id)
