@@ -5,7 +5,7 @@ from app.schemas.categories import SCategoriesAdd, SCategoriesGet
 from app.services.categories import CategoryService
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from exceptions.base import ObjectAlreadyExistsException, ObjectAlreadyExistsHTTPException
+from exceptions.categories import CategoryAlreadyExistsError, CategoryAlreadyExistsHTTPError
 
 router = APIRouter(prefix="/categories",tags=["Category"])
 
