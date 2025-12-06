@@ -57,11 +57,6 @@ def __init__(self):
         super().__init__(status_code=self.status_code, detail=self.detail)
 
 
-class ObjectAlreadyExistsHTTPException(MyAppException):
-    status_code = 500
-    detail = "Похожий объект уже существует"
-
-
 class InvalidDateRangeException(MyAppException):
     detail = "Дата заезда не может быть позже даты выезда"
 
