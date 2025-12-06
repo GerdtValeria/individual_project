@@ -1,12 +1,16 @@
+from typing import TYPE_CHECKING
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database.database import Base
-from app.models.bookings import BookingsModel
-from app.models.categories import CategoriesModel
-from app.models.comments import CommentsModel
-from app.models.favorites import FavoritesModel
-from app.models.images import ImagesModel
-from app.models.users import UserModel
+
+
+if TYPE_CHECKING:
+    from app.models.bookings import BookingsModel
+    from app.models.categories import CategoriesModel
+    from app.models.comments import CommentsModel
+    from app.models.favorites import FavoritesModel
+    from app.models.images import ImagesModel
+    from app.models.users import UserModel
 
 class RentsModel(Base):
     __tablename__ = 'rents'
@@ -19,9 +23,9 @@ class RentsModel(Base):
     description = Column(String(65535))
     active = Column(Boolean)
 
-user: Mapped["UserModel"] = relationship(back_populates="rents")
-booking: Mapped["BookingsModel"] = relationship(back_populates="rent")
-images: Mapped[list["ImagesModel"]] = relationship(back_populates="rent")
-comments: Mapped[list["CommentsModel"]] = relationship(back_populates="rent")
-category: Mapped["CategoriesModel"] = relationship(back_populates="rent")
-favorites: Mapped["FavoritesModel"] = relationship(back_populates="rents")
+    user: Mapped["UserModel"] = relationship(back_populates="rents")
+    booking: Mapped["BookingsModel"] = relationship(back_populates="rent")
+    images: Mapped[list["ImagesModel"]] = relationship(back_populates="rent")
+    comments: Mapped[list["CommentsModel"]] = relationship(back_populates="rent")
+    category: Mapped["CategoriesModel"] = relationship(back_populates="rent")
+    favorites: Mapped["FavoritesModel"] = relationship(back_populates="rents")

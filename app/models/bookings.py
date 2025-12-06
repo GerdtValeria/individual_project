@@ -1,10 +1,11 @@
+from typing import TYPE_CHECKING
 from sqlalchemy import Column, Date, Integer, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database.database import Base
-from app.models.rents import RentsModel
-from app.models.users import UserModel
 
-
+if TYPE_CHECKING:
+    from app.models.rents import RentsModel
+    from app.models.users import UserModel
 
 class BookingsModel(Base):
     __tablename__ = 'bookings'
@@ -15,5 +16,5 @@ class BookingsModel(Base):
     date_end = Column(Date) 
     cost = Column(Integer) 
 
-rent: Mapped["RentsModel"] = relationship(back_populates="booking")
-user: Mapped["UserModel"] = relationship(back_populates="bookings")
+    rent: Mapped["RentsModel"] = relationship(back_populates="booking")
+    user: Mapped["UserModel"] = relationship(back_populates="bookings")
