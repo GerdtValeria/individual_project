@@ -13,7 +13,7 @@ class CategoryService(BaseService):
         await self.db.commit()
         return categories
       
-      async def get_category(self, category_name: int):
+      async def get_category(self, category_name: str):
         category = await self.db.categories.get_by_name(name=category_name)
         await self.db.commit()
         return category
