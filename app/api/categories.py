@@ -11,12 +11,12 @@ router = APIRouter(prefix="/categories",tags=["Category"])
 
 @router.get("/", response_model=list[SCategoriesGet])
 async def get_categories( db: DBDep,) -> list[SCategoriesGet]:
- categories = await CategoryService(db).get_all_categories()   
- return categories
+    categories = await CategoryService(db).get_all_categories()   
+    return categories
 
 @router.get("/{name}", response_model=SCategoriesGet)
-async def get_category(name:str, db: DBDep,) -> dict[str, str]:
-    category = await CategoryService(db).get_all_categories(name=name)   
+async def get_category(category_name:str, db: DBDep,) -> dict[str, str]:
+    category = await CategoryService(db).get_all_categories(name=category_name)   
     return category
 
 @router.post("/", response_model=SCategoriesGet)
