@@ -17,12 +17,9 @@ class CategoryService(BaseService):
         await self.db.commit()
 
       async def add_category(self, category_data: SCategoriesAdd) -> SCategoriesGet:
-        try:
-          await self.db.categories.add_category(category_data)
-        except CategoryAlreadyExistsError:
-          raise CategoryAlreadyExistsHTTPError
+        await self.db.categories.add_category(category_data)
         await self.db.commit()
-        
+        return
 
       async def edit_category(self, category_id: int, category_data: SCategoriesAdd) -> None:
         await self.db.categories.edit_category(category_id, category_data)
