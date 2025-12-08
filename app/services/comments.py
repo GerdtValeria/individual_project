@@ -8,17 +8,17 @@ class CommentService(BaseService):
         return comments
     
     async def add_comment(self, comment_data: SCommentAdd) -> SCommentGet:
-        comment = await CommentsRepository.add_comment(comment_data)
+        comment = await self.db.comments.add_comment(comment_data)
         await self.db.commit()
         return comment
     
     async def edit_comment(self, comment_id: int, comment_data: SCommentAdd) -> None:
-        comment = await CommentsRepository.add_comment(comment_id, comment_data)
+        comment = await self.db.comments.add_comment(comment_id, comment_data)
         await self.db.commit()
         return comment
     
     async def delete_comment(self, id: int) -> None:
-        await CommentsRepository.delete_comment(id)
+        await self.db.comments.delete_comment(id)
         await self.db.commit()
         return {"message": f"Комментарий с id={id} успешно удален"} 
     
