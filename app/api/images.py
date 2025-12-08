@@ -8,7 +8,8 @@ router = APIRouter(prefix="/image",tags=["Image"])
 
 @router.post("/", response_model=SImagesGet)
 async def add_image(image_data: SImagesAdd, db: DBDep,) -> dict[str, str]:
-     await ImageService(db).add_image(image_data)
+     image = await ImageService(db).add_image(image_data)
+     return image
 
 @router.put("/{id}")
 async def edit_image(id:int, image_data: SImagesAdd, db: DBDep,) -> dict[str, str]:
