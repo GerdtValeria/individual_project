@@ -11,11 +11,13 @@ async def get_rents( db: DBDep,) -> list[SFavoriteRentGet]:
  favorite_rents = await FavoritesService(db).get_all_favorite_rents()   
  return favorite_rents
 
-@router.post("/")
-async def add_rent(rent_data: SFavoriteRentAdd):
-    await FavoritesService().add_favorite_rent(rent_data)
+@router.post("/", response_model=SFavoriteRentGet)
+async def add_rent(rent_data: SFavoriteRentAdd, db: DBDep,) -> dict[str, str]:
+    await FavoritesService(db).add_favorite_rent(rent_data)
+    return {"message": "Favorite rent updated successfully"}
 
 
 @router.delete("/{id}")
-async def delete_rent(id:int):
-     await FavoritesService().delete_favorite_rent(id=id)   
+async def delete_rent(id:int, db: DBDep,) -> dict[str, str]:
+     await FavoritesService(db).delete_favorite_rent(id=id)  
+     return {"message": "Fvorite rent deleted successfully"} 

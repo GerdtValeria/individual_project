@@ -11,6 +11,6 @@ class BookingService(BaseService):
         return bookings
     
     async def add_booking(self, booking_data: SBookingAdd) -> SBookingGet:
-        booking = await self.db.bookings.add_category(booking_data)
+        booking = await self.db.bookings.add_booking (booking_data)
         await self.db.commit()
         return booking

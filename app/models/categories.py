@@ -11,4 +11,4 @@ class CategoriesModel(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(255))
     
-    rent: Mapped[list["RentsModel"]] = relationship(back_populates="")
+    rent: Mapped[list["RentsModel"]] = relationship(back_populates="category")

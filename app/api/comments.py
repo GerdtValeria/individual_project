@@ -10,15 +10,16 @@ async def get_comments( db: DBDep,) -> list[SCommentGet]:
  comments = await CommentService(db).get_all_comments()   
  return comments
 
-@router.post("/")
-async def add_comment(comment_data: SCommentAdd):
-    await CommentService().add_comment(comment_data)
+@router.post("/", response_model=SCommentGet)
+async def add_comment(comment_data: SCommentAdd, db: DBDep,) -> dict[str, str]:
+    await CommentService(db).add_comment(comment_data)
 
 @router.put("/{id}")
-async def edit_comment(id:int, comment_data: SCommentAdd):
-    data_comment = await CommentService().edit_comment(id,comment_data)
-    return data_comment
+async def edit_comment(id:int, comment_data: SCommentAdd,db: DBDep,) -> dict[str, str]:
+    await CommentService(db).edit_comment(id,comment_data)
+    return {"message": "Comment updated successfully"}
 
 @router.delete("/{id}")
-async def delete_comment(id:int):
-     await CommentService().delete_comment(id=id)   
+async def delete_comment(id:int, db: DBDep,) -> dict[str, str]:
+     await CommentService().delete_comment(id=id)  
+     return {"message": "Comment deleted successfully"} 
