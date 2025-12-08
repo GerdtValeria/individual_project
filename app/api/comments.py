@@ -1,17 +1,18 @@
-from app.api.dependencies import DBDep
+from app.api.dependencies import DBDep, UserIdDep
 from fastapi import APIRouter
-from app.schemas.comments import SCommentAdd, SCommentGet
+from app.schemas.comments import SCommentAdd, SComment
 from app.services.comments import CommentService
 
-router = APIRouter(prefix="/comments",tags=["Comment"])
+router = APIRouter(prefix="/rent/{rent_id}/comments",tags=["Comment"])
 
-@router.get("/", response_model=list[SCommentGet])
-async def get_comments( db: DBDep,) -> list[SCommentGet]:
+@router.get("/", response_model=list[SComment])
+async def get_comments( db: DBDep,) -> list[SComment]:
  comments = await CommentService(db).get_all_comments()   
  return comments
 
-@router.post("/", response_model=SCommentGet)
-async def add_comment(comment_data: SCommentAdd, db: DBDep,) -> dict[str, str]:
+@router.post("/", response_model=SComment)
+async def add_comment(content:str, db: DBDep, user_id: UserIdDep,) -> dict[str, str]:
+    comment_data = SCommentAdd(rent_id, user_id, content)
     comment = await CommentService(db).add_comment(comment_data)
     return comment
 
