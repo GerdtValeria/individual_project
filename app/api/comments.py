@@ -1,5 +1,6 @@
-from app.api.dependencies import DBDep
-from fastapi import APIRouter
+from app.api.dependencies import DBDep, get_current_user_id
+from fastapi import APIRouter, Depends
+from app.models.users import UserModel
 from app.schemas.comments import SCommentAdd, SCommentGet
 from app.services.comments import CommentService
 
@@ -11,8 +12,11 @@ async def get_comments( db: DBDep,) -> list[SCommentGet]:
  return comments
 
 @router.post("/", response_model=SCommentGet)
-async def add_comment(comment_data: SCommentAdd, db: DBDep,) -> dict[str, str]:
-    comment = await CommentService(db).add_comment(comment_data)
+async def add_comment(comment_data: SCommentAdd, db: DBDep, current_user: UserModel = Depends(get_current_user_id) ) -> dict[str, str]:
+    comment = await CommentService(db).add_comment(
+        rent_id=rent_id,
+        user_id=current_user.id,
+        content=comment_data.content)
     return comment
 
 @router.put("/{id}")
