@@ -1,13 +1,13 @@
-from app.schemas.comments import SCommentAdd, SCommentGet
+from app.schemas.comments import SCommentAdd, SComment
 from app.services.base import BaseService
 from app.repositories.comments import CommentsRepository
 
 class CommentService(BaseService):
-    async def get_all_comments(self) -> list[SCommentGet]:
+    async def get_all_comments(self) -> list[SComment]:
         comments = await CommentsRepository.get_all()
         return comments
     
-    async def add_comment(self, comment_data: SCommentAdd) -> SCommentGet:
+    async def add_comment(self, comment_data: SCommentAdd) -> SComment:
         comment = await self.db.comments.add_comment(comment_data)
         await self.db.commit()
         return comment
