@@ -12,7 +12,6 @@ class SRent(BaseModel):
     active: bool | None = None
     
 class SRentAdd(BaseModel):
-    id: int
     id_category: int 
     id_image: int
     id_user: int

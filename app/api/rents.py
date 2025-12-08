@@ -16,7 +16,7 @@ async def get_rent(db: DBDep,id:int,):
     return rent
 
 @router.post("/",response_model=SRentGet)
-async def add_rent(rent_data: SRentAdd, db: DBDep,) -> dict[str, str]:
+async def add_rent(rent_data: SRentAdd, db: DBDep,) -> SRentGet:
     await RentService(db).add_rent(rent_data)
 
 @router.put("/{id}")
@@ -26,6 +26,6 @@ async def edit_rent(id:int, rent_data: SRentAdd):
 
 
 @router.delete("/{id}")
-async def delete_rent(id:int, db: DBDep,) -> dict[str, str]:
+async def delete_rent(id:int, db: DBDep,) -> SRentGet:
      await RentService(db).delete_rent(id=id)   
      return {"message": "Rent deleted successfully"}
