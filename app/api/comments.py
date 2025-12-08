@@ -11,7 +11,7 @@ async def get_comments( db: DBDep,) -> list[SComment]:
  return comments
 
 @router.post("/", response_model=SComment)
-async def add_comment(content:str, db: DBDep, user_id: UserIdDep,) -> dict[str, str]:
+async def add_comment( rent_id: int, content:str, db: DBDep, user_id: UserIdDep,) -> dict[str, str]:
     comment_data = SCommentAdd(rent_id, user_id, content)
     comment = await CommentService(db).add_comment(comment_data)
     return comment
