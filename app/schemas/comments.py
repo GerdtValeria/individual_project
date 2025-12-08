@@ -8,7 +8,6 @@ class SComment(BaseModel):
     content: str = Field(...,min_length=10, max_length=1000)
 
 class SCommentAdd(BaseModel):
-    id:int
     content: str = Field(...,min_length=10, max_length=1000)
     
 class SCommentGet(SCommentAdd):
