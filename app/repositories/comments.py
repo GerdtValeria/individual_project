@@ -21,7 +21,7 @@ class CommentsRepository(BaseRepository):
         return await super().add(data)
 
     async def edit_comment(self, comment_id: int, data: SCommentAdd) -> None:
-        await super().edit(data, id=comment_id)
+        return await super().edit(data, id=comment_id)
 
     async def delete_comment(self, comment_id: int) -> None:
-        await super().delete(id=comment_id)
+        return await super().delete(id=comment_id)
