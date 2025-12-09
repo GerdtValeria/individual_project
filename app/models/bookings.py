@@ -16,5 +16,10 @@ class BookingsModel(Base):
     date_end = Column(Date) 
     cost = Column(Integer) 
 
+    @property
+    def total_cost(self):
+        days = (self.date_end - self.date_start).days
+        return days * self.cost if days > 0 else self.cost
+
     rent: Mapped["RentsModel"] = relationship(back_populates="booking")
     user: Mapped["UserModel"] = relationship(back_populates="bookings")
