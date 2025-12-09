@@ -3,14 +3,14 @@ from pydantic import BaseModel, ConfigDict
 
 
 class SBookingAddRequest(BaseModel):
-    id_rent: int
-    date_from: date
-    date_to: date
+    id_rents: int 
+    date_start: date 
+    date_end: date
 
 
 class SBookingAdd(SBookingAddRequest):
-    user_id: int
-    price: int
+    id_user: int  
+    cost: int
 
 
 class SBookingGet(SBookingAdd):
@@ -20,12 +20,12 @@ class SBookingGet(SBookingAdd):
 
 
 class SBookingPatchRequest(BaseModel):
-    room_id: int | None = None
-    date_from: date | None = None
-    date_to: date | None = None
+    id_rents: int | None = None
+    date_start: date | None = None
+    date_end: date | None = None
 
 
 class SBookingPatch(SBookingPatchRequest):
-    user_id: int | None = None
-    price: int | None = None
+    id_user: int | None = None
+    cost: int | None = None
     
