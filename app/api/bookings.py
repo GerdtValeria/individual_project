@@ -17,4 +17,5 @@ async def get_booking(db: DBDep,user_id: UserIdDep,):
 
 @router.post("/")
 async def add_booking(booking_data: SBookingAdd, db: DBDep,) -> dict[str, str]:
-    await BookingService(db).add_booking(booking_data)
+    booking = await BookingService(db).add_booking(booking_data)
+    return booking
