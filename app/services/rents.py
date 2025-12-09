@@ -6,7 +6,6 @@ from app.repositories.rents import RentsRepository
 class RentService(BaseService):
     async def get_all_rents(self) -> list[SRentGet]:
         rents = await self.db.rents.get_all()
-        await self.db.commit()
         return rents
     
     async def add_rent(self, rent_data: SRentAdd) -> SRentGet:

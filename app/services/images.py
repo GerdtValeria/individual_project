@@ -6,7 +6,6 @@ from app.repositories.images import ImagesRepository
 class ImageService(BaseService):
     async def get_all_images(self) -> list[SImagesGet]:
         images = await self.db.images.get_all()
-        await self.db.commit()
         return images
 
     async def add_image(self, image_data: SImagesAdd) -> SImagesGet:

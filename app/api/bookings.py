@@ -1,4 +1,4 @@
-from app.api.dependencies import DBDep
+from app.api.dependencies import DBDep, UserIdDep
 from fastapi import APIRouter
 from app.schemas.bookings import SBookingAdd, SBookingGet
 from app.services.bookings import BookingService
@@ -11,8 +11,8 @@ async def get_bookings(db: DBDep,) -> list[SBookingGet]:
     return bookings
 
 @router.get("/me", response_model=list[SBookingGet])
-async def get_booking(db: DBDep,id:int,):
-    booking = await BookingService(db).get_all_bookings(id=id)   
+async def get_booking(db: DBDep,id:int,user_id: UserIdDep,):
+    booking = await BookingService(db).get_all_bookings(user_id)   
     return booking
 
 @router.post("/", response_model=SBookingGet)

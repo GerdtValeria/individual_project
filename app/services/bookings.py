@@ -5,9 +5,8 @@ from app.repositories.bookings import BookingsRepository
 
 
 class BookingService(BaseService):
-    async def get_all_bookings(self) -> list[SCategoriesGet]:
+    async def get_all_bookings(self) -> list[SBookingGet]:
         bookings = await self.db.bookings.get_all()
-        await self.db.commit()
         return bookings
     
     async def add_booking(self, booking_data: SBookingAdd) -> SBookingGet:
