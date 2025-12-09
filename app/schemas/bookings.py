@@ -15,7 +15,7 @@ class SBookingAdd(SBookingAddRequest):
 
 class SBookingGet(SBookingAdd):
     id: int
-    total_cost: int
+    # total_cost: int
     model_config = ConfigDict(from_attributes=True)
 
 
