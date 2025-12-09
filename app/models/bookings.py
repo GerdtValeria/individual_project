@@ -19,7 +19,10 @@ class BookingsModel(Base):
 
     @hybrid_property
     def total_cost(self) -> int:
-        return self.price * (self.date_to - self.date_from).days
+        if self.date_end and self.date_start:
+            days = (self.date_end - self.date_start).days
+            return self.cost * max(days, 1)  # Минимум 1 день
+        return self.cost
 
     rent: Mapped["RentsModel"] = relationship(back_populates="booking")
     user: Mapped["UserModel"] = relationship(back_populates="bookings")
