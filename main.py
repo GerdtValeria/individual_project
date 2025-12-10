@@ -7,6 +7,7 @@ from app.api.roles import router as router_roles
 from app.api.auth import router as router_users
 from app.api.bookings import router as router_bookings
 from app.api.favorites import router as router_favorites
+from app.api.help import router as router_help
 
 app = FastAPI()
 
@@ -24,3 +25,4 @@ app.include_router(router_rents)
 app.include_router(router_roles)
 app.include_router(router_users)
 app.include_router(router_favorites)
+app.include_router(router_help)
