@@ -23,6 +23,7 @@ class DBManager:
         self.images = ImagesRepository(self.session)
         self.roles = RolesRepository(self.session)
         self.favorites = FavoritesRepository(self.session)
+        self.help = HelpRepository(self.session)
         return self
 
     async def __aexit__(self, *args):

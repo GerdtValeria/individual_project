@@ -1,8 +1,8 @@
 """Initial database schema
 
-Revision ID: f4238109fc5f
+Revision ID: 5f02a9fea472
 Revises: 
-Create Date: 2025-12-09 10:57:03.456532
+Create Date: 2025-12-11 00:10:17.014329
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'f4238109fc5f'
+revision: str = '5f02a9fea472'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -53,6 +53,15 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['role_id'], ['roles.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
+    )
+    op.create_table('help',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id_user', sa.Integer(), nullable=True),
+    sa.Column('content', sa.String(length=1000), nullable=True),
+    sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
+    sa.ForeignKeyConstraint(['id_user'], ['users.id'], ),
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('rents',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -114,6 +123,7 @@ def downgrade() -> None:
     op.drop_table('comments')
     op.drop_table('bookings')
     op.drop_table('rents')
+    op.drop_table('help')
     op.drop_table('users')
     op.drop_table('roles')
     op.drop_table('images')

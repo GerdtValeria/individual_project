@@ -22,6 +22,7 @@ from app.models.categories import CategoriesModel
 from app.models.comments import CommentsModel
 from app.models.images import ImagesModel
 from app.models.favorites import FavoritesModel
+from app.models.help import HelpModel
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
