@@ -2,6 +2,7 @@ from app.database.database import async_session_maker
 from app.repositories.bookings import BookingsRepository
 from app.repositories.categories import CategoriesRepository
 from app.repositories.comments import CommentsRepository
+from app.repositories.help import HelpRepository
 from app.repositories.images import ImagesRepository
 from app.repositories.rents import RentsRepository
 from app.repositories.roles import RolesRepository
