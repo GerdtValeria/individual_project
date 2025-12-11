@@ -43,6 +43,6 @@ async def get_profile_html(request: Request):
 
 
 @router.get("/")
-async def get_index_html(request: Request):
+async def get_rent_html(request: Request):
     return templates.TemplateResponse(name="rent.html", context={"request": request})
 

@@ -1,8 +1,9 @@
 from typing import List, Optional
-from app.api.dependencies import DBDep
-from fastapi import APIRouter, Query
+from app.api.dependencies import DBDep, PaginationDep
+from fastapi import APIRouter, HTTPException, Query
 from app.schemas.rents import SRentAdd, SRentGet
 from app.services.rents import RentService
+from exceptions.rents import InvalidRentFilterException
 
 router = APIRouter(prefix="/rents",tags=["Rent"])
 
@@ -10,27 +11,33 @@ router = APIRouter(prefix="/rents",tags=["Rent"])
 @router.get("/", response_model=List[SRentGet])
 async def get_rents(
     db: DBDep,
-    search: Optional[str] = Query(None, description="Поисковый запрос по названию, описанию, городу, району или адресу"),
-    city: Optional[str] = Query(None, description="Фильтр по городу"),
-    adress: Optional[str] = Query(None, description="Фильтр по району"),
-    category_id: Optional[int] = Query(None, description="ID категории"),
-    limit: Optional[int] = Query(20, description="Лимит результатов"),
-    offset: Optional[int] = Query(0, description="Смещение для пагинации")
-) -> List[SRentGet]:
-
-    # Если есть поисковый запрос, используем метод filtered
-    if search:
-        rents = await RentService(db).filtered(
-            search_query=search,
-            city=city,
-            adress=adress,
-            category_id=category_id,
-            limit=limit,
-            offset=offset
+    pagination: PaginationDep,
+    id_category: Optional[int] = Query(None, description="ID категории"),
+    id_user: Optional[int] = Query(None, description="ID пользователя"),
+    price_from: Optional[int] = Query(
+        0, description="Начало диапазона стоимости аренды"
+    ),
+    price_to: Optional[int] = Query(
+        None, description="Конец диапазона стоимости аренды"
+    ),
+    title: Optional[str] = Query(None, description="Название объявления"),
+    active: Optional[bool] = Query(None, description="Активно ли объявление"),
+    address: Optional[str] = Query(None, description="Адрес аренды"),
+) -> List[SRentGet] | None:
+    try:
+        rents = await RentService(db).get_filtered_rents(
+            id_category=id_category,
+            id_user=id_user,
+            price_from=price_from,
+            price_to=price_to,
+            title=title,
+            active=active,
+            address=address,
+            pagination=pagination,
         )
-    else:
-
-        rents = await RentService(db).get_all_rents()
+    except InvalidRentFilterException as e:
+        raise HTTPException(400, e.detail)
+    
     return rents
 
 @router.get("/{id}", response_model=SRentGet)

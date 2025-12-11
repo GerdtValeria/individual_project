@@ -4,6 +4,25 @@ from app.repositories.rents import RentsRepository
 
 
 class RentService(BaseService):
+
+    async def get_filtered_free_hotels(
+        self,
+        pagination,
+        date_from: date,
+        date_to: date,
+        location: str | None,
+        title: str | None,
+    ):
+        hotels = await self.db.hotels.get_filtered_free_hotels(
+            date_from=date_from,
+            date_to=date_to,
+            limit=pagination.per_page,
+            offset=(pagination.per_page * (pagination.page - 1)),
+            title=title,
+            location=location,
+        )
+        return hotels
+
     async def get_all_rents(self) -> list[SRentGet]:
         rents = await self.db.rents.get_all()
         return rents
