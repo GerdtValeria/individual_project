@@ -18,13 +18,13 @@ class RentsRepository(BaseRepository):
         title: Optional[str] = None,
         active: Optional[bool] = None,
         address: Optional[str] = None,
+        city: Optional[str] = None,         
+        district: Optional[str] = None,       
+        search_query: Optional[str] = None,   
         limit: int = 100,
         offset: int = 0,
     ) -> List[RentsModel]:
-        """
-        Получение отфильтрованного списка аренд с отношениями
-        """
-        # Сначала получаем ID отфильтрованных аренд
+
         rent_ids_to_get = await self._get_filtered_rent_ids(
             id_category=id_category,
             id_user=id_user,
@@ -33,9 +33,18 @@ class RentsRepository(BaseRepository):
             title=title,
             active=active,
             address=address,
+            city=city,
+            district=district,
+            search_query=search_query,
         )
         
         if not rent_ids_to_get:
+            return []
+        
+        # Применяем пагинацию к списку ID
+        paginated_ids = rent_ids_to_get[offset:offset + limit]
+        
+        if not paginated_ids:
             return []
         
         # Получаем полные данные с отношениями
@@ -48,12 +57,13 @@ class RentsRepository(BaseRepository):
                 selectinload(self.model.comments),
                 selectinload(self.model.favorites),
             )
-            .filter(RentsModel.id.in_(rent_ids_to_get))
+            .filter(RentsModel.id.in_(paginated_ids))
+            .order_by(RentsModel.created_at.desc())  # Сохраняем сортировку
         )
         
         result = await self.session.execute(query)
         return result.scalars().all()
-
+    
     async def get_active_rents(self):
         return await self.get_filtered(active=True)
 

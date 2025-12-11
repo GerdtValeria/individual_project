@@ -11,32 +11,32 @@ router = APIRouter(prefix="/rents",tags=["Rent"])
 @router.get("/", response_model=List[SRentGet])
 async def get_rents(
     db: DBDep,
-    pagination: PaginationDep,
-    id_category: Optional[int] = Query(None, description="ID категории"),
-    id_user: Optional[int] = Query(None, description="ID пользователя"),
-    price_from: Optional[int] = Query(
-        0, description="Начало диапазона стоимости аренды"
-    ),
-    price_to: Optional[int] = Query(
-        None, description="Конец диапазона стоимости аренды"
-    ),
-    title: Optional[str] = Query(None, description="Название объявления"),
-    active: Optional[bool] = Query(None, description="Активно ли объявление"),
-    address: Optional[str] = Query(None, description="Адрес аренды"),
-) -> List[SRentGet] | None:
-    try:
-        rents = await RentService(db).get_filtered_rents(
-            id_category=id_category,
-            id_user=id_user,
-            price_from=price_from,
-            price_to=price_to,
-            title=title,
-            active=active,
-            address=address,
-            pagination=pagination,
-        )
-    except InvalidRentFilterException as e:
-        raise HTTPException(400, e.detail)
+    q: Optional[str] = Query(None, description="Поисковый запрос"),
+    city: Optional[str] = Query(None, description="Город"),
+    district: Optional[str] = Query(None, description="Район"),
+    price_from: Optional[int] = Query(None, description="Цена от"),
+    price_to: Optional[int] = Query(None, description="Цена до"),
+    id_category: Optional[int] = Query(None, description="Категория"),
+    page: int = Query(1, ge=1),
+    size: int = Query(20, ge=1, le=100)
+) -> List[SRentGet]:
+    """
+    Получить все объявления с возможностью фильтрации.
+    Можно использовать как альтернативу /search
+    """
+    service = RentService(db)
+    pagination = {"page": page, "size": size}
+    
+    rents = await service.get_filtered_rents(
+        pagination=pagination,
+        search_query=q,
+        city=city,
+        district=district,
+        price_from=price_from,
+        price_to=price_to,
+        id_category=id_category,
+        active=True  # По умолчанию только активные
+    )
     
     return rents
 

@@ -17,20 +17,79 @@ class RentService(BaseService):
         title: Optional[str] = None,
         active: Optional[bool] = None,
         address: Optional[str] = None,
+        city: Optional[str] = None,
+        district: Optional[str] = None,
+        search_query: Optional[str] = None, 
     ) -> List[SRentGet]:
-      
-            rents = await self.db.rents.get_filtered_rents(
-                limit=pagination.size,
-                offset=(pagination.size * (pagination.page - 1)),
-                id_category=id_category,
-                id_user=id_user,
-                price_from=price_from,
-                price_to=price_to,
-                title=title,
-                active=active,
-                address=address,
-            )
-            return rents
+        """
+        Получить отфильтрованные объявления об аренде.
+        
+        Parameters:
+        - pagination: словарь с параметрами пагинации (size, page)
+        - search_query: общий поисковый запрос для поисковой строки
+        - другие параметры фильтрации...
+        
+        Returns:
+        - List[SRentGet]: список найденных объявлений
+        """
+        
+
+        page_size = pagination.get('size', 20)
+        page = pagination.get('page', 1)
+        
+
+        offset = page_size * (page - 1)
+        
+
+        rents = await self.repository.get_filtered_rents(
+            id_category=id_category,
+            id_user=id_user,
+            price_from=price_from,
+            price_to=price_to,
+            title=title,
+            active=active,
+            address=address,
+            city=city,
+            district=district,
+            search_query=search_query, 
+            limit=page_size,
+            offset=offset
+        )
+
+        return [SRentGet.from_orm(rent) for rent in rents]
+    
+    async def search_rents(
+        self,
+        q: str,
+        pagination: dict,
+        city: Optional[str] = None,
+        district: Optional[str] = None,
+        price_from: Optional[int] = None,
+        price_to: Optional[int] = None,
+        id_category: Optional[int] = None,
+        beds: Optional[int] = None,  
+    ) -> List[SRentGet]:
+        """
+        Специальный метод для поиска из поисковой строки.
+        """
+        
+        page_size = pagination.get('size', 20)
+        page = pagination.get('page', 1)
+        offset = page_size * (page - 1)
+        
+        
+        rents = await self.repository.get_filtered_rents(
+            search_query=q,
+            city=city,
+            district=district,
+            price_from=price_from,
+            price_to=price_to,
+            id_category=id_category,
+            limit=page_size,
+            offset=offset
+        )
+        
+        return [SRentGet.from_orm(rent) for rent in rents]
 
     async def get_all_rents(self) -> list[SRentGet]:
         rents = await self.db.rents.get_all()
