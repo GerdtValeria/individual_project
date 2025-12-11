@@ -1,4 +1,4 @@
-from sqlalchemy import select, and_
+from sqlalchemy import or_, select, and_
 from typing import List, Optional
 from app.models.rents import RentsModel
 from app.repositories.base import BaseRepository
@@ -8,6 +8,83 @@ from sqlalchemy.orm import selectinload
 class RentsRepository(BaseRepository):
     model = RentsModel
     schema = SRentGet
+
+    async def _get_filtered_rent_ids(
+        self,
+        id_category: Optional[int] = None,
+        id_user: Optional[int] = None,
+        price_from: Optional[int] = None,
+        price_to: Optional[int] = None,
+        title: Optional[str] = None,
+        active: Optional[bool] = None,
+        address: Optional[str] = None,
+        city: Optional[str] = None,        
+        district: Optional[str] = None,      
+        search_query: Optional[str] = None,   
+    ) -> List[int]:
+        """
+        Получение ID отфильтрованных аренд с учетом всех параметров
+        """
+        query = select(RentsModel.id)
+        
+        # Собираем условия фильтрации
+        conditions = []
+        
+        # Фильтр по категории
+        if id_category is not None:
+            conditions.append(RentsModel.id_category == id_category)
+        
+        # Фильтр по пользователю
+        if id_user is not None:
+            conditions.append(RentsModel.id_user == id_user)
+        
+        # Фильтр по цене
+        if price_from is not None:
+            conditions.append(RentsModel.price >= price_from)
+        if price_to is not None:
+            conditions.append(RentsModel.price <= price_to)
+        
+        # Поиск по названию (регистронезависимый)
+        if title:
+            conditions.append(RentsModel.title.ilike(f"%{title}%"))
+        
+        # Фильтр по активности
+        if active is not None:
+            conditions.append(RentsModel.active == active)
+        
+        # Поиск по адресу (регистронезависимый)
+        if address:
+            conditions.append(RentsModel.address.ilike(f"%{address}%"))
+        
+        # Фильтр по городу (регистронезависимый)
+        if city:
+            conditions.append(RentsModel.city.ilike(f"%{city}%"))
+        
+        # Фильтр по району (регистронезависимый)
+        if district:
+            conditions.append(RentsModel.district.ilike(f"%{district}%"))
+        
+        # Общий поисковый запрос (ищет в нескольких полях)
+        if search_query:
+            search_lower = f"%{search_query.lower()}%"
+            search_conditions = [
+                RentsModel.title.ilike(search_lower),
+                RentsModel.description.ilike(search_lower),
+                RentsModel.city.ilike(search_lower),
+                RentsModel.district.ilike(search_lower),
+                RentsModel.address.ilike(search_lower)
+            ]
+            conditions.append(or_(*search_conditions))
+        
+        if conditions:
+            query = query.where(and_(*conditions))
+        
+        query = query.order_by(RentsModel.created_at.desc())
+  
+        result = await self.session.execute(query)
+        rent_ids = result.scalars().all()
+        
+        return rent_ids
 
     async def get_filtered_rents(
         self,
