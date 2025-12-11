@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from app.schemas.comments import SCommentAdd, SComment
 from app.services.comments import CommentService
 
-router = APIRouter(prefix="/rent",tags=["Comment"])
+router = APIRouter(prefix="/rents",tags=["Comment"])
 
 @router.get("/{rent_id}/comments", response_model=list[SComment])
 async def get_comments( db: DBDep,) -> list[SComment]:

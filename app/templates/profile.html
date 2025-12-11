@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Угол Комфорта — Профиль</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <div class="logo" aria-hidden="false">
+        <a href="/index.html" class="logo-link" aria-label="Перейти на главную">
+          <img src="/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
+        </a>
+      </div>
+    </div>
+    <nav class="top-tabs" aria-label="Главная навигация">
+      <button class="tab" data-tab="rent">Арендовать</button>
+      <button class="tab" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
+      <a class="tab" href="/favorites.html">Избранное</a>
+      <button class="tab" data-tab="help">Помощь</button>
+      <div class="auth">
+        <button class="tab primary" data-tab="signup">Зарегистрироваться</button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container" style="padding:18px;">
+    <section style="max-width:720px;margin:0 auto">
+      <h1 style="margin:0 0 12px;font-size:24px;color:#042018">Профиль</h1>
+      <div id="profileCard" class="card" style="padding:18px">
+        <div id="profileContent" class="post-form" style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <img id="profileAvatar" src="/logo.png" alt="Аватар" style="width:64px;height:64px;border-radius:10px;object-fit:cover">
+            <div>
+              <div id="profileName" style="font-weight:800;font-size:18px;color:#042018">Гость</div>
+              <div id="profileEmail" style="color:var(--muted);font-size:13px">—</div>
+            </div>
+          </div>
+
+          <div style="margin-top:8px;color:var(--muted);">
+            Здесь вы можете просмотреть и обновить данные профиля (в демонстрационной версии данные сохраняются локально).
+          </div>
+
+          <form id="profileForm" style="display:flex;flex-direction:column;gap:8px;max-width:520px">
+            <label>Имя<input name="name" type="text" style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)"></label>
+            <label>Электронная почта<input name="email" type="email" style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)"></label>
+            <div style="display:flex;gap:8px;justify-content:flex-end">
+              <button type="button" id="logoutBtn" class="btn">Выйти</button>
+              <button type="submit" class="btn primary">Сохранить</button>
+            </div>
+          </form>
+
+          <div style="margin-top:12px">
+            <a class="btn" href="/rent.html">К списку объявлений</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- My listings -->
+      <section id="myListingsWrap" style="margin-top:18px">
+        <h2 style="margin:0 0 8px;color:#042018">Мои объявления</h2>
+        <p id="myListingsEmpty" style="color:var(--muted);margin:0 0 12px">У вас пока нет опубликованных объявлений. Нажмите "Добавить" на странице "Сдать в аренду".</p>
+        <div id="myListings" class="listings" style="margin-top:8px"></div>
+      </section>
+    </section>
+  </main>
+
+  <!-- Edit listing modal -->
+  <div id="editListingModal" class="modal" aria-hidden="true">
+    <div class="modal-dialog" role="dialog" aria-label="Редактировать объявление">
+      <header class="modal-header">
+        <h3>Редактировать объявление</h3>
+        <button id="closeEditListing" aria-label="Закрыть"><i data-feather="x"></i></button>
+      </header>
+      <form id="editListingForm" class="post-form">
+        <input type="hidden" name="id">
+        <label>Заголовок<input name="title" required></label>
+        <label>Город<input name="city" required></label>
+        <label>Категория
+          <select name="category" required>
+            <option value="">— Выберите —</option>
+            <option>Студия</option>
+            <option>1‑комнатная</option>
+            <option>2‑комнатная</option>
+            <option>Дом</option>
+            <option>С видом</option>
+          </select>
+        </label>
+        <label>Описание<textarea name="description" rows="3" required></textarea></label>
+        <label>Цена (₽/ночь)<input name="price" type="number" min="0" required></label>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+          <button type="button" id="cancelEditListing" class="btn">Отмена</button>
+          <button type="submit" class="btn primary">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="site-footer" aria-label="Сайт футер" style="margin-top:28px">
+    <div class="footer-inner">
+      <div class="footer-col footer-contact">
+        <div class="footer-brand">
+          <img src="/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
+          <div class="company-name">Угол Комфорта</div>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-heading">Меню</h4>
+        <ul>
+          <li><a href="/rent.html" data-nav="rent">Арендовать</a></li>
+          <li><a href="/list.html" data-nav="list">Сдать в аренду</a></li>
+          <li><a href="/index.html" data-nav="help">Помощь</a></li>
+          <li><a href="/index.html" data-nav="home">Главная</a></li>
+          <li><a href="/signup.html" data-nav="signup">Зарегистрироваться</a></li>
+          <li><a href="/favorites.html" data-nav="favorites">Избранное</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">О проекте</h4>
+        <ul>
+          <li><a href="/index.html#team">Команда</a></li>
+          <li><a href="/index.html#history">Наша история</a></li>
+          <li><a href="/index.html#mission">Миссия проекта</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Мы в соцсетях</h4>
+        <ul class="social-list">
+          <li><a href="#">ВК</a></li>
+          <li><a href="#">Телеграмм</a></li>
+          <li><a href="#">Одноклассники</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function(){
+      // Profile load/save
+      function qs(sel){ return document.querySelector(sel); }
+      const nameEl = qs('#profileName');
+      const emailEl = qs('#profileEmail');
+      const form = qs('#profileForm');
+      const logoutBtn = qs('#logoutBtn');
+
+      function loadProfile() {
+        try {
+          const raw = localStorage.getItem('ugol_user');
+          const user = raw ? JSON.parse(raw) : null;
+          if (user) {
+            nameEl.textContent = user.name || user.email || 'Пользователь';
+            emailEl.textContent = user.email || '—';
+            form.name.value = user.name || '';
+            form.email.value = user.email || '';
+          } else {
+            nameEl.textContent = 'Гость';
+            emailEl.textContent = '—';
+            form.name.value = '';
+            form.email.value = '';
+          }
+        } catch (e) {
+          nameEl.textContent = 'Гость';
+          emailEl.textContent = '—';
+        }
+      }
+      loadProfile();
+
+      if (form) {
+        form.addEventListener('submit', (e)=> {
+          e.preventDefault();
+          try {
+            const fm = new FormData(form);
+            const user = { name: (fm.get('name')||'').toString().trim() || 'user', email: (fm.get('email')||'').toString().trim() || '' };
+            localStorage.setItem('ugol_user', JSON.stringify(user));
+            loadProfile();
+            window.dispatchEvent(new CustomEvent('ugol:login', { detail: { user } }));
+            alert('Данные профиля сохранены (локально, демо).');
+          } catch (err) {
+            alert('Не удалось сохранить профиль (демо).');
+          }
+        });
+      }
+
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', ()=> {
+          if (!confirm('Выйти из аккаунта?')) return;
+          try {
+            localStorage.removeItem('ugol_user');
+            // optional: clear transient UI state related to session
+            // localStorage.removeItem('ugol_session'); // kept commented as optional
+          } catch(e){}
+          // notify other modules/pages
+          try { window.dispatchEvent(new CustomEvent('ugol:logout')); } catch(e){}
+          // redirect to home after logout
+          window.location.href = '/index.html';
+        });
+      }
+
+      // My listings: stored under 'ugol_my_listings' as array of objects
+      const myListEl = document.getElementById('myListings');
+      const emptyMsg = document.getElementById('myListingsEmpty');
+      const editModal = document.getElementById('editListingModal');
+      const editForm = document.getElementById('editListingForm');
+
+      function loadMyListings() {
+        try {
+          const raw = localStorage.getItem('ugol_my_listings') || '[]';
+          return JSON.parse(raw);
+        } catch (e) { return []; }
+      }
+      function persistMyListings(arr) {
+        try { localStorage.setItem('ugol_my_listings', JSON.stringify(arr)); } catch(e){}
+      }
+      function renderMyListings() {
+        const arr = loadMyListings();
+        myListEl.innerHTML = '';
+        if (!arr.length) {
+          emptyMsg.style.display = '';
+          return;
+        }
+        emptyMsg.style.display = 'none';
+        for (const it of arr) {
+          const art = document.createElement('article');
+          art.className = 'card';
+          art.innerHTML = `
+            <img class="thumb" src="${(it.photo||'/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg')}" alt="${escapeHtml(it.title)}">
+            <div class="card-body">
+              <div class="card-top"><h3 class="title">${escapeHtml(it.title)}</h3></div>
+              <p class="meta">${escapeHtml(it.city)}${it.category ? ' · ' + escapeHtml(it.category) : ''}</p>
+              <p class="desc-snippet">${escapeHtml(it.description||'')}</p>
+              <p class="price">₽${escapeHtml(it.price||0)}/ночь</p>
+              <div style="display:flex;gap:8px;margin-top:auto">
+                <button class="btn viewMy" data-id="${escapeHtml(it.id)}">Подробнее</button>
+                <button class="btn" data-action="edit" data-id="${escapeHtml(it.id)}">Редактировать</button>
+                <button class="btn" data-action="delete" data-id="${escapeHtml(it.id)}">Удалить</button>
+              </div>
+            </div>
+          `;
+          myListEl.appendChild(art);
+        }
+        // wire actions
+        myListEl.querySelectorAll('[data-action="delete"]').forEach(b=>{
+          b.addEventListener('click', ()=>{
+            const id = b.dataset.id;
+            if (!confirm('Удалить объявление?')) return;
+            let arr = loadMyListings();
+            arr = arr.filter(x => x.id !== id);
+            persistMyListings(arr);
+            renderMyListings();
+          });
+        });
+        myListEl.querySelectorAll('[data-action="edit"]').forEach(b=>{
+          b.addEventListener('click', ()=>{
+            const id = b.dataset.id;
+            const arr = loadMyListings();
+            const item = arr.find(x => x.id === id);
+            if (!item) return;
+            // open modal and fill
+            editForm.id.value = item.id;
+            editForm.title.value = item.title || '';
+            editForm.city.value = item.city || '';
+            editForm.category.value = item.category || '';
+            editForm.description.value = item.description || '';
+            editForm.price.value = item.price || '';
+            editModal.setAttribute('aria-hidden','false');
+            setTimeout(()=> editForm.title.focus(), 120);
+          });
+        });
+        myListEl.querySelectorAll('.viewMy').forEach(b=>{
+          b.addEventListener('click', ()=>{
+            const id = b.dataset.id;
+            if (!id) return;
+            window.location.href = `/detail.html?id=${encodeURIComponent(id)}`;
+          });
+        });
+      }
+
+      // Edit modal handlers
+      document.getElementById('closeEditListing')?.addEventListener('click', ()=> editModal.setAttribute('aria-hidden','true'));
+      document.getElementById('cancelEditListing')?.addEventListener('click', ()=> editModal.setAttribute('aria-hidden','true'));
+      editModal.addEventListener('click', (e)=> { if (e.target === editModal) editModal.setAttribute('aria-hidden','true'); });
+
+      editForm.addEventListener('submit', (e)=> {
+        e.preventDefault();
+        const fm = new FormData(editForm);
+        const id = fm.get('id');
+        const data = {
+          id,
+          title: (fm.get('title')||'').toString().trim(),
+          city: (fm.get('city')||'').toString().trim(),
+          category: (fm.get('category')||'').toString().trim(),
+          description: (fm.get('description')||'').toString().trim(),
+          price: Number(fm.get('price')||0),
+          photo: (fm.get('photo')||'') || undefined
+        };
+        const arr = loadMyListings();
+        const idx = arr.findIndex(x => x.id === id);
+        if (idx >= 0) arr[idx] = Object.assign({}, arr[idx], data);
+        else arr.unshift(Object.assign({ id: id || 'm' + Date.now() }, data));
+        persistMyListings(arr);
+        editModal.setAttribute('aria-hidden','true');
+        renderMyListings();
+      });
+
+      // utility
+      function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+      // initial render
+      renderMyListings();
+
+      // listen for events where user might have added listing elsewhere (demo pages save to ugol_my_listings)
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'ugol_my_listings' || e.key === 'ugol_user') renderMyListings();
+      });
+    })();
+  </script>
+
+  <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+  <script type="module" src="/js/signup-handler.js"></script>
+</body>
+</html>

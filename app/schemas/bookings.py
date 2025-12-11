@@ -4,12 +4,14 @@ from pydantic import BaseModel, ConfigDict
 
 class SBookingAddRequest(BaseModel):
     id_rents: int 
+    guests: int
     date_start: date 
     date_end: date
 
 
 class SBookingAdd(SBookingAddRequest):
     id_user: int  
+    guests: int
     cost: int
 
 

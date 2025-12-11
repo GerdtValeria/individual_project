@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Угол Комфорта — Аренда</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Import map (keeps options open for future libs) -->
+  <script type="importmap">
+  {
+    "imports": {}
+  }
+  </script>
+  <!-- Basil icons (CDN) -->
+  <script src="https://unpkg.com/basil-icons@1.0.2/dist/basil.min.js"></script>
+  
+  <!-- Common JavaScript -->
+  <script src="/js/common.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <div class="logo" aria-hidden="false">
+        <a href="/index.html" class="logo-link" aria-label="Перейти на главную">
+          <img src="/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
+        </a>
+      </div>
+      <div>
+        <!-- service name removed -->
+        <!-- tag paragraph removed as requested -->
+      </div>
+    </div>
+
+    <form id="searchForm" class="search-form" aria-label="Поиск аренды">
+      <input id="q" name="q" type="search" placeholder="Поиск по городу, району или опции" />
+      <!-- search and add buttons removed; form can be submitted via Enter -->
+    </form>
+
+    <!-- Removed: Sort control block -->
+
+    <nav class="top-tabs" aria-label="Главная навигация">
+      <a class="tab" href="/rent.html">Арендовать</a>
+      <a class="tab" href="/list.html"><span class="two-line">Сдать<br>в аренду</span></a>
+      <a class="tab" href="/favorites.html">Избранное</a>
+      <button class="tab" onclick="openHelpModal()">Помощь</button>
+      <div class="auth">
+        <button class="tab primary" onclick="openRegisterModal()">Зарегистрироваться</button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- NEW: Compact service block (from provided selection) -->
+  <section class="service-cta" aria-label="О сервисе">
+    <div class="service-cta-inner" style="background-image: url('/85e85c87c4f5678cd4d5fc9645267c74.jpg')">
+      <!-- image moved to background of .service-cta-inner -->
+      <div class="service-cta-text">
+        <h3>Найдите идеальное жильё для отдыха</h3>
+        <p>Широкий выбор жилья и квартир для всей семьи</p>
+      </div>
+      <!-- NEW: compact filters for quick search -->
+      <form id="serviceFindForm" class="service-filters" aria-label="Быстрый поиск">
+        <label class="service-label">Местоположение
+          <input id="serviceLocation" name="location" type="text" placeholder="Город, район или адрес" />
+        </label>
+        <label class="service-label">Заезд
+          <input id="serviceArrive" name="arrive" type="date" />
+        </label>
+        <label class="service-label">Выезд
+          <input id="serviceDepart" name="depart" type="date" />
+        </label>
+        <label class="service-label">Гости
+          <input id="serviceGuests" name="guests" type="number" min="1" value="1" />
+        </label>
+        <button class="service-find-btn" type="submit">Найти</button>
+      </form>
+    </div>
+  </section>
+
+  <main class="container">
+    <!-- Filters block removed as requested -->
+
+    <!-- NEW: About / marketing blocks -->
+    <section id="aboutSections" style="width:100%;max-width:var(--max-width);margin:8px 0 18px;display:grid;gap:12px">
+      <div class="card" style="padding:16px;">
+        <h3 style="margin:0 0 8px;color:#042018">Почему люди выбирают нас</h3>
+        <p style="margin:0;color:var(--muted)">Мы предлагаем тщательно отобранные варианты жилья, честные цены и оперативную поддержку — всё для комфортного проживания. Наши проверки хозяев и реалистичные фотографии помогают вам выбирать без сюрпризов.</p>
+        <ul style="margin:12px 0 0;color:var(--muted);line-height:1.5">
+          <li>Поддержка 24/7 и оперативное решение вопросов.</li>
+          <li>Проверенные объявления и прозрачные условия бронирования.</li>
+          <li>Гибкая политика отмен и выгодные цены для постоянных клиентов.</li>
+        </ul>
+      </div>
+
+      <div class="card" style="padding:16px;">
+        <h3 style="margin:0 0 8px;color:#042018">Команда</h3>
+        <p style="margin:0;color:var(--muted)">Наша команда объединяет профессионалов с опытом в гостеприимстве, обслуживании клиентов и локальной экспертизе: менеджеры по качеству проверяют объявления, служба поддержки решает вопросы быстро, а региональные координаторы помогают находить лучшие варианты. Мы ценим открытость, честность и стремимся к постоянному улучшению сервиса.</p>
+      </div>
+
+      <div class="card" style="padding:16px;">
+        <h3 style="margin:0 0 8px;color:#042018">Наша история</h3>
+        <p style="margin:0;color:var(--muted)">Мы стартовали как локальный проект по подбору уютных квартир и со временем расширились до сервиса с поддержкой регионов, автоматизированными проверками и растущей базой хозяев. На каждом этапе мы учились у пользователей, вводили механизмы доверия и удобные инструменты бронирования — всё чтобы гости и хозяева чувствовали уверенность и уважение.</p>
+      </div>
+
+      <div class="card" style="padding:16px;">
+        <h3 style="margin:0 0 8px;color:#042018">Миссия проекта</h3>
+        <p style="margin:0;color:var(--muted)">Мы стремимся сделать аренду максимально прозрачной, доступной и комфортной: упрощать поиск, повышать качество объявлений и обеспечивать честные условия взаимодействия. Наша цель — свести к минимуму риски и неопределённость для гостей и помочь хозяевам предлагать лучшее обслуживание.</p>
+      </div>
+
+      <div class="card" style="padding:16px;">
+        <h3 style="margin:0 0 8px;color:#042018">Арендуйте жильё у нас</h3>
+        <p style="margin:0;color:var(--muted)">Процесс действительно простой: фильтры помогают быстро отсеять неподходящие варианты, детальные карточки с честными фотографиями и описаниями дают полное представление, а встроенная связь с хозяевами и календарь доступности упрощают уточнения. Мы также показываем отзывы и недавно просмотренные варианты, чтобы вы могли принять взвешенное решение.</p>
+        <p style="margin-top:12px"><a class="btn" href="/rent.html">Перейти к предложениям</a></p>
+      </div>
+    </section>
+
+    <div id="pages">
+      <section id="rentPage" class="page" aria-live="polite">
+        <section class="listings" id="listings">
+          <!-- Listing cards inserted by JS -->
+        </section>
+      </section>
+
+      <!-- NEW: Favorites page -->
+      <!-- favorites moved to a dedicated page /favorites.html -->
+    </div>
+  </main>
+
+  <!-- Footer: added grouped columns from provided selection -->
+  <footer class="site-footer" aria-label="Сайт футер">
+    <div class="footer-inner">
+      <div class="footer-col footer-contact">
+        <div class="footer-brand">
+          <img src="/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
+          <div class="company-name">Угол Комфорта</div>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Меню</h4>
+        <ul>
+          <li><a href="/rent.html">Арендовать</a></li>
+          <li><a href="/list.html">Сдать в аренду</a></li>
+          <li><a href="#" onclick="openHelpModal(); return false;">Помощь</a></li>
+          <li><a href="/index.html">Главная</a></li>
+          <li><a href="#" onclick="openRegisterModal(); return false;">Зарегистрироваться</a></li>
+          <li><a href="/favorites.html">Избранное</a></li>
+        </ul>
+      </div>
+
+      <!-- Removed "Компания" block per request -->
+
+      <div class="footer-col">
+        <h4 class="footer-heading">О проекте</h4>
+        <ul>
+          <li><a href="#team">Команда</a></li>
+          <li><a href="#history">Наша история</a></li>
+          <li><a href="#mission">Миссия проекта</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Мы в соцсетях</h4>
+        <ul class="social-list">
+          <li><a href="#">ВК</a></li>
+          <li><a href="#">Телеграмм</a></li>
+          <li><a href="#">Одноклассники</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bar" aria-hidden="true"></div>
+  </footer>
+
+  <!-- View modal (details with description + availability) -->
+  <div id="viewModal" class="modal" aria-hidden="true">
+    <div class="modal-dialog" role="dialog" aria-label="Детали объявления">
+      <header class="modal-header">
+        <h3 id="viewTitle">Объявление</h3>
+        <button id="closeView" aria-label="Закрыть"><i data-feather="x" data-basil="x"></i></button>
+      </header>
+      <div class="post-form" style="gap:12px;">
+        <div class="gallery">
+          <button id="galleryPrev" class="btn small">‹</button>
+          <img id="viewImg" alt="" style="width:100%;height:220px;object-fit:cover;border-radius:8px">
+          <button id="galleryNext" class="btn small">›</button>
+        </div>
+        <p id="viewDesc" style="margin:0;color:var(--muted)"></p>
+        <div id="viewMeta" style="font-weight:700;margin-top:6px"></div>
+        <div id="viewTags" class="tags" style="margin-top:8px"></div>
+        <div id="viewCalendar" aria-hidden="false" style="margin-top:12px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW: Help modal (opens on top of main page when clicking 'Помощь') -->
+  <div id="helpModal" class="modal" aria-hidden="true">
+    <div class="modal-dialog" role="dialog" aria-label="Помощь">
+      <header class="modal-header">
+        <h3>Помощь</h3>
+        <button id="closeHelp" aria-label="Закрыть"><i data-feather="x" data-basil="x"></i></button>
+      </header>
+      <div class="post-form" style="max-width:520px;">
+        <p style="margin:0 0 8px;color:var(--muted)">Здесь вы найдёте ответы на частые вопросы, инструкции по бронированию и контакты службы поддержки.</p>
+        <ul style="margin:0 0 8px;color:var(--muted);line-height:1.5">
+          <li>Как забронировать жильё?</li>
+          <li>Как отменить бронирование?</li>
+          <li>Как разместить объявление?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Post modal -->
+  <div id="postModal" class="modal" aria-hidden="true">
+    <div class="modal-dialog" role="dialog" aria-label="Форма добавления объявления">
+      <header class="modal-header">
+        <h3>Новое объявление</h3>
+        <button id="closePost" aria-label="Закрыть"><i data-feather="x" data-basil="x"></i></button>
+      </header>
+      <form id="postForm" class="post-form">
+        <label>Заголовок<input name="title" required></label>
+        <label>Город<input name="city" required></label>
+        <label>Описание<textarea name="description" rows="3" required></textarea></label>
+        <label>Спальни<input name="beds" type="number" min="0" value="0" required></label>
+        <label>Цена (₽/ночь)<input name="price" type="number" min="0" required></label>
+        <label>Фото — одна ссылка на строку (поддерживается несколько)
+          <textarea name="photos" rows="3" placeholder="https://.../1.jpg\nhttps://.../2.jpg" required></textarea>
+        </label>
+        <div style="display:flex;gap:8px">
+          <label style="flex:1">Доступно с<input name="avail_from" type="date"></label>
+          <label style="flex:1">Доступно до<input name="avail_to" type="date"></label>
+        </div>
+        <fieldset class="opts">
+          <legend>Опции</legend>
+          <label><input type="checkbox" name="pet"> Можно с питомцами</label>
+          <label><input type="checkbox" name="parking"> Парковка</label>
+          <label><input type="checkbox" name="wifi"> Wi‑Fi</label>
+        </fieldset>
+        <div class="modal-actions">
+          <button type="button" id="cancelPost" class="btn">Отмена</button>
+          <button type="submit" class="btn">Опубликовать</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Registration Modal -->
+  <div id="registerModal" class="modal" aria-hidden="true">
+    <div class="modal-dialog" role="dialog" aria-label="Регистрация">
+      <header class="modal-header">
+        <h3>Регистрация</h3>
+        <button id="closeRegister" aria-label="Закрыть"><i data-feather="x" data-basil="x"></i></button>
+      </header>
+      <form id="registerForm" class="post-form">
+        <label>Имя<input name="name" required></label>
+        <label>Электронная почта<input name="email" type="email" required></label>
+        <label>Пароль<input name="password" type="password" required></label>
+        <div class="modal-actions">
+          <button type="button" id="cancelRegister" class="btn">Отмена</button>
+          <button type="submit" class="btn primary">Зарегистрироваться</button>
+        </div>
+        <p style="margin-top: 12px; font-size: 14px; color: var(--muted);">
+          Уже есть аккаунт? <a href="#" id="openLoginFromRegister" style="color: #044036; text-decoration: none; font-weight: 700">Войти</a>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <template id="cardTpl">
+    <article class="card">
+      <img class="thumb" alt="">
+      <div class="card-body">
+        <div class="card-top">
+          <h3 class="title"></h3>
+          <button class="fav" title="Сохранить объявление" aria-pressed="false"><i data-feather="heart" data-basil="heart"></i></button>
+        </div>
+        <p class="meta"></p>
+        <p class="price"></p>
+        <div class="tags"></div>
+        <button class="details btn small">Подробнее</button>
+      </div>
+    </article>
+  </template>
+
+  <!-- Feather icons -->
+  <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+  <script>
+    // Инициализация Feather icons
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof feather !== 'undefined') {
+        feather.replace();
+      }
+      
+      // Инициализация Basil icons
+      if (typeof basil !== 'undefined') {
+        basil.replace();
+      }
+      
+      // Обработка форм
+      const searchForm = document.getElementById('searchForm');
+      if (searchForm) {
+        searchForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const query = document.getElementById('q').value.trim();
+          if (query) {
+            window.location.href = `/rent.html?q=${encodeURIComponent(query)}`;
+          }
+        });
+      }
+      
+      const serviceSearchForm = document.getElementById('serviceFindForm');
+      if (serviceSearchForm) {
+        serviceSearchForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const location = document.getElementById('serviceLocation').value.trim();
+          if (location) {
+            window.location.href = `/rent.html?location=${encodeURIComponent(location)}`;
+          }
+        });
+      }
+      
+      // Обработка модальных окон
+      const helpModal = document.getElementById('helpModal');
+      const closeHelpBtn = document.getElementById('closeHelp');
+      
+      if (closeHelpBtn && helpModal) {
+        closeHelpBtn.addEventListener('click', function() {
+          helpModal.setAttribute('aria-hidden', 'true');
+        });
+      }
+      
+      if (helpModal) {
+        helpModal.addEventListener('click', function(e) {
+          if (e.target === this) {
+            this.setAttribute('aria-hidden', 'true');
+          }
+        });
+      }
+      
+      const registerModal = document.getElementById('registerModal');
+      const closeRegisterBtn = document.getElementById('closeRegister');
+      const cancelRegisterBtn = document.getElementById('cancelRegister');
+      
+      if (closeRegisterBtn && registerModal) {
+        closeRegisterBtn.addEventListener('click', function() {
+          registerModal.setAttribute('aria-hidden', 'true');
+        });
+      }
+      
+      if (cancelRegisterBtn && registerModal) {
+        cancelRegisterBtn.addEventListener('click', function() {
+          registerModal.setAttribute('aria-hidden', 'true');
+        });
+      }
+      
+      if (registerModal) {
+        registerModal.addEventListener('click', function(e) {
+          if (e.target === this) {
+            this.setAttribute('aria-hidden', 'true');
+          }
+        });
+      }
+      
+      const postModal = document.getElementById('postModal');
+      const closePostBtn = document.getElementById('closePost');
+      const cancelPostBtn = document.getElementById('cancelPost');
+      
+      if (closePostBtn && postModal) {
+        closePostBtn.addEventListener('click', function() {
+          postModal.setAttribute('aria-hidden', 'true');
+        });
+      }
+      
+      if (cancelPostBtn && postModal) {
+        cancelPostBtn.addEventListener('click', function() {
+          postModal.setAttribute('aria-hidden', 'true');
+        });
+      }
+      
+      if (postModal) {
+        postModal.addEventListener('click', function(e) {
+          if (e.target === this) {
+            this.setAttribute('aria-hidden', 'true');
+          }
+        });
+      }
+      
+      const viewModal = document.getElementById('viewModal');
+      const closeViewBtn = document.getElementById('closeView');
+      
+      if (closeViewBtn && viewModal) {
+        closeViewBtn.addEventListener('click', function() {
+          viewModal.setAttribute('aria-hidden', 'true');
+        });
+      }
+      
+      if (viewModal) {
+        viewModal.addEventListener('click', function(e) {
+          if (e.target === this) {
+            this.setAttribute('aria-hidden', 'true');
+          }
+        });
+      }
+      
+      // Обработка формы регистрации
+      const registerForm = document.getElementById('registerForm');
+      if (registerForm) {
+        registerForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const formData = new FormData(this);
+          const name = formData.get('name').trim();
+          const email = formData.get('email').trim();
+          
+          // Демо: сохраняем пользователя в localStorage
+          try {
+            localStorage.setItem('ugol_user', JSON.stringify({ name, email }));
+            alert('Регистрация успешна! Теперь вы можете войти в систему.');
+            registerModal.setAttribute('aria-hidden', 'true');
+            this.reset();
+          } catch (err) {
+            alert('Ошибка при регистрации. Попробуйте еще раз.');
+          }
+        });
+      }
+      
+      // Ссылка "Войти" в форме регистрации
+      const openLoginFromRegister = document.getElementById('openLoginFromRegister');
+      if (openLoginFromRegister) {
+        openLoginFromRegister.addEventListener('click', function(e) {
+          e.preventDefault();
+          if (registerModal) {
+            registerModal.setAttribute('aria-hidden', 'true');
+          }
+          // Здесь можно открыть модальное окно входа, если оно есть
+          alert('Функция входа будет реализована позже.');
+        });
+      }
+    });
+    
+    // Глобальные функции для открытия модальных окон
+    window.openHelpModal = function() {
+      const helpModal = document.getElementById('helpModal');
+      if (helpModal) {
+        helpModal.setAttribute('aria-hidden', 'false');
+      }
+    };
+    
+    window.openRegisterModal = function() {
+      const registerModal = document.getElementById('registerModal');
+      if (registerModal) {
+        registerModal.setAttribute('aria-hidden', 'false');
+      }
+    };
+  </script>
+</body>
+</html>

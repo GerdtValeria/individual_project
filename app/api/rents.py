@@ -15,6 +15,11 @@ async def get_rent(db: DBDep,id:int,):
     rent = await RentService(db).get_all_rents(id=id)   
     return rent
 
+@router.get("/{category_id}", response_model=SRentGet)
+async def get_category_rent(db: DBDep,category_id:int,):
+    rent = await RentService(db).get_category_rents(category_id=category_id)   
+    return rent
+
 @router.post("/",response_model=SRentGet)
 async def add_rent(rent_data: SRentAdd, db: DBDep,) -> dict[str, str]:
     rent = await RentService(db).add_rent(rent_data)

@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Угол Комфорта — Сдать в аренду</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <div class="logo" aria-hidden="false">
+        <a href="/index.html" class="logo-link" aria-label="Перейти на главную">
+          <img src="/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
+        </a>
+      </div>
+    </div>
+    <form id="searchForm" class="search-form" aria-label="Поиск аренды" style="margin-left:12px;">
+      <input id="q" name="q" type="search" placeholder="Поиск по городу, району или опции" />
+    </form>
+    <nav class="top-tabs" aria-label="Главная навигация">
+      <button class="tab" data-tab="rent">Арендовать</button>
+      <button class="tab active" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
+      <a class="tab" href="/favorites.html">Избранное</a>
+      <button class="tab" data-tab="help">Помощь</button>
+      <div class="auth">
+        <button class="tab primary" data-tab="signup">Зарегистрироваться</button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container" style="padding:18px;">
+    <section style="max-width:900px;margin:0 auto">
+      <h1 style="margin:0 0 12px;font-size:28px;color:#042018">Сдать в аренду — размещение объявления</h1>
+      <p style="color:var(--muted);margin:0 0 18px">Здесь вы можете разместить объявление о сдаче жилья: заполните форму и публикуйте предложение.</p>
+
+      <div class="card" style="padding:18px;max-width:900px;margin:12px auto">
+        <strong>Разместить объявление</strong>
+        <p style="color:var(--muted)">Форма публикации доступна в разделе "Новое объявление". В демонстрационной версии — инструкции и пример.</p>
+        <ol style="color:var(--muted)">
+          <li>Подготовьте заголовок, описание и фотографии.</li>
+          <li>Укажите цены и даты доступности.</li>
+          <li>Опубликуйте — объявление появится в списке предложений.</li>
+        </ol>
+        <p style="margin-top:12px"><button id="openPostBtn" class="btn">Добавить объявление</button></p>
+      </div>
+
+    </section>
+  </main>
+
+  <footer class="site-footer" aria-label="Сайт футер" style="margin-top:28px">
+    <div class="footer-inner">
+      <div class="footer-col footer-contact">
+        <div class="footer-brand">
+          <img src="/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
+          <div class="company-name">Угол Комфорта</div>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-heading">Меню</h4>
+        <ul>
+          <li><a href="/rent.html" data-nav="rent">Арендовать</a></li>
+          <li><a href="/list.html" data-nav="list">Сдать в аренду</a></li>
+          <li><a href="/index.html" data-nav="help">Помощь</a></li>
+          <li><a href="/index.html" data-nav="home">Главная</a></li>
+          <li><a href="/signup.html" data-nav="signup">Зарегистрироваться</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">О проекте</h4>
+        <ul>
+          <li><a href="/index.html#team">Команда</a></li>
+          <li><a href="/index.html#history">Наша история</a></li>
+          <li><a href="/index.html#mission">Миссия проекта</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Мы в соцсетях</h4>
+        <ul class="social-list">
+          <li><a href="#">ВК</a></li>
+          <li><a href="#">Телеграмм</a></li>
+          <li><a href="#">Одноклассники</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Post modal (local to list.html) -->
+  <div id="postModalLocal" class="modal" aria-hidden="true">
+    <div class="modal-dialog" role="dialog" aria-label="Форма добавления объявления">
+      <header class="modal-header">
+        <h3>Новое объявление</h3>
+      </header>
+      <form id="postFormLocal" class="post-form">
+        <label>Заголовок<input name="title" required></label>
+        <label>Город<input name="city" required></label>
+        <label>Описание<textarea name="description" rows="3" required></textarea></label>
+        <label>Категория
+          <select name="category" required>
+            <option value="">— Выберите —</option>
+            <option value="Студия">Студия</option>
+            <option value="1‑комнатная">1‑комнатная</option>
+            <option value="2‑комнатная">2‑комнатная</option>
+            <option value="Дом">Дом</option>
+            <option value="Апартаменты с видом">Апартаменты с видом</option>
+          </select>
+        </label>
+        <label>Цена (₽/ночь)<input name="price" type="number" min="0" required></label>
+        <label>Загрузите фото</label>
+        <input name="photo" type="file" accept="image/*">
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+          <button type="button" id="cancelPostLocal" class="btn">Отмена</button>
+          <button type="submit" class="btn primary">Опубликовать</button>
+        </div>
+        <p style="color:var(--muted);font-size:13px;margin-top:12px">Демонстрация: форма не отправляет данные на сервер — объявление добавляется на странице.</p>
+      </form>
+    </div>
+  </div>
+
+
+
+  <script>
+    // Local post modal handlers for list.html
+    (function(){
+      const openBtn = document.getElementById('openPostBtn');
+      const modal = document.getElementById('postModalLocal');
+      const closeBtn = document.getElementById('closePostLocal');
+      const cancelBtn = document.getElementById('cancelPostLocal');
+      const form = document.getElementById('postFormLocal');
+      const listingsWrap = document.querySelector('main .card')?.parentElement || document.querySelector('main .card').parentElement;
+
+      function close() { modal.setAttribute('aria-hidden','true'); }
+      function open() { modal.setAttribute('aria-hidden','false'); setTimeout(()=>modal.querySelector('input[name="title"]')?.focus(),100); }
+      if (openBtn) openBtn.addEventListener('click', open);
+      if (closeBtn) closeBtn.addEventListener('click', close);
+      if (cancelBtn) cancelBtn.addEventListener('click', close);
+      if (modal) modal.addEventListener('click', (e)=> { if (e.target === modal) close(); });
+      if (form) {
+        form.addEventListener('submit', (e)=>{
+          e.preventDefault();
+          const data = new FormData(form);
+          const title = data.get('title') || 'Без названия';
+          const city = data.get('city') || '';
+          const category = data.get('category') || '';
+          const desc = data.get('description') || '';
+          const price = data.get('price') || '0';
+          const photoFile = data.get('photo');
+          const photo = (photoFile && photoFile.size) ? URL.createObjectURL(photoFile) : '/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg';
+          // create a simple card and insert into the page (include category)
+          const card = document.createElement('article');
+          card.className = 'card';
+          card.innerHTML = `
+            <img class="thumb" src="${photo}" alt="">
+            <div class="card-body">
+              <div class="card-top"><h3 class="title">${escapeHtml(title)}</h3></div>
+              <p class="meta">${escapeHtml(city)}${category ? ' · ' + escapeHtml(category) : ''}</p>
+              <p class="desc-snippet">${escapeHtml(desc)}</p>
+              <p class="price">₽${escapeHtml(price)}/ночь</p>
+            </div>
+          `;
+          // insert after the static instruction card
+          const container = document.querySelector('#rentListings') || document.querySelector('main section');
+          if (container) container.insertAdjacentElement('afterbegin', card);
+          close();
+          form.reset();
+        });
+      }
+      function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    })();
+  </script>
+
+  <script>
+    // top-tab navigation: redirect where appropriate
+    document.querySelectorAll('.top-tabs .tab').forEach(tb=>{
+      tb.addEventListener('click', ()=>{
+        if (tb.dataset.tab === 'list') return; // already on list page
+        if (tb.dataset.tab === 'rent') { window.location.href = '/rent.html'; return; }
+        if (tb.dataset.tab === 'favorites') { window.location.href = '/index.html#favorites'; return; }
+        // open in-page register block instead of redirecting to signup page
+        if (tb.dataset.tab === 'signup') {
+          // visually activate tab
+          document.querySelectorAll('.top-tabs .tab').forEach(t=>t.classList.remove('active'));
+          tb.classList.add('active');
+          const block = document.getElementById('registerBlock');
+          if (block) { block.setAttribute('aria-hidden','false'); setTimeout(()=>block.querySelector('input[name="name"]')?.focus(),120); return; }
+          // fallback: redirect
+          window.location.href = '/signup.html';
+        }
+        // open in-page Help block instead of redirecting
+        if (tb.dataset.tab === 'help') {
+          document.querySelectorAll('.top-tabs .tab').forEach(t=>t.classList.remove('active'));
+          tb.classList.add('active');
+          const block = document.getElementById('helpBlock');
+          if (block) { block.setAttribute('aria-hidden','false'); setTimeout(()=>block.querySelector('button, a, input')?.focus(),120); return; }
+          window.location.href = '/index.html';
+        }
+        const map = { travel: '/travel.html', help: '/index.html' };
+        const target = map[tb.dataset.tab] || '/index.html';
+        window.location.href = target;
+      });
+    });
+    // Register modal handlers
+    (function(){
+      // Handlers for the in-page register block
+      const registerBlock = document.getElementById('registerBlock');
+      const closeBtn = document.getElementById('closeRegisterBlock');
+      const cancelBtn = document.getElementById('cancelRegisterBlock');
+      const form = document.getElementById('registerBlockForm');
+      if (closeBtn) closeBtn.addEventListener('click', ()=> registerBlock.setAttribute('aria-hidden','true'));
+      if (cancelBtn) cancelBtn.addEventListener('click', ()=> registerBlock.setAttribute('aria-hidden','true'));
+      if (registerBlock) registerBlock.addEventListener('click', (e)=> { if (e.target === registerBlock) registerBlock.setAttribute('aria-hidden','true'); });
+      if (form) {
+        form.addEventListener('submit', (e)=> {
+          e.preventDefault();
+          alert('Регистрация (демо): данные не отправляются.');
+          registerBlock.setAttribute('aria-hidden','true');
+          form.reset();
+        });
+      }
+    })();
+    // Help overlay handlers: add a helpBlock element if not present and wire close/open
+    (function(){
+      if (!document.getElementById('helpBlock')) {
+        const wrapper = document.createElement('div');
+        wrapper.id = 'helpBlock';
+        wrapper.className = 'overlay-block';
+        wrapper.setAttribute('aria-hidden','true');
+        wrapper.innerHTML = `
+          <div class="overlay-dialog" role="dialog" aria-label="Помощь">
+            <header class="modal-header">
+              <h3>Помощь</h3>
+              <button id="closeHelpBlock" class="help-close" aria-label="Закрыть"><i data-feather="x"></i></button>
+            </header>
+            <div class="post-form" style="max-width:520px;">
+              <p style="margin:0 0 8px;color:var(--muted)">Здесь вы найдёте ответы на частые вопросы, инструкции по бронированию и контакты службы поддержки.</p>
+              <ul style="margin:0 0 8px;color:var(--muted);line-height:1.5">
+                <li>Как забронировать жильё?</li>
+                <li>Как отменить бронирование?</li>
+                <li>Как разместить объявление?</li>
+              </ul>
+              <hr style="border:0;height:1px;background:rgba(0,0,0,0.06);margin:8px 0">
+              <form id="helpContactFormList" class="help-contact-form" style="display:flex;flex-direction:column;gap:8px;">
+                <label style="font-size:13px">Ваш e-mail
+                  <input type="email" name="email" placeholder="you@example.com" required style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)">
+                </label>
+                <label style="font-size:13px">Сообщение
+                  <textarea name="message" rows="3" placeholder="Опишите проблему или вопрос" required style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)"></textarea>
+                </label>
+                <div style="display:flex;justify-content:flex-end;gap:8px">
+                  <button type="submit" class="btn">Отправить</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(wrapper);
+        if (window.feather) feather.replace();
+      }
+      const helpBlock = document.getElementById('helpBlock');
+      const closeBtn = document.getElementById('closeHelpBlock');
+      if (closeBtn) closeBtn.addEventListener('click', ()=> helpBlock.setAttribute('aria-hidden','true'));
+      if (helpBlock) helpBlock.addEventListener('click', (e)=> { if (e.target === helpBlock) helpBlock.setAttribute('aria-hidden','true'); });
+      
+      // contact form handler for list helpBlock
+      const listForm = document.getElementById('helpContactFormList');
+      if (listForm) {
+        listForm.addEventListener('submit', (e)=> {
+          e.preventDefault();
+          const fm = new FormData(listForm);
+          const email = (fm.get('email')||'').toString().trim();
+          const msg = (fm.get('message')||'').toString().trim();
+          const subject = encodeURIComponent('Поддержка — Угол Комфорта');
+          const body = encodeURIComponent(`От: ${email}\n\n${msg}`);
+          window.location.href = `mailto:support@ugolkomforta.example?subject=${subject}&body=${body}`;
+          // keep overlay visible after sending (no explicit close button)
+        });
+      }
+    })();
+  </script>
+
+  <script>
+    // open login modal from register block and perform demo auth (persist ugol_user)
+    (function(){
+      const openLogin = document.getElementById('openLoginFromRegister');
+      const loginModal = document.getElementById('loginModal');
+      const closeLogin = document.getElementById('closeLogin');
+      const cancelLogin = document.getElementById('cancelLogin');
+      const loginForm = document.getElementById('loginForm');
+      if (openLogin) openLogin.addEventListener('click', (e)=>{ 
+        e.preventDefault(); 
+        const registerBlock = document.getElementById('registerBlock');
+        if (registerBlock) registerBlock.setAttribute('aria-hidden','true');
+        if (loginModal) { loginModal.setAttribute('aria-hidden','false'); setTimeout(()=> loginModal.querySelector('input[name=\"email\"]')?.focus(),120); }
+      });
+      if (closeLogin) closeLogin.addEventListener('click', ()=> loginModal.setAttribute('aria-hidden','true'));
+      if (cancelLogin) cancelLogin.addEventListener('click', ()=> loginModal.setAttribute('aria-hidden','true'));
+      if (loginModal) loginModal.addEventListener('click', (e)=> { if (e.target === loginModal) loginModal.setAttribute('aria-hidden','true'); });
+      if (loginForm) loginForm.addEventListener('submit', (e)=>{ e.preventDefault(); const fm=new FormData(loginForm); const email=(fm.get('email')||'').toString().trim(); const user={ email, name: email.split('@')[0]||'user' }; try{ localStorage.setItem('ugol_user', JSON.stringify(user)); }catch(e){} window.dispatchEvent(new CustomEvent('ugol:login',{detail:{user}})); loginModal.setAttribute('aria-hidden','true'); });
+    })();
+  </script>
+
+  <script type="module" src="/js/signup-handler.js"></script>
+
+  <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+</body>
+</html>
