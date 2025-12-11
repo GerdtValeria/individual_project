@@ -41,7 +41,7 @@ class RentService(BaseService):
         offset = page_size * (page - 1)
         
 
-        rents = await self.repository.get_filtered_rents(
+        rents = await self.db.rents.get_filtered_rents(
             id_category=id_category,
             id_user=id_user,
             price_from=price_from,
