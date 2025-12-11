@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="styles.css">
 
   <!-- Import map (keeps options open for future libs) -->
   <script type="importmap">
@@ -20,16 +20,13 @@
   </script>
   <!-- Basil icons (CDN) -->
   <script src="https://unpkg.com/basil-icons@1.0.2/dist/basil.min.js"></script>
-  
-  <!-- Common JavaScript -->
-  <script src="/static/js/common.js" defer></script>
 </head>
 <body>
   <header class="site-header">
     <div class="brand">
       <div class="logo" aria-hidden="false">
         <a href="/index.html" class="logo-link" aria-label="Перейти на главную">
-          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
+          <img src="/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
         </a>
       </div>
       <div>
@@ -46,19 +43,19 @@
     <!-- Removed: Sort control block -->
 
     <nav class="top-tabs" aria-label="Главная навигация">
-      <a class="tab" href="/rent.html">Арендовать</a>
-      <a class="tab" href="/list.html"><span class="two-line">Сдать<br>в аренду</span></a>
+      <button class="tab" data-tab="rent">Арендовать</button>
+      <button class="tab" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
       <a class="tab" href="/favorites.html">Избранное</a>
-      <button class="tab" onclick="openHelpModal()">Помощь</button>
+      <button class="tab" data-tab="help">Помощь</button>
       <div class="auth">
-        <button class="tab primary" onclick="openRegisterModal()">Зарегистрироваться</button>
+        <button class="tab primary" data-tab="signup">Зарегистрироваться</button>
       </div>
     </nav>
   </header>
 
   <!-- NEW: Compact service block (from provided selection) -->
   <section class="service-cta" aria-label="О сервисе">
-    <div class="service-cta-inner" style="background-image: url('/static/85e85c87c4f5678cd4d5fc9645267c74.jpg')">
+    <div class="service-cta-inner" style="background-image: url('/85e85c87c4f5678cd4d5fc9645267c74.jpg')">
       <!-- image moved to background of .service-cta-inner -->
       <div class="service-cta-text">
         <h3>Найдите идеальное жильё для отдыха</h3>
@@ -145,12 +142,12 @@
       <div class="footer-col">
         <h4 class="footer-heading">Меню</h4>
         <ul>
-          <li><a href="/rent.html">Арендовать</a></li>
-          <li><a href="/list.html">Сдать в аренду</a></li>
-          <li><a href="#" onclick="openHelpModal(); return false;">Помощь</a></li>
-          <li><a href="/index.html">Главная</a></li>
-          <li><a href="#" onclick="openRegisterModal(); return false;">Зарегистрироваться</a></li>
-          <li><a href="/favorites.html">Избранное</a></li>
+          <li><a href="#" data-nav="rent">Арендовать</a></li>
+          <li><a href="#" data-nav="list">Сдать в аренду</a></li>
+          <li><a href="#" data-nav="help">Помощь</a></li>
+          <li><a href="#" data-nav="home">Главная</a></li>
+          <li><a href="#" data-nav="signup">Зарегистрироваться</a></li>
+          <li><a href="#" data-nav="favorites">Избранное</a></li>
         </ul>
       </div>
 
@@ -159,9 +156,9 @@
       <div class="footer-col">
         <h4 class="footer-heading">О проекте</h4>
         <ul>
-          <li><a href="#team">Команда</a></li>
-          <li><a href="#history">Наша история</a></li>
-          <li><a href="#mission">Миссия проекта</a></li>
+          <li><a href="/index.html#team">Команда</a></li>
+          <li><a href="/index.html#history">Наша история</a></li>
+          <li><a href="/index.html#mission">Миссия проекта</a></li>
         </ul>
       </div>
 
@@ -198,6 +195,28 @@
     </div>
   </div>
 
+
+
+  <script>
+    (function(){
+      const overlay = document.getElementById('signin');
+      if (!overlay) return;
+      const closeBtn = document.getElementById('closeSignin');
+      const regForm = document.getElementById('signinRegisterForm');
+      const logForm = document.getElementById('signinLoginForm');
+      const toLog = document.getElementById('toSigninLogin');
+      const toReg = document.getElementById('toSigninRegister');
+      const titleEl = document.getElementById('signinTitle');
+
+      function showRegister() {
+        regForm.style.display = 'flex';
+        logForm.style.display = 'none';
+        if (titleEl) titleEl.textContent = 'Регистрация';
+        setTimeout(()=> regForm.querySelector('input[name="name"]')?.focus(), 80);
+      }
+
+  </script>
+
   <!-- NEW: Help modal (opens on top of main page when clicking 'Помощь') -->
   <div id="helpModal" class="modal" aria-hidden="true">
     <div class="modal-dialog" role="dialog" aria-label="Помощь">
@@ -215,7 +234,6 @@
       </div>
     </div>
   </div>
-  
   <!-- Post modal -->
   <div id="postModal" class="modal" aria-hidden="true">
     <div class="modal-dialog" role="dialog" aria-label="Форма добавления объявления">
@@ -250,28 +268,6 @@
     </div>
   </div>
 
-  <!-- Registration Modal -->
-  <div id="registerModal" class="modal" aria-hidden="true">
-    <div class="modal-dialog" role="dialog" aria-label="Регистрация">
-      <header class="modal-header">
-        <h3>Регистрация</h3>
-        <button id="closeRegister" aria-label="Закрыть"><i data-feather="x" data-basil="x"></i></button>
-      </header>
-      <form id="registerForm" class="post-form">
-        <label>Имя<input name="name" required></label>
-        <label>Электронная почта<input name="email" type="email" required></label>
-        <label>Пароль<input name="password" type="password" required></label>
-        <div class="modal-actions">
-          <button type="button" id="cancelRegister" class="btn">Отмена</button>
-          <button type="submit" class="btn primary">Зарегистрироваться</button>
-        </div>
-        <p style="margin-top: 12px; font-size: 14px; color: var(--muted);">
-          Уже есть аккаунт? <a href="#" id="openLoginFromRegister" style="color: #044036; text-decoration: none; font-weight: 700">Войти</a>
-        </p>
-      </form>
-    </div>
-  </div>
-
   <template id="cardTpl">
     <article class="card">
       <img class="thumb" alt="">
@@ -290,173 +286,7 @@
 
   <!-- Feather icons -->
   <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
-  <script>
-    // Инициализация Feather icons
-    document.addEventListener('DOMContentLoaded', function() {
-      if (typeof feather !== 'undefined') {
-        feather.replace();
-      }
-      
-      // Инициализация Basil icons
-      if (typeof basil !== 'undefined') {
-        basil.replace();
-      }
-      
-      // Обработка форм
-      const searchForm = document.getElementById('searchForm');
-      if (searchForm) {
-        searchForm.addEventListener('submit', function(e) {
-          e.preventDefault();
-          const query = document.getElementById('q').value.trim();
-          if (query) {
-            window.location.href = `/rent.html?q=${encodeURIComponent(query)}`;
-          }
-        });
-      }
-      
-      const serviceSearchForm = document.getElementById('serviceFindForm');
-      if (serviceSearchForm) {
-        serviceSearchForm.addEventListener('submit', function(e) {
-          e.preventDefault();
-          const location = document.getElementById('serviceLocation').value.trim();
-          if (location) {
-            window.location.href = `/rent.html?location=${encodeURIComponent(location)}`;
-          }
-        });
-      }
-      
-      // Обработка модальных окон
-      const helpModal = document.getElementById('helpModal');
-      const closeHelpBtn = document.getElementById('closeHelp');
-      
-      if (closeHelpBtn && helpModal) {
-        closeHelpBtn.addEventListener('click', function() {
-          helpModal.setAttribute('aria-hidden', 'true');
-        });
-      }
-      
-      if (helpModal) {
-        helpModal.addEventListener('click', function(e) {
-          if (e.target === this) {
-            this.setAttribute('aria-hidden', 'true');
-          }
-        });
-      }
-      
-      const registerModal = document.getElementById('registerModal');
-      const closeRegisterBtn = document.getElementById('closeRegister');
-      const cancelRegisterBtn = document.getElementById('cancelRegister');
-      
-      if (closeRegisterBtn && registerModal) {
-        closeRegisterBtn.addEventListener('click', function() {
-          registerModal.setAttribute('aria-hidden', 'true');
-        });
-      }
-      
-      if (cancelRegisterBtn && registerModal) {
-        cancelRegisterBtn.addEventListener('click', function() {
-          registerModal.setAttribute('aria-hidden', 'true');
-        });
-      }
-      
-      if (registerModal) {
-        registerModal.addEventListener('click', function(e) {
-          if (e.target === this) {
-            this.setAttribute('aria-hidden', 'true');
-          }
-        });
-      }
-      
-      const postModal = document.getElementById('postModal');
-      const closePostBtn = document.getElementById('closePost');
-      const cancelPostBtn = document.getElementById('cancelPost');
-      
-      if (closePostBtn && postModal) {
-        closePostBtn.addEventListener('click', function() {
-          postModal.setAttribute('aria-hidden', 'true');
-        });
-      }
-      
-      if (cancelPostBtn && postModal) {
-        cancelPostBtn.addEventListener('click', function() {
-          postModal.setAttribute('aria-hidden', 'true');
-        });
-      }
-      
-      if (postModal) {
-        postModal.addEventListener('click', function(e) {
-          if (e.target === this) {
-            this.setAttribute('aria-hidden', 'true');
-          }
-        });
-      }
-      
-      const viewModal = document.getElementById('viewModal');
-      const closeViewBtn = document.getElementById('closeView');
-      
-      if (closeViewBtn && viewModal) {
-        closeViewBtn.addEventListener('click', function() {
-          viewModal.setAttribute('aria-hidden', 'true');
-        });
-      }
-      
-      if (viewModal) {
-        viewModal.addEventListener('click', function(e) {
-          if (e.target === this) {
-            this.setAttribute('aria-hidden', 'true');
-          }
-        });
-      }
-      
-      // Обработка формы регистрации
-      const registerForm = document.getElementById('registerForm');
-      if (registerForm) {
-        registerForm.addEventListener('submit', function(e) {
-          e.preventDefault();
-          const formData = new FormData(this);
-          const name = formData.get('name').trim();
-          const email = formData.get('email').trim();
-          
-          // Демо: сохраняем пользователя в localStorage
-          try {
-            localStorage.setItem('ugol_user', JSON.stringify({ name, email }));
-            alert('Регистрация успешна! Теперь вы можете войти в систему.');
-            registerModal.setAttribute('aria-hidden', 'true');
-            this.reset();
-          } catch (err) {
-            alert('Ошибка при регистрации. Попробуйте еще раз.');
-          }
-        });
-      }
-      
-      // Ссылка "Войти" в форме регистрации
-      const openLoginFromRegister = document.getElementById('openLoginFromRegister');
-      if (openLoginFromRegister) {
-        openLoginFromRegister.addEventListener('click', function(e) {
-          e.preventDefault();
-          if (registerModal) {
-            registerModal.setAttribute('aria-hidden', 'true');
-          }
-          // Здесь можно открыть модальное окно входа, если оно есть
-          alert('Функция входа будет реализована позже.');
-        });
-      }
-    });
-    
-    // Глобальные функции для открытия модальных окон
-    window.openHelpModal = function() {
-      const helpModal = document.getElementById('helpModal');
-      if (helpModal) {
-        helpModal.setAttribute('aria-hidden', 'false');
-      }
-    };
-    
-    window.openRegisterModal = function() {
-      const registerModal = document.getElementById('registerModal');
-      if (registerModal) {
-        registerModal.setAttribute('aria-hidden', 'false');
-      }
-    };
-  </script>
+  <script type="module" src="/js/signup-handler.js"></script>
+  <script type="module" src="/app.js"></script>
 </body>
 </html>

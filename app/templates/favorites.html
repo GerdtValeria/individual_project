@@ -24,7 +24,9 @@
       <a class="tab" href="/list.html"><span class="two-line">Сдать<br>в аренду</span></a>
       <a class="tab" href="/favorites.html">Избранное</a>
       <button class="tab" data-tab="help">Помощь</button>
-      <button class="tab primary" data-tab="signup">Зарегистрироваться</button>
+      <div class="auth">
+        <button class="tab primary" data-tab="signup">Зарегистрироваться</button>
+      </div>
     </nav>
   </header>
 
@@ -34,16 +36,18 @@
       <p id="favoritesEmptyMsg" style="color:var(--muted);margin:0 0 12px">У вас пока нет сохранённых объявлений.</p>
       <div id="favoritesList" class="listings" style="margin-top:8px"></div>
       <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+        <!-- add highlight-on-hover class for page-specific hover effect -->
         <a class="btn highlight-on-hover" href="/rent.html">К списку</a>
       </div>
     </section>
   </main>
 
-  <!-- In-page Help overlay -->
+  <!-- In-page Help overlay (opens on top of favorites page when clicking 'Помощь') -->
   <div id="helpBlock" class="overlay-block" aria-hidden="true">
     <div class="overlay-dialog" role="dialog" aria-label="Помощь">
       <header class="modal-header">
         <h3>Помощь</h3>
+        <!-- Close button explicitly placed in the header top-right -->
         <button id="closeHelpBlock" class="help-close" aria-label="Закрыть" style="position:absolute;top:10px;right:10px;"><i data-feather="x"></i></button>
       </header>
       <div class="post-form" style="max-width:520px;">
@@ -69,61 +73,93 @@
     </div>
   </div>
 
-  <!-- Signin/Register Overlay -->
-  <div id="signin" class="overlay-block" aria-hidden="true">
-    <div class="overlay-dialog" role="dialog" aria-label="Вход или регистрация">
-      <header class="modal-header">
-        <h3 id="signinTitle">Регистрация</h3>
-        <button id="closeSignin" class="help-close" aria-label="Закрыть" style="position:absolute;top:10px;right:10px;"><i data-feather="x"></i></button>
-      </header>
-      <div class="post-form" style="max-width:480px;">
-        <div class="tabs" style="margin-bottom:16px;">
-          <a href="#" id="signinTabRegister" class="tab-link">Регистрация</a>
-          <a href="#" id="signinTabLogin" class="tab-link ghost">Вход</a>
-        </div>
 
-        <form id="signinRegisterForm" style="display:flex;flex-direction:column;gap:12px;">
-          <label>
-            Имя
-            <input type="text" name="name" placeholder="Ваше имя" required>
-          </label>
-          <label>
-            E-mail
-            <input type="email" name="email" placeholder="you@example.com" required>
-          </label>
-          <label>
-            Пароль
-            <input type="password" name="password" placeholder="Не менее 6 символов" required minlength="6">
-          </label>
-          <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px;">
-            <button type="button" id="cancelSigninRegister" class="btn ghost">Отмена</button>
-            <button type="submit" class="btn">Зарегистрироваться</button>
-          </div>
-          <p style="text-align:center;margin-top:12px;font-size:13px;color:var(--muted)">
-            Уже есть аккаунт? <a href="#" id="toSigninLogin">Войти</a>
-          </p>
-        </form>
 
-        <form id="signinLoginForm" style="display:none;flex-direction:column;gap:12px;">
-          <label>
-            E-mail
-            <input type="email" name="email" placeholder="you@example.com" required>
-          </label>
-          <label>
-            Пароль
-            <input type="password" name="password" placeholder="Ваш пароль" required>
-          </label>
-          <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px;">
-            <button type="button" id="cancelSigninLogin" class="btn ghost">Отмена</button>
-            <button type="submit" class="btn">Войти</button>
-          </div>
-          <p style="text-align:center;margin-top:12px;font-size:13px;color:var(--muted)">
-            Нет аккаунта? <a href="#" id="toSigninRegister">Зарегистрироваться</a>
-          </p>
-        </form>
-      </div>
-    </div>
-  </div>
+  <script>
+    (function(){
+      const overlay = document.getElementById('signin');
+      if (!overlay) return;
+      const closeBtn = document.getElementById('closeSignin');
+      const tabReg = document.getElementById('signinTabRegister');
+      const tabLog = document.getElementById('signinTabLogin');
+      const regForm = document.getElementById('signinRegisterForm');
+      const logForm = document.getElementById('signinLoginForm');
+      const toLog = document.getElementById('toSigninLogin');
+      const toReg = document.getElementById('toSigninRegister');
+      const titleEl = document.getElementById('signinTitle');
+
+      function showRegister() {
+        if (tabReg) tabReg.classList.remove('ghost');
+        if (tabLog) tabLog.classList.add('ghost');
+        regForm.style.display = 'flex';
+        logForm.style.display = 'none';
+        if (titleEl) titleEl.textContent = 'Регистрация';
+        setTimeout(()=> regForm.querySelector('input[name="name"]')?.focus(), 80);
+      }
+      function showLogin() {
+        if (tabReg) tabReg.classList.add('ghost');
+        if (tabLog) tabLog.classList.remove('ghost');
+        regForm.style.display = 'none';
+        logForm.style.display = 'flex';
+        if (titleEl) titleEl.textContent = 'Вход';
+        setTimeout(()=> logForm.querySelector('input[name="email"]')?.focus(), 80);
+      }
+
+      // open handlers (the header opener already toggles aria-hidden to false)
+      // close handlers
+      closeBtn.addEventListener('click', ()=> overlay.setAttribute('aria-hidden','true'));
+      overlay.addEventListener('click', (e)=> { if (e.target === overlay) overlay.setAttribute('aria-hidden','true'); });
+
+      // tab toggles
+      if (tabReg) tabReg.addEventListener('click', (e)=> { e.preventDefault(); showRegister(); });
+      if (tabLog) tabLog.addEventListener('click', (e)=> { e.preventDefault(); showLogin(); });
+      if (toLog) toLog.addEventListener('click', (e)=> { e.preventDefault(); showLogin(); });
+      if (toReg) toReg.addEventListener('click', (e)=> { e.preventDefault(); showRegister(); });
+
+      // cancel buttons close overlay
+      document.getElementById('cancelSigninRegister')?.addEventListener('click', ()=> overlay.setAttribute('aria-hidden','true'));
+      document.getElementById('cancelSigninLogin')?.addEventListener('click', ()=> overlay.setAttribute('aria-hidden','true'));
+
+      // Registration submit: persist ugol_user and dispatch event
+      regForm.addEventListener('submit', (e)=>{
+        e.preventDefault();
+        try {
+          const fm = new FormData(regForm);
+          const name = (fm.get('name') || '').toString().trim() || 'user';
+          const email = (fm.get('email') || '').toString().trim();
+          const user = { name, email };
+          try { localStorage.setItem('ugol_user', JSON.stringify(user)); } catch (err) {}
+          window.dispatchEvent(new CustomEvent('ugol:login', { detail: { user } }));
+          overlay.setAttribute('aria-hidden','true');
+          regForm.reset();
+          alert('Регистрация завершена (локально, демо). Вы вошли как ' + (name || email));
+        } catch (err) {
+          alert('Ошибка регистрации (демо).');
+        }
+      });
+
+      // Login submit: validate locally against stored or accept and persist as demo login
+      logForm.addEventListener('submit', (e)=>{
+        e.preventDefault();
+        try {
+          const fm = new FormData(logForm);
+          const email = (fm.get('email') || '').toString().trim();
+          const name = email.split('@')[0] || 'user';
+          const user = { name, email };
+          try { localStorage.setItem('ugol_user', JSON.stringify(user)); } catch (err) {}
+          window.dispatchEvent(new CustomEvent('ugol:login', { detail: { user } }));
+          overlay.setAttribute('aria-hidden','true');
+          logForm.reset();
+          alert('Вход выполнен (локально, демо). Вы вошли как ' + (name || email));
+        } catch (err) {
+          alert('Ошибка входа (демо).');
+        }
+      });
+
+      // initialize view as registration
+      showRegister();
+    })();
+  </script>
 
   <footer class="site-footer" aria-label="Сайт футер" style="margin-top:28px">
     <div class="footer-inner">
@@ -137,11 +173,11 @@
       <div class="footer-col">
         <h4 class="footer-heading">Меню</h4>
         <ul>
-          <li><a href="/rent.html">Арендовать</a></li>
-          <li><a href="/list.html">Сдать в аренду</a></li>
-          <li><a href="#" data-tab="help">Помощь</a></li>
-          <li><a href="/index.html">Главная</a></li>
-          <li><a href="#" data-tab="signup">Зарегистрироваться</a></li>
+          <li>Арендовать</li>
+          <li>Сдать в аренду</li>
+          <li>Помощь</li>
+          <li>Главная</li>
+          <li>Зарегистрироваться</li>
         </ul>
       </div>
 
@@ -165,6 +201,256 @@
     </div>
   </footer>
 
-  <script src="/js/favorites-handler.js"></script>
+  <script type="module">
+    import { rentListings } from './js/state.js';
+    function escapeHtml(s){ return String(s||'').replace(/[&<>\"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[c])); }
+    function renderFavorites() {
+      const container = document.getElementById('favoritesList');
+      const emptyMsg = document.getElementById('favoritesEmptyMsg');
+      if (!container) return;
+      container.innerHTML = '';
+      let favArr = [];
+      try {
+        const raw = localStorage.getItem('ugol_fav') || '[]';
+        favArr = (JSON.parse(raw) || []).map(x => x.id).filter(Boolean);
+      } catch (e) { favArr = []; }
+      if (!favArr.length) {
+        if (emptyMsg) emptyMsg.style.display = '';
+        container.innerHTML = '';
+        return;
+      } else {
+        if (emptyMsg) emptyMsg.style.display = 'none';
+      }
+      for (const id of favArr) {
+        const item = rentListings.find(r => r.id === id);
+        if (!item) continue;
+        const article = document.createElement('article');
+        article.className = 'card';
+        article.innerHTML = `
+          <img class="thumb" src="${(item.photos && item.photos[0]) ? item.photos[0] : (item.img || '')}" alt="${escapeHtml(item.title || '')}">
+          <div class="card-body">
+            <div class="card-top"><h3 class="title">${escapeHtml(item.title || '')}</h3></div>
+            <p class="meta">${escapeHtml(item.city || '')} · ${item.beds === 0 ? 'Студия' : item.beds + 'к'}</p>
+            <p class="desc-snippet">${escapeHtml(item.description ? (item.description.length > 120 ? item.description.slice(0,117) + '…' : item.description) : '')}</p>
+            <p class="price">₽${escapeHtml(item.price || 0)}/ночь</p>
+            <div style="display:flex;gap:8px;margin-top:auto">
+              <button class="btn viewFav" data-id="${escapeHtml(item.id)}">Подробнее</button>
+              <button class="btn" data-action="removeFav" data-id="${escapeHtml(item.id)}">Удалить</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(article);
+      }
+      container.querySelectorAll('.viewFav').forEach(b => {
+        b.addEventListener('click', () => {
+          const id = b.dataset.id;
+          if (!id) return;
+          window.location.href = `/detail.html?id=${encodeURIComponent(id)}`;
+        });
+      });
+      container.querySelectorAll('[data-action="removeFav"]').forEach(b => {
+        b.addEventListener('click', () => {
+          const id = b.dataset.id;
+          if (!id) return;
+          try {
+            const raw = localStorage.getItem('ugol_fav') || '[]';
+            const arr = JSON.parse(raw) || [];
+            const out = arr.filter(x => x.id !== id);
+            localStorage.setItem('ugol_fav', JSON.stringify(out));
+          } catch (e) {}
+          renderFavorites();
+          // notify other pages that favorites changed (optional)
+          if (window.ugolRenderFavorites) window.ugolRenderFavorites();
+        });
+      });
+    }
+    document.addEventListener('DOMContentLoaded', ()=> {
+      renderFavorites();
+      // wire search redirect similar to other pages
+      const form = document.getElementById('searchForm');
+      if (form) form.addEventListener('submit', (e)=>{ e.preventDefault(); const q = (document.getElementById('q')?.value||'').trim(); window.location.href = q ? `/index.html?q=${encodeURIComponent(q)}` : '/index.html'; });
+
+      // --- Wire top-tabs help/signup to open overlays on this page ---
+      document.querySelectorAll('.top-tabs .tab').forEach(tb => {
+        tb.addEventListener('click', (ev) => {
+          const target = tb.dataset.tab;
+          if (target === 'help') {
+            const help = document.getElementById('helpBlock');
+            if (help) { help.setAttribute('aria-hidden','false'); setTimeout(()=> help.querySelector('input[name=\"email\"]')?.focus(), 120); }
+            return;
+          }
+          if (target === 'signup') {
+            // prefer the main-page style register modal if available, otherwise open full-page signup, then fallback to registerBlock
+            const regModal = document.getElementById('registerModal');
+            if (regModal) { regModal.setAttribute('aria-hidden','false'); setTimeout(()=> regModal.querySelector('input[name=\"name\"]')?.focus(), 120); return; }
+            const signupEl = document.getElementById('signup');
+            if (signupEl) { signupEl.setAttribute('aria-hidden','false'); setTimeout(()=> signupEl.querySelector('input[name=\"name\"]')?.focus(), 120); return; }
+            const reg = document.getElementById('registerBlock');
+            if (reg) { reg.setAttribute('aria-hidden','false'); setTimeout(()=> reg.querySelector('input[name=\"name\"]')?.focus(), 120); }
+            return;
+          }
+          // other tabs keep their default href/fallback behavior
+          if (target === 'rent') { window.location.href = '/rent.html'; return; }
+          if (target === 'list') { window.location.href = '/list.html'; return; }
+          if (target === 'favorites') { /* stay */ return; }
+        });
+      });
+
+      // help overlay handlers
+      (function(){
+        const helpBlock = document.getElementById('helpBlock');
+        if (!helpBlock) return;
+        const closeHelp = document.getElementById('closeHelpBlock');
+        if (closeHelp) closeHelp.addEventListener('click', ()=> helpBlock.setAttribute('aria-hidden','true'));
+        helpBlock.addEventListener('click', (e)=> { if (e.target === helpBlock) helpBlock.setAttribute('aria-hidden','true'); });
+        const form = document.getElementById('helpContactFormFavorites');
+        if (form) form.addEventListener('submit', (e)=> {
+          e.preventDefault();
+          const fm = new FormData(form);
+          const email = (fm.get('email')||'').toString().trim();
+          const msg = (fm.get('message')||'').toString().trim();
+          const subject = encodeURIComponent('Поддержка — Угол Комфорта');
+          const body = encodeURIComponent(`От: ${email}\n\n${msg}`);
+          window.location.href = `mailto:support@ugolkomforta.example?subject=${subject}&body=${body}`;
+        });
+      })();
+
+      // register overlay handlers
+      (function(){
+        const reg = document.getElementById('registerBlock');
+        if (!reg) return;
+        const closeBtn = document.getElementById('closeRegisterBlock');
+        const cancelBtn = document.getElementById('cancelRegisterBlock');
+        const form = document.getElementById('registerBlockForm');
+        const openLogin = document.getElementById('openLoginFromRegister');
+        if (closeBtn) closeBtn.addEventListener('click', ()=> reg.setAttribute('aria-hidden','true'));
+        if (cancelBtn) cancelBtn.addEventListener('click', ()=> reg.setAttribute('aria-hidden','true'));
+        reg.addEventListener('click', (e)=> { if (e.target === reg) reg.setAttribute('aria-hidden','true'); });
+        if (form) form.addEventListener('submit', (e)=> { e.preventDefault(); alert('Регистрация (демо): данные не отправляются.'); reg.setAttribute('aria-hidden','true'); form.reset(); });
+        if (openLogin) openLogin.addEventListener('click', (ev)=> { ev.preventDefault(); reg.setAttribute('aria-hidden','true'); alert('Открытие входа (демо)'); });
+      })();
+    });
+  </script>
+
+  <script>
+    // Ensure "Помощь" tab opens the in-page help overlay on Favorites page.
+    (function(){
+      function openHelpBlock() {
+        const help = document.getElementById('helpBlock');
+        if (!help) return;
+        help.setAttribute('aria-hidden', 'false');
+        // focus first input or close button for accessibility
+        setTimeout(()=> {
+          const first = help.querySelector('input[name="email"], textarea, button');
+          if (first) first.focus();
+        }, 80);
+      }
+
+      // wire header help tab click
+      const helpTab = document.querySelector('.top-tabs .tab[data-tab="help"]');
+      if (helpTab && !helpTab.__favHelpHandler) {
+        helpTab.__favHelpHandler = true;
+        helpTab.addEventListener('click', (e) => {
+          e.preventDefault();
+          openHelpBlock();
+        });
+      }
+
+      // close handlers for the overlay
+      const helpBlock = document.getElementById('helpBlock');
+      const closeBtn = document.getElementById('closeHelpBlock');
+      if (closeBtn) closeBtn.addEventListener('click', ()=> helpBlock.setAttribute('aria-hidden','true'));
+      if (helpBlock) helpBlock.addEventListener('click', (e)=> { if (e.target === helpBlock) helpBlock.setAttribute('aria-hidden','true'); });
+      // wire contact form to mailto (keeps existing behaviour)
+      const form = document.getElementById('helpContactFormFavorites');
+      if (form) form.addEventListener('submit', (e)=> {
+        e.preventDefault();
+        const fm = new FormData(form);
+        const email = (fm.get('email')||'').toString().trim();
+        const msg = (fm.get('message')||'').toString().trim();
+        const subject = encodeURIComponent('Поддержка — Угол Комфорта');
+        const body = encodeURIComponent(`От: ${email}\n\n${msg}`);
+        window.location.href = `mailto:support@ugolkomforta.example?subject=${subject}&body=${body}`;
+      });
+    })();
+  </script>
+
+  <!-- NEW: Make header "Зарегистрироваться" button open the full-page signup overlay -->
+  <script>
+    (function(){
+      const signupBtn = document.querySelector('.top-tabs .tab[data-tab="signup"]');
+      if (!signupBtn) return;
+      // avoid attaching twice
+      if (signupBtn.__signupAttached) return;
+      signupBtn.__signupAttached = true;
+      signupBtn.addEventListener('click', function(e){
+        e.preventDefault();
+        // Open the new full-page signin overlay named "signin"
+        const signinOverlay = document.getElementById('signin');
+        if (signinOverlay) {
+          signinOverlay.setAttribute('aria-hidden', 'false');
+          // focus first input for accessibility
+          setTimeout(()=> signinOverlay.querySelector('input[name="email"], input[name="password"], button')?.focus(), 120);
+          return;
+        }
+        // fallback to signup overlay if signin overlay missing
+        const signupOverlay = document.getElementById('signup') || document.getElementById('registerBlock');
+        if (!signupOverlay) {
+          window.location.href = '/signup.html';
+          return;
+        }
+        signupOverlay.setAttribute('aria-hidden', 'false');
+        setTimeout(()=> signupOverlay.querySelector('input[name="name"], input[name="email"], button')?.focus(), 120);
+      });
+
+      // Wire close/cancel inside signin overlay
+      const signinOverlay = document.getElementById('signin');
+      if (signinOverlay) {
+        signinOverlay.addEventListener('click', (ev) => { if (ev.target === signinOverlay) signinOverlay.setAttribute('aria-hidden','true'); });
+        document.getElementById('closeSignin')?.addEventListener('click', ()=> signinOverlay.setAttribute('aria-hidden','true'));
+        document.getElementById('cancelSignin')?.addEventListener('click', ()=> signinOverlay.setAttribute('aria-hidden','true'));
+        // handle form submit: perform demo registration, persist ugol_user and notify app via ugol:login
+        const form = document.getElementById('signinForm');
+        if (form) form.addEventListener('submit', (e)=> {
+          e.preventDefault();
+          try {
+            const fm = new FormData(form);
+            const name = (fm.get('name') || '').toString().trim() || 'user';
+            const email = (fm.get('email') || '').toString().trim();
+            // demo: persist a lightweight user record
+            const user = { name, email };
+            try { localStorage.setItem('ugol_user', JSON.stringify(user)); } catch (err) { /* ignore */ }
+            // notify other parts of app
+            window.dispatchEvent(new CustomEvent('ugol:login', { detail: { user } }));
+            // close overlay and reset form
+            signinOverlay.setAttribute('aria-hidden','true');
+            form.reset();
+            // small confirmation for demo
+            alert('Регистрация завершена (локально, демо). Вы вошли как ' + (name || email));
+          } catch (err) {
+            // fallback behaviour
+            alert('Не удалось зарегистрировать (локальная демонстрация).');
+            signinOverlay.setAttribute('aria-hidden','true');
+            form.reset();
+          }
+        });
+      }
+
+      // also wire "Войти" link inside signup to open the signin overlay
+      const openLoginFromSignup = document.getElementById('openLoginFromSignup');
+      if (openLoginFromSignup) {
+        openLoginFromSignup.addEventListener('click', (ev) => {
+          ev.preventDefault();
+          const signinOverlay = document.getElementById('signin');
+          const signupOverlay = document.getElementById('signup');
+          if (signupOverlay) signupOverlay.setAttribute('aria-hidden','true');
+          if (signinOverlay) {
+            signinOverlay.setAttribute('aria-hidden','false');
+            setTimeout(()=> signinOverlay.querySelector('input[name=\"email\"]')?.focus(), 120);
+          }
+        });
+      }
+    })();
+  </script>
 </body>
 </html>

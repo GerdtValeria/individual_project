@@ -308,7 +308,6 @@
             <div style="background:#fbfffe;padding:10px;border-radius:8px;border:1px solid #eef7f4">
               <div style="display:flex;justify-content:space-between;align-items:center">
                 <strong style="font-size:14px">${escapeHtml(r.author || 'Гость')}</strong>
-                <div style="color:var(--muted);font-size:12px">${r.created ? new Date(r.created).toLocaleDateString() : ''}</div>
               </div>
               <div style="color:var(--muted);margin-top:6px">${escapeHtml(r.text||'')}</div>
             </div>
@@ -329,7 +328,7 @@
       `;
       parentSection.appendChild(block);
 
-      const listEl = block.querySelector('#reviewsList');
+      const listEl = document.getElementById('reviewsList');
       const form = block.querySelector('#reviewForm');
       form.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -341,7 +340,7 @@
         // prepend review to UI
         const node = document.createElement('div');
         node.style.cssText = 'background:#fbfffe;padding:10px;border-radius:8px;border:1px solid #eef7f4';
-        node.innerHTML = `<div style=" display:flex;justify-content:space-between;align-items:center"><strong style="font-size:14px">${escapeHtml(author)}</strong><div style="color:var(--muted);font-size:12px">${new Date().toLocaleDateString()}</div></div><div style="color:var(--muted);margin-top:6px">${escapeHtml(text)}</div>`;
+        node.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center"><strong style="font-size:14px">${escapeHtml(author)}</strong></div><div style="color:var(--muted);margin-top:6px">${escapeHtml(text)}</div>`;
         listEl.insertBefore(node, listEl.firstChild);
         form.reset();
         // optional small confirmation
