@@ -1,3 +1,5 @@
+from datetime import date
+from typing import List, Optional
 from app.schemas.rents import SRentAdd, SRentGet
 from app.services.base import BaseService
 from app.repositories.rents import RentsRepository
@@ -5,23 +7,30 @@ from app.repositories.rents import RentsRepository
 
 class RentService(BaseService):
 
-    async def get_filtered_free_hotels(
+    async def get_filtered_rents(
         self,
-        pagination,
-        date_from: date,
-        date_to: date,
-        location: str | None,
-        title: str | None,
-    ):
-        hotels = await self.db.hotels.get_filtered_free_hotels(
-            date_from=date_from,
-            date_to=date_to,
-            limit=pagination.per_page,
-            offset=(pagination.per_page * (pagination.page - 1)),
-            title=title,
-            location=location,
-        )
-        return hotels
+        pagination: dict,
+        id_category: Optional[int] = None,
+        id_user: Optional[int] = None,
+        price_from: Optional[int] = None,
+        price_to: Optional[int] = None,
+        title: Optional[str] = None,
+        active: Optional[bool] = None,
+        address: Optional[str] = None,
+    ) -> List[SRentGet]:
+      
+            rents = await self.db.rents.get_filtered_rents(
+                limit=pagination.size,
+                offset=(pagination.size * (pagination.page - 1)),
+                id_category=id_category,
+                id_user=id_user,
+                price_from=price_from,
+                price_to=price_to,
+                title=title,
+                active=active,
+                address=address,
+            )
+            return rents
 
     async def get_all_rents(self) -> list[SRentGet]:
         rents = await self.db.rents.get_all()
