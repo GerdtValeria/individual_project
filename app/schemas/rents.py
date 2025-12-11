@@ -16,6 +16,7 @@ class SRentAdd(BaseModel):
     id_image: int
     id_user: int
     title: str = Field(...)
+    adress: str = Field(...)
     price: int = Field(...)
     description: str = Field(..., min_length=10, max_length=65535)
 

@@ -19,6 +19,7 @@ class RentsModel(Base):
     id_image = Column(Integer, ForeignKey('images.id'))
     id_user = Column(Integer, ForeignKey('users.id'))
     title = Column(String(50))
+    adress = Column(String(50))
     price = Column(Integer)
     description = Column(String(65535))
     active = Column(Boolean)
