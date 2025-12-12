@@ -12,13 +12,15 @@ router = APIRouter(prefix="/rents",tags=["Rent"])
 async def get_rents(
     db: DBDep,
     q: Optional[str] = Query(None, description="Поисковый запрос"),
-    title: Optional[str] = Query(None, description="Район"),
+    title: Optional[str] = Query(None, description="Название"),
     adress: Optional[str] = Query(None, description="Район"),
-    price: Optional[int] = Query(None, description="Цена от"),
+    price: Optional[int] = Query(None, description="Цена"),
     guests: Optional[int] = Query(None, description="Количество гостей"),
     description: Optional[int] = Query(None, description="Описание"),
     id_category: Optional[int] = Query(None, description="Категория"),
     id_user: Optional[int] = Query(None, description="ID пользователя"),
+    page: int = Query(1, ge=1, description="Номер страницы"),
+    size: int = Query(20, ge=1, le=100, description="Количество на странице")
 ) -> List[SRentGet]:
     """
     Получить все объявления с возможностью фильтрации.
