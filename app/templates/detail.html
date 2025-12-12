@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Угол Комфорта — Объявление</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body class="Ad">
   <header class="site-header">
     <div class="brand">
       <div class="logo" aria-hidden="false">
-        <a href="/index.html" class="logo-link" aria-label="Перейти на главную">
-          <img src="/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
+        <a href="/" class="logo-link" aria-label="Перейти на главную">
+          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
         </a>
       </div>
     </div>
@@ -22,7 +22,7 @@
     <nav class="top-tabs" aria-label="Главная навигация">
       <button class="tab" data-tab="rent">Арендовать</button>
       <button class="tab" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
-      <a class="tab" href="/favorites.html">Избранное</a>
+      <a class="tab" href="/web/favorites">Избранное</a>
       <button class="tab" data-tab="help">Помощь</button>
       <div class="auth">
         <button class="tab primary" data-tab="signup">Зарегистрироваться</button>
@@ -40,27 +40,27 @@
     <div class="footer-inner">
       <div class="footer-col footer-contact">
         <div class="footer-brand">
-          <img src="/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
+          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
           <div class="company-name">Угол Комфорта</div>
         </div>
       </div>
       <div class="footer-col">
         <h4 class="footer-heading">Меню</h4>
         <ul>
-          <li><a href="/rent.html" data-nav="rent">Арендовать</a></li>
-          <li><a href="/list.html" data-nav="list">Сдать в аренду</a></li>
-          <li><a href="/index.html" data-nav="help">Помощь</a></li>
-          <li><a href="/index.html" data-nav="home">Главная</a></li>
-          <li><a href="/signup.html" data-nav="signup">Зарегистрироваться</a></li>
+          <li><a href="/web/rent" data-nav="rent">Арендовать</a></li>
+          <li><a href="/web/list" data-nav="list">Сдать в аренду</a></li>
+          <li><a href="/" data-nav="help">Помощь</a></li>
+          <li><a href="/" data-nav="home">Главная</a></li>
+          <li><a href="/web/auth" data-nav="signup">Зарегистрироваться</a></li>
         </ul>
       </div>
 
       <div class="footer-col">
         <h4 class="footer-heading">О проекте</h4>
         <ul>
-          <li><a href="/index.html#team">Команда</a></li>
-          <li><a href="/index.html#history">Наша история</a></li>
-          <li><a href="/index.html#mission">Миссия проекта</a></li>
+          <li><a href="/#team">Команда</a></li>
+          <li><a href="/#history">Наша история</a></li>
+          <li><a href="/#mission">Миссия проекта</a></li>
         </ul>
       </div>
 
@@ -76,7 +76,34 @@
   </footer>
 
   <script type="module">
-    import { rentListings } from './js/state.js';
+    // В демо-версии используем локальные данные вместо импорта из state.js
+    const rentListings = [
+      {
+        id: '1',
+        title: 'Уютная квартира в центре',
+        city: 'Москва',
+        price: 2500,
+        beds: 2,
+        description: 'Уютная квартира в самом центре города',
+        photos: ['/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg'],
+        rating: 4.8,
+        avail_from: '2024-12-15',
+        avail_to: '2025-01-15'
+      },
+      {
+        id: '2',
+        title: 'Современная студия',
+        city: 'Санкт-Петербург',
+        price: 1800,
+        beds: 1,
+        description: 'Современная студия с новой мебелью',
+        photos: ['/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg'],
+        rating: 4.5,
+        avail_from: '2024-12-20',
+        avail_to: '2025-02-20'
+      }
+    ];
+    
     // wire local search form to redirect to main site search (same behavior as other pages)
     (function(){
       const searchForm = document.getElementById('searchForm');
@@ -84,7 +111,7 @@
         searchForm.addEventListener('submit', (e)=>{
           e.preventDefault();
           const q = (document.getElementById('q')?.value || '').trim();
-          const url = q ? `/index.html?q=${encodeURIComponent(q)}` : '/index.html';
+          const url = q ? `/?q=${encodeURIComponent(q)}` : '/';
           window.location.href = url;
         });
         document.getElementById('q')?.addEventListener('keydown', (ev)=> { if (ev.key === 'Enter') searchForm.requestSubmit(); });
@@ -102,7 +129,7 @@
     const container = document.getElementById('detailCard');
 
     if (!item) {
-      container.innerHTML = '<div class="card"><div class="card-body"><h3>Объявление не найдено</h3><p style="color:var(--muted)">Проверьте ссылку или вернитесь на главную.</p><p><a class="btn" href="/rent.html">К списку</a></p></div></div>';
+      container.innerHTML = '<div class="card"><div class="card-body"><h3>Объявление не найдено</h3><p style="color:var(--muted)">Проверьте ссылку или вернитесь на главную.</p><p><a class="btn" href="/web/rent">К списку</a></p></div></div>';
     } else {
       // build detail layout following the provided mockup (image left, details right)
       const photos = item.photos && item.photos.length ? item.photos : (item.img ? [item.img] : []);
@@ -128,7 +155,7 @@
             <div style="display:flex;gap:8px;margin-top:auto;align-items:center">
               <button id="bookBtn" class="btn cta">Арендовать</button>
               <button id="saveBtn" class="fav" aria-pressed="false" title="Сохранить"><i data-feather="heart"></i></button>
-              <a href="/rent.html" class="btn" style="background:transparent">К списку</a>
+              <a href="/web/rent" class="btn" style="background:transparent">К списку</a>
             </div>
 
             <div id="availability" style="margin-top:12px;background:#fbfffe;padding:10px;border-radius:8px;border:1px solid #eef7f4">Доступность: с ${item.avail_from || '—'} до ${item.avail_to || '—'}</div>
@@ -161,9 +188,9 @@
       if (bookBtn) bookBtn.addEventListener('click', ()=> {
         // перейти на страницу бронирования, передав id текущего объявления
         if (id) {
-          window.location.href = `/booking.html?id=${encodeURIComponent(id)}`;
+          window.location.href = `/web/booking?id=${encodeURIComponent(id)}`;
         } else {
-          window.location.href = '/booking.html';
+          window.location.href = '/web/booking';
         }
       });
 
@@ -243,7 +270,7 @@
         card.className = 'ad-card';
         card.style.minHeight = '120px';
         card.innerHTML = `
-          <div class="ad-media" role="img" aria-hidden="true" style="background-image:url('${escapeHtml((sim.photos && sim.photos[0]) || sim.img || '/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg')}')"></div>
+          <div class="ad-media" role="img" aria-hidden="true" style="background-image:url('${escapeHtml((sim.photos && sim.photos[0]) || sim.img || '/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg')}')"></div>
           <div class="ad-body">
             <h4 class="ad-title">${escapeHtml(sim.title)}</h4>
             <p class="ad-desc">${escapeHtml(sim.city)} · ${sim.beds === 0 ? 'Студия' : sim.beds + 'к'}</p>
@@ -261,7 +288,7 @@
           const nid = btn.dataset.id;
           if (!nid) return;
           // navigate to the other detail page (full page load) — keeps URL param in sync
-          window.location.href = `/detail.html?id=${encodeURIComponent(nid)}`;
+          window.location.href = `/web/detail?id=${encodeURIComponent(nid)}`;
         });
       });
     })();
@@ -350,6 +377,5 @@
   </script>
 
   <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
-  <script type="module" src="/js/signup-handler.js"></script>
 </body>
 </html>

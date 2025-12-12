@@ -5,21 +5,21 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Угол Комфорта — Регистрация</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
   <header class="site-header">
     <div class="brand">
       <div class="logo" aria-hidden="false">
-        <a href="/index.html" class="logo-link" aria-label="Перейти на главную">
-          <img src="/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
+        <a href="/" class="logo-link" aria-label="Перейти на главную">
+          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
         </a>
       </div>
     </div>
     <nav class="top-tabs" aria-label="Главная навигация">
       <button class="tab" data-tab="rent">Арендовать</button>
       <button class="tab" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
-      <a class="tab" href="/favorites.html">Избранное</a>
+      <a class="tab" href="/web/favorites">Избранное</a>
       <button class="tab" data-tab="help">Помощь</button>
       <div class="auth">
         <button class="tab active primary" data-tab="signup">Зарегистрироваться</button>
@@ -44,7 +44,7 @@
             <input name="password" type="password" required>
           </label>
           <div style="grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
-            <a class="btn" href="/index.html" data-nav="home">Отмена</a>
+            <a class="btn" href="/" data-nav="home">Отмена</a>
             <button class="btn primary" type="submit">Зарегистрироваться</button>
           </div>
         </form>
@@ -78,7 +78,7 @@
     <div class="footer-inner">
       <div class="footer-col footer-contact">
         <div class="footer-brand">
-          <img src="/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
+          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
           <div class="company-name">Угол Комфорта</div>
         </div>
       </div>
@@ -86,21 +86,21 @@
       <div class="footer-col">
         <h4 class="footer-heading">Меню</h4>
         <ul>
-          <li><a href="/rent.html" data-nav="rent">Арендовать</a></li>
-          <li><a href="/list.html" data-nav="list">Сдать в аренду</a></li>
-          <li><a href="/index.html" data-nav="help">Помощь</a></li>
-          <li><a href="/index.html" data-nav="home">Главная</a></li>
-          <li><a href="/signup.html" data-nav="signup">Зарегистрироваться</a></li>
-          <li><a href="/favorites.html" data-nav="favorites">Избранное</a></li>
+          <li><a href="/web/rent" data-nav="rent">Арендовать</a></li>
+          <li><a href="/web/list" data-nav="list">Сдать в аренду</a></li>
+          <li><a href="/" data-nav="help">Помощь</a></li>
+          <li><a href="/" data-nav="home">Главная</a></li>
+          <li><a href="/web/auth" data-nav="signup">Зарегистрироваться</a></li>
+          <li><a href="/web/favorites" data-nav="favorites">Избранное</a></li>
         </ul>
       </div>
 
       <div class="footer-col">
         <h4 class="footer-heading">О проекте</h4>
         <ul>
-          <li><a href="/index.html#team">Команда</a></li>
-          <li><a href="/index.html#history">Наша история</a></li>
-          <li><a href="/index.html#mission">Миссия проекта</a></li>
+          <li><a href="/#team">Команда</a></li>
+          <li><a href="/#history">Наша история</a></li>
+          <li><a href="/#mission">Миссия проекта</a></li>
         </ul>
       </div>
 
@@ -120,9 +120,9 @@
     document.querySelectorAll('.top-tabs .tab').forEach(tb=>{
       tb.addEventListener('click', ()=>{
         if (tb.dataset.tab === 'signup') return; // already on signup page
-        if (tb.dataset.tab === 'rent') { window.location.href = '/rent.html'; return; }
-        if (tb.dataset.tab === 'favorites') { window.location.href = '/index.html#favorites'; return; }
-        if (tb.dataset.tab === 'list') { window.location.href = '/list.html'; return; }
+        if (tb.dataset.tab === 'rent') { window.location.href = '/web/rent'; return; }
+        if (tb.dataset.tab === 'favorites') { window.location.href = '/web/favorites'; return; }
+        if (tb.dataset.tab === 'list') { window.location.href = '/web/list'; return; }
         const map = { travel: '/travel.html', help: '/index.html' };
         const target = map[tb.dataset.tab] || '/index.html';
         window.location.href = target;
@@ -149,6 +149,5 @@
       if (loginForm) loginForm.addEventListener('submit', (e)=>{ e.preventDefault(); alert('Вход (демо): данные не отправляются.'); loginModal.setAttribute('aria-hidden','true'); });
     })();
   </script>
-  <script type="module" src="/js/signup-handler.js"></script>
 </body>
 </html>

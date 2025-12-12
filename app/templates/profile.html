@@ -5,21 +5,21 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Угол Комфорта — Профиль</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
   <header class="site-header">
     <div class="brand">
       <div class="logo" aria-hidden="false">
-        <a href="/index.html" class="logo-link" aria-label="Перейти на главную">
-          <img src="/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
+        <a href="/" class="logo-link" aria-label="Перейти на главную">
+          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
         </a>
       </div>
     </div>
     <nav class="top-tabs" aria-label="Главная навигация">
       <button class="tab" data-tab="rent">Арендовать</button>
       <button class="tab" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
-      <a class="tab" href="/favorites.html">Избранное</a>
+      <a class="tab" href="/web/favorites">Избранное</a>
       <button class="tab" data-tab="help">Помощь</button>
       <div class="auth">
         <button class="tab primary" data-tab="signup">Зарегистрироваться</button>
@@ -33,7 +33,7 @@
       <div id="profileCard" class="card" style="padding:18px">
         <div id="profileContent" class="post-form" style="display:flex;flex-direction:column;gap:10px">
           <div style="display:flex;align-items:center;gap:12px">
-            <img id="profileAvatar" src="/logo.png" alt="Аватар" style="width:64px;height:64px;border-radius:10px;object-fit:cover">
+            <img id="profileAvatar" src="/static/logo.png" alt="Аватар" style="width:64px;height:64px;border-radius:10px;object-fit:cover">
             <div>
               <div id="profileName" style="font-weight:800;font-size:18px;color:#042018">Гость</div>
               <div id="profileEmail" style="color:var(--muted);font-size:13px">—</div>
@@ -54,7 +54,7 @@
           </form>
 
           <div style="margin-top:12px">
-            <a class="btn" href="/rent.html">К списку объявлений</a>
+            <a class="btn" href="/web/rent">К списку объявлений</a>
           </div>
         </div>
       </div>
@@ -103,28 +103,28 @@
     <div class="footer-inner">
       <div class="footer-col footer-contact">
         <div class="footer-brand">
-          <img src="/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
+          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
           <div class="company-name">Угол Комфорта</div>
         </div>
       </div>
       <div class="footer-col">
         <h4 class="footer-heading">Меню</h4>
         <ul>
-          <li><a href="/rent.html" data-nav="rent">Арендовать</a></li>
-          <li><a href="/list.html" data-nav="list">Сдать в аренду</a></li>
-          <li><a href="/index.html" data-nav="help">Помощь</a></li>
-          <li><a href="/index.html" data-nav="home">Главная</a></li>
-          <li><a href="/signup.html" data-nav="signup">Зарегистрироваться</a></li>
-          <li><a href="/favorites.html" data-nav="favorites">Избранное</a></li>
+          <li><a href="/web/rent" data-nav="rent">Арендовать</a></li>
+          <li><a href="/web/list" data-nav="list">Сдать в аренду</a></li>
+          <li><a href="/" data-nav="help">Помощь</a></li>
+          <li><a href="/" data-nav="home">Главная</a></li>
+          <li><a href="/web/auth" data-nav="signup">Зарегистрироваться</a></li>
+          <li><a href="/web/favorites" data-nav="favorites">Избранное</a></li>
         </ul>
       </div>
 
       <div class="footer-col">
         <h4 class="footer-heading">О проекте</h4>
         <ul>
-          <li><a href="/index.html#team">Команда</a></li>
-          <li><a href="/index.html#history">Наша история</a></li>
-          <li><a href="/index.html#mission">Миссия проекта</a></li>
+          <li><a href="/#team">Команда</a></li>
+          <li><a href="/#history">Наша история</a></li>
+          <li><a href="/#mission">Миссия проекта</a></li>
         </ul>
       </div>
 
@@ -197,7 +197,7 @@
           // notify other modules/pages
           try { window.dispatchEvent(new CustomEvent('ugol:logout')); } catch(e){}
           // redirect to home after logout
-          window.location.href = '/index.html';
+          window.location.href = '/';
         });
       }
 
@@ -228,7 +228,7 @@
           const art = document.createElement('article');
           art.className = 'card';
           art.innerHTML = `
-            <img class="thumb" src="${(it.photo||'/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg')}" alt="${escapeHtml(it.title)}">
+            <img class="thumb" src="${(it.photo||'/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg')}" alt="${escapeHtml(it.title)}">
             <div class="card-body">
               <div class="card-top"><h3 class="title">${escapeHtml(it.title)}</h3></div>
               <p class="meta">${escapeHtml(it.city)}${it.category ? ' · ' + escapeHtml(it.category) : ''}</p>
@@ -275,7 +275,7 @@
           b.addEventListener('click', ()=>{
             const id = b.dataset.id;
             if (!id) return;
-            window.location.href = `/detail.html?id=${encodeURIComponent(id)}`;
+            window.location.href = `/web/detail?id=${encodeURIComponent(id)}`;
           });
         });
       }
@@ -379,7 +379,7 @@
             const one = allBookings.find(x => x.id === id);
             if (!one) return;
             // navigate to listing detail if listingId present
-            if (one.listingId) window.location.href = `/detail.html?id=${encodeURIComponent(one.listingId)}`;
+            if (one.listingId) window.location.href = `/web/detail?id=${encodeURIComponent(one.listingId)}`;
             else alert('Информация о бронировании:\n' + JSON.stringify(one, null, 2));
           });
         });
@@ -469,6 +469,5 @@
   </script>
 
   <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
-  <script type="module" src="/js/signup-handler.js"></script>
 </body>
 </html>

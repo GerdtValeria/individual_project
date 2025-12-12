@@ -5,21 +5,21 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Угол Комфорта — Бронирование</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
   <header class="site-header">
     <div class="brand">
       <div class="logo" aria-hidden="false">
-        <a href="/index.html" class="logo-link" aria-label="Перейти на главную">
-          <img src="/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
+        <a href="/" class="logo-link" aria-label="Перейти на главную">
+          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
         </a>
       </div>
     </div>
     <nav class="top-tabs" aria-label="Главная навигация">
       <button class="tab" data-tab="rent">Арендовать</button>
       <button class="tab" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
-      <a class="tab" href="/favorites.html">Избранное</a>
+      <a class="tab" href="/web/favorites">Избранное</a>
       <button class="tab" data-tab="help">Помощь</button>
       <div class="auth">
         <button class="tab primary" data-tab="signup">Зарегистрироваться</button>
@@ -98,7 +98,7 @@
                   <input name="card_exp" type="text" placeholder="12/26" style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)">
                 </label>
                 <label style="flex:0 0 120px;font-size:13px">CVC
-                  <input name="card_cvc" type="text" inputmode="numeric" placeholder="123" style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)">
+                  <input name="card_cvc" type="text" inputmode="numeric" placeholder="123" style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)"></input>
                 </label>
               </div>
             </div>
@@ -109,7 +109,7 @@
           </fieldset>
 
           <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
-            <a class="btn" href="/rent.html">Отмена</a>
+            <a class="btn" href="/web/rent">Отмена</a>
             <button class="btn primary" type="submit">Подтвердить бронирование</button>
           </div>
         </form>
@@ -122,25 +122,47 @@
     <div class="footer-inner">
       <div class="footer-col footer-contact">
         <div class="footer-brand">
-          <img src="/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
+          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
           <div class="company-name">Угол Комфорта</div>
         </div>
       </div>
       <div class="footer-col">
         <h4 class="footer-heading">О проекте</h4>
         <ul>
-          <li><a href="/rent.html" data-nav="rent">Арендовать</a></li>
-          <li><a href="/list.html" data-nav="list">Сдать в аренду</a></li>
-          <li><a href="/index.html#team">Команда</a></li>
-          <li><a href="/index.html#history">Наша история</a></li>
-          <li><a href="/index.html#mission">Миссия проекта</a></li>
+          <li><a href="/web/rent">Арендовать</a></li>
+          <li><a href="/web/list">Сдать в аренду</a></li>
+          <li><a href="/#team">Команда</a></li>
+          <li><a href="/#history">Наша история</a></li>
+          <li><a href="/#mission">Миссия проекта</a></li>
         </ul>
       </div>
     </div>
   </footer>
 
   <script type="module">
-    import { rentListings } from './js/state.js';
+    // В демо-версии используем локальные данные
+    const rentListings = [
+      {
+        id: '1',
+        title: 'Уютная квартира в центре',
+        city: 'Москва',
+        price: 2500,
+        beds: 2,
+        description: 'Уютная квартира в самом центре города',
+        photos: ['/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg'],
+        rating: 4.8
+      },
+      {
+        id: '2',
+        title: 'Современная студия',
+        city: 'Санкт-Петербург',
+        price: 1800,
+        beds: 1,
+        description: 'Современная студия с новой мебелью',
+        photos: ['/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg'],
+        rating: 4.5
+      }
+    ];
 
     function qs(name) { return new URLSearchParams(location.search).get(name); }
     function escapeHtml(s){ return String(s||'').replace(/[&<>\"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c])); }
@@ -218,7 +240,7 @@
         const doRedirect = ()=> {
           const params = new URLSearchParams();
           params.set('ok', '1');
-          window.location.href = '/booking.html?ok=1';
+          window.location.href = '/web/booking?ok=1';
         };
 
         if (summary.payment.method === 'none') {
@@ -264,18 +286,18 @@
             <li><strong>Оплата:</strong> ${escapeHtml(summary.payment.method === 'card' ? 'Карта • ****' + (summary.payment.card && summary.payment.card.last4 ? escapeHtml(summary.payment.card.last4) : '****') : (summary.payment.method === 'yoomoney' ? 'ЮMoney (демо)' : 'При заезде'))}</li>
             ${ summary.payment.processed ? `<li style="color:var(--muted)"><strong>Платёж:</strong> Успешно обработан (демо)</li>` : '' }
           </ul>
-          <p style="margin-top:12px"><a class="btn" href="/rent.html">К списку</a></p>
+          <p style="margin-top:12px"><a class="btn" href="/web/rent">К списку</a></p>
         </div>
-      ` : `<div style="padding:12px"><h3>Бронирование выполнено</h3><p style="color:var(--muted)">Демонстрационная страница.</p><p style="margin-top:12px"><a class="btn" href="/rent.html">К списку</a></p></div>`;
+      ` : `<div style="padding:12px"><h3>Бронирование выполнено</h3><p style="color:var(--muted)">Демонстрационная страница.</p><p style="margin-top:12px"><a class="btn" href="/web/rent">К списку</a></p></div>`;
       card.innerHTML = html;
     }
 
     // top-tabs simple routing (reuse small logic)
     document.querySelectorAll('.top-tabs .tab').forEach(tb=>{
       tb.addEventListener('click', ()=>{
-        if (tb.dataset.tab === 'rent') { window.location.href = '/rent.html'; return; }
-        if (tb.dataset.tab === 'favorites') { window.location.href = '/index.html#favorites'; return; }
-        if (tb.dataset.tab === 'list') { window.location.href = '/list.html'; return; }
+        if (tb.dataset.tab === 'rent') { window.location.href = '/web/rent'; return; }
+        if (tb.dataset.tab === 'favorites') { window.location.href = '/web/favorites'; return; }
+        if (tb.dataset.tab === 'list') { window.location.href = '/web/list'; return; }
         if (tb.dataset.tab === 'help') {
           // open in-page Help overlay on booking page
           const helpBlock = document.getElementById('helpBlock');
@@ -284,9 +306,9 @@
             setTimeout(()=> helpBlock.querySelector('input[name=\"email\"]')?.focus(), 120);
             return;
           }
-          window.location.href = '/index.html';
+          window.location.href = '/';
         }
-        if (tb.dataset.tab === 'signup') { window.location.href = '/signup.html'; return; }
+        if (tb.dataset.tab === 'signup') { window.location.href = '/web/auth'; return; }
       });
     });
 
@@ -340,6 +362,5 @@
   </script>
 
   <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
-  <script type="module" src="/js/signup-handler.js"></script>
 </body>
 </html>

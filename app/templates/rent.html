@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Угол Комфорта — Арендовать</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
   <header class="site-header">
     <div class="brand">
       <div class="logo" aria-hidden="false">
-        <a href="/index.html" class="logo-link" aria-label="Перейти на главную">
-          <img src="/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
+        <a href="/" class="logo-link" aria-label="Перейти на главную">
+          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
         </a>
       </div>
     </div>
@@ -22,10 +22,10 @@
     <nav class="top-tabs" aria-label="Главная навигация">
       <button class="tab active" data-tab="rent">Арендовать</button>
       <button class="tab" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
-      <a class="tab" href="/favorites.html">Избранное</a>
+      <a class="tab" href="/web/favorites">Избранное</a>
       <button class="tab" data-tab="help">Помощь</button>
       <div class="auth">
-        <a class="tab primary" href="/signup.html">Зарегистрироваться</a>
+        <a class="tab primary" href="/web/auth">Зарегистрироваться</a>
       </div>
     </nav>
   </header>
@@ -40,31 +40,31 @@
         <div class="feed-wrap">
           <button class="feed-arrow left" aria-label="Скролл влево">‹</button>
           <div class="feed-scroll" style="display:flex;gap:12px;overflow:hidden;padding-bottom:4px">
-            <a class="category-card" href="/index.html?q=Студии" style="min-width:160px;flex:0 0 auto;text-decoration:none;color:inherit">
+            <a class="category-card" href="/?q=Студии" style="min-width:160px;flex:0 0 auto;text-decoration:none;color:inherit">
               <div style="background:#f1f9f7;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;box-shadow:var(--card-shadow)">
                 <strong style="font-size:15px;color:#044036">Студии</strong>
                 <span style="color:var(--muted);font-size:13px">Компактные и недорогие варианты</span>
               </div>
             </a>
-            <a class="category-card" href="/index.html?q=1+комната" style="min-width:160px;flex:0 0 auto;text-decoration:none;color:inherit">
+            <a class="category-card" href="/?q=1+комната" style="min-width:160px;flex:0 0 auto;text-decoration:none;color:inherit">
               <div style="background:#fff6f0;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;box-shadow:var(--card-shadow)">
                 <strong style="font-size:15px;color:#7a3b2b">1‑комнатные</strong>
                 <span style="color:var(--muted);font-size:13px">Уютные квартиры для пары</span>
               </div>
             </a>
-            <a class="category-card" href="/index.html?q=2+комнаты" style="min-width:160px;flex:0 0 auto;text-decoration:none;color:inherit">
+            <a class="category-card" href="/?q=2+комнаты" style="min-width:160px;flex:0 0 auto;text-decoration:none;color:inherit">
               <div style="background:#eef7ff;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;box-shadow:var(--card-shadow)">
                 <strong style="font-size:15px;color:#084a7a">2‑комнатные</strong>
                 <span style="color:var(--muted);font-size:13px">Для небольших семей</span>
               </div>
             </a>
-            <a class="category-card" href="/index.html?q=Дома" style="min-width:160px;flex:0 0 auto;text-decoration:none;color:inherit">
+            <a class="category-card" href="/?q=Дома" style="min-width:160px;flex:0 0 auto;text-decoration:none;color:inherit">
               <div style="background:#f5fff8;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;box-shadow:var(--card-shadow)">
                 <strong style="font-size:15px;color:#0b6b45">Дома</strong>
                 <span style="color:var(--muted);font-size:13px">Просторные варианты с садом</span>
               </div>
             </a>
-            <a class="category-card" href="/index.html?q=Апартаменты+с+видом" style="min-width:160px;flex:0 0 auto;text-decoration:none;color:inherit">
+            <a class="category-card" href="/?q=Апартаменты+с+видом" style="min-width:160px;flex:0 0 auto;text-decoration:none;color:inherit">
               <div style="background:#fffaf4;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;box-shadow:var(--card-shadow)">
                 <strong style="font-size:15px;color:#6b4a11">С видом</strong>
                 <span style="color:var(--muted);font-size:13px">Панорамные окна и вид на воду</span>
@@ -80,13 +80,11 @@
         </div>
       </section>
 
-
-
       <!-- Reuse the listings container from the main app; keep simple client-side rendering via existing app.js if desired -->
       <div id="rentListings" class="listings">
         <!-- minimal static fallback cards to ensure content appears if app.js is not loaded -->
         <article class="card">
-          <img class="thumb" src="/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg" alt="">
+          <img class="thumb" src="/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg" alt="">
           <div class="card-body">
             <div class="card-top"><h3 class="title">Примеры предложений</h3></div>
             <p class="meta">Набережная · 1к</p>
@@ -104,8 +102,6 @@
           <!-- populated by js/rent-page.js -->
         </div>
       </section>
-
-      <!-- Removed: Expanded ads grid (many promotional cards) -->
 
       <!-- Restored: Ads block -->
       <section class="ads" id="ads" aria-label="Реклама">
@@ -152,7 +148,7 @@
     <div class="footer-inner">
       <div class="footer-col footer-contact">
         <div class="footer-brand">
-          <img src="/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
+          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
           <div class="company-name">Угол Комфорта</div>
         </div>
       </div>
@@ -160,20 +156,20 @@
       <div class="footer-col">
         <h4 class="footer-heading">Меню</h4>
         <ul>
-          <li><a href="/rent.html" data-nav="rent">Арендовать</a></li>
-          <li><a href="/list.html" data-nav="list">Сдать в аренду</a></li>
-          <li><a href="/index.html" data-nav="help">Помощь</a></li>
-          <li><a href="/index.html" data-nav="home">Главная</a></li>
-          <li><a href="/signup.html" data-nav="signup">Зарегистрироваться</a></li>
+          <li><a href="/web/rent" data-nav="rent">Арендовать</a></li>
+          <li><a href="/web/list" data-nav="list">Сдать в аренду</a></li>
+          <li><a href="/" data-nav="help">Помощь</a></li>
+          <li><a href="/" data-nav="home">Главная</a></li>
+          <li><a href="/web/auth" data-nav="signup">Зарегистрироваться</a></li>
         </ul>
       </div>
 
       <div class="footer-col">
         <h4 class="footer-heading">О проекте</h4>
         <ul>
-          <li><a href="/index.html#team">Команда</a></li>
-          <li><a href="/index.html#history">Наша история</a></li>
-          <li><a href="/index.html#mission">Миссия проекта</a></li>
+          <li><a href="/#team">Команда</a></li>
+          <li><a href="/#history">Наша история</a></li>
+          <li><a href="/#mission">Миссия проекта</a></li>
         </ul>
       </div>
 
@@ -189,16 +185,7 @@
     <div class="footer-bar" aria-hidden="true"></div>
   </footer>
 
-  <!-- removed: feed arrow handlers, top-tabs navigation handlers, register modal handlers, help overlay handlers, local search redirect -->
-  <!-- removed function implementations:
-    // removed function: feed arrow scroll handlers
-    // removed function: top-tabs click/navigation logic
-    // removed function: register modal open/close/submit handlers
-    // removed function: helpBlock creation and handlers
-    // removed function: local search form redirect
-  -->
-
-  <script type="module" src="/js/rent-page.js"></script>
+  <script type="module" src="/static/js/rent.js"></script>
 
 </body>
 </html>
