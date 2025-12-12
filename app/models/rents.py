@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database.database import Base
 
@@ -16,14 +16,15 @@ class RentsModel(Base):
     __tablename__ = 'rents'
     id = Column(Integer, primary_key=True)
     id_category = Column(Integer, ForeignKey('categories.id'))
-    id_image = Column(Integer, ForeignKey('images.id'))
     id_user = Column(Integer, ForeignKey('users.id'))
     title = Column(String(50))
-    adress = Column(String(50))
+    address = Column(String(50)) 
     price = Column(Integer)
     guests = Column(Integer)
     description = Column(String(65535))
-    active = Column(Boolean)
+    active = Column(Boolean, default=True)
+    created_at = Column(DateTime, server_default=func.now()) 
+    updated_at = Column(DateTime, onupdate=func.now())
 
     user: Mapped["UserModel"] = relationship(back_populates="rents")
     booking: Mapped["BookingsModel"] = relationship(back_populates="rent")

@@ -13,18 +13,18 @@ async def get_rents(
     db: DBDep,
     q: Optional[str] = Query(None, description="Поисковый запрос"),
     title: Optional[str] = Query(None, description="Название"),
-    adress: Optional[str] = Query(None, description="Район"),
+    address: Optional[str] = Query(None, description="Адрес"),  
     price: Optional[int] = Query(None, description="Цена"),
     guests: Optional[int] = Query(None, description="Количество гостей"),
-    description: Optional[int] = Query(None, description="Описание"),
+    description: Optional[str] = Query(None, description="Описание"), 
     id_category: Optional[int] = Query(None, description="Категория"),
     id_user: Optional[int] = Query(None, description="ID пользователя"),
+    active: Optional[bool] = Query(True, description="Только активные"),
     page: int = Query(1, ge=1, description="Номер страницы"),
     size: int = Query(20, ge=1, le=100, description="Количество на странице")
 ) -> List[SRentGet]:
     """
     Получить все объявления с возможностью фильтрации.
-    Можно использовать как альтернативу /search
     """
     service = RentService(db)
     pagination = {"page": page, "size": size}
@@ -33,13 +33,13 @@ async def get_rents(
         pagination=pagination,
         search_query=q,
         title=title,
-        adress=adress,
+        address=address, 
         price=price,
         guests=guests,
         id_category=id_category,
         id_user=id_user,
         description=description,
-        active=True 
+        active=active
     )
     
     return rents

@@ -8,16 +8,17 @@ from app.repositories.rents import RentsRepository
 class RentService(BaseService):
 
     async def get_filtered_rents(
-         self,
+        self,
         pagination: dict,
         search_query: Optional[str] = None,
         title: Optional[str] = None,
-        adress: Optional[str] = None,
+        address: Optional[str] = None,  # Исправлено adress на address
         price: Optional[int] = None,
         guests: Optional[int] = None,
         description: Optional[str] = None,
         id_category: Optional[int] = None,
         id_user: Optional[int] = None,
+        active: Optional[bool] = None,
     ) -> List[SRentGet]:
         """
         Получить отфильтрованные объявления об аренде.
@@ -29,34 +30,24 @@ class RentService(BaseService):
         # Вычисляем смещение
         offset = page_size * (page - 1)
         
-        # Если есть search_query, используем его для поиска
-        # Если нет search_query, но есть отдельные поля, используем их
-        if search_query:
-            # Поиск по общему запросу
-            rents = await self.db.rents.get_filtered_rents(
-                search_query=search_query,
-                limit=page_size,
-                offset=offset
-            )
-        else:
-            # Фильтрация по отдельным полям
-            rents = await self.db.rents.get_filtered_rents(
-                title=title,
-                adress=adress,
-                price=price,  # Если нужно фильтровать по точной цене
-                # Для диапазона цен используйте price_from и price_to
-                guests=guests,
-                description=description,
-                id_category=id_category,
-                id_user=id_user,
-                limit=page_size,
-                offset=offset
-            )
+        # Получаем данные из репозитория
+        rents = await self.db.rents.get_filtered_rents(
+            search_query=search_query,
+            title=title,
+            address=address,
+            price=price,
+            guests=guests,
+            description=description,
+            id_category=id_category,
+            id_user=id_user,
+            active=active,
+            limit=page_size,
+            offset=offset
+        )
         
         # Конвертируем модели в схемы
         return [SRentGet.from_orm(rent) for rent in rents]
     
-
 
     async def get_all_rents(self) -> list[SRentGet]:
         rents = await self.db.rents.get_all()
