@@ -307,6 +307,154 @@
         renderMyListings();
       });
 
+      // -------------------------
+      // NEW: My Bookings management
+      // Bookings are stored in localStorage under 'ugol_bookings' as array of booking objects.
+      // Each booking: { id, listingId, listingTitle, userEmail, from, to, nights, total, created }
+      // Render bookings for current logged-in user, allow cancel (mark removed) and remove entries.
+      // -------------------------
+      const bookingsWrap = document.createElement('section');
+      bookingsWrap.id = 'myBookingsWrap';
+      bookingsWrap.style.marginTop = '18px';
+      bookingsWrap.innerHTML = `
+        <h2 style="margin:0 0 8px;color:#042018">Мои бронирования</h2>
+        <p id="bookingsEmpty" style="color:var(--muted);margin:0 0 12px">У вас пока нет бронирований.</p>
+        <div id="myBookings" class="listings" style="margin-top:8px"></div>
+      `;
+      // insert bookings section after profile card section
+      const profileSection = document.querySelector('main section');
+      if (profileSection) profileSection.appendChild(bookingsWrap);
+
+      function loadAllBookings() {
+        try {
+          const raw = localStorage.getItem('ugol_bookings') || '[]';
+          return JSON.parse(raw);
+        } catch (e) { return []; }
+      }
+      function persistBookings(arr) {
+        try { localStorage.setItem('ugol_bookings', JSON.stringify(arr)); } catch(e){}
+      }
+      function renderBookings() {
+        const container = document.getElementById('myBookings');
+        const empty = document.getElementById('bookingsEmpty');
+        if (!container) return;
+        container.innerHTML = '';
+        const userRaw = localStorage.getItem('ugol_user');
+        const user = userRaw ? JSON.parse(userRaw) : null;
+        const all = loadAllBookings();
+        const mine = user && user.email ? all.filter(b => b.userEmail === user.email) : [];
+        if (!mine.length) {
+          if (empty) empty.style.display = '';
+          return;
+        }
+        if (empty) empty.style.display = 'none';
+        // render each booking card
+        mine.forEach(b => {
+          const art = document.createElement('article');
+          art.className = 'card';
+          art.innerHTML = `
+            <div class="card-body">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+                <div style="flex:1">
+                  <h3 style="margin:0 0 6px">${escapeHtml(b.listingTitle || '—')}</h3>
+                  <div style="color:var(--muted);font-size:13px">Заезд: ${escapeHtml(b.from || '—')} — Выезд: ${escapeHtml(b.to || '—')}</div>
+                  <div style="color:var(--muted);font-size:13px;margin-top:6px">Ночей: ${escapeHtml(String(b.nights || 0))} · Итого: ${b.total ? '₽' + escapeHtml(String(b.total)) : '—'}</div>
+                  <div style="color:var(--muted);font-size:12px;margin-top:6px">Создано: ${escapeHtml(new Date(b.created).toLocaleString())}</div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+                  <button class="btn viewBooking" data-id="${escapeHtml(b.id)}">Открыть</button>
+                  <button class="btn" data-action="cancelBooking" data-id="${escapeHtml(b.id)}">${b.cancelled ? 'Удалить' : 'Отменить'}</button>
+                </div>
+              </div>
+            </div>
+          `;
+          container.appendChild(art);
+        });
+        // wire actions
+        container.querySelectorAll('.viewBooking').forEach(btn=>{
+          btn.addEventListener('click', ()=>{
+            const id = btn.dataset.id;
+            if (!id) return;
+            const allBookings = loadAllBookings();
+            const one = allBookings.find(x => x.id === id);
+            if (!one) return;
+            // navigate to listing detail if listingId present
+            if (one.listingId) window.location.href = `/detail.html?id=${encodeURIComponent(one.listingId)}`;
+            else alert('Информация о бронировании:\n' + JSON.stringify(one, null, 2));
+          });
+        });
+        container.querySelectorAll('[data-action="cancelBooking"]').forEach(btn=>{
+          btn.addEventListener('click', ()=>{
+            const id = btn.dataset.id;
+            if (!id) return;
+            let allBookings = loadAllBookings();
+            const idx = allBookings.findIndex(x => x.id === id);
+            if (idx === -1) return;
+            const target = allBookings[idx];
+            if (target.cancelled) {
+              // allow deletion of cancelled booking
+              if (!confirm('Удалить запись бронирования окончательно?')) return;
+              allBookings.splice(idx,1);
+              persistBookings(allBookings);
+              renderBookings();
+              return;
+            }
+            // cancel booking: mark cancelled with timestamp
+            if (!confirm('Вы действительно хотите отменить бронирование?')) return;
+            target.cancelled = true;
+            target.cancelledAt = new Date().toISOString();
+            // optionally record reason etc.
+            allBookings[idx] = target;
+            persistBookings(allBookings);
+            renderBookings();
+          });
+        });
+      }
+
+      // render bookings on load
+      renderBookings();
+
+      // respond to storage changes (e.g., booking created on booking.html)
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'ugol_bookings' || e.key === 'ugol_last_booking' || e.key === 'ugol_user') renderBookings();
+      });
+
+      // Convenience: if booking page saves the last booking under 'ugol_last_booking', convert it into ugol_bookings for current user
+      (function autoIngestLastBooking(){
+        try {
+          const raw = localStorage.getItem('ugol_last_booking');
+          if (!raw) return;
+          const last = JSON.parse(raw);
+          if (!last) return;
+          // check if already ingested (id present in ugol_bookings)
+          const all = loadAllBookings();
+          // create id if not present
+          const id = last.id || ('b' + Date.now());
+          const userRaw = localStorage.getItem('ugol_user');
+          const user = userRaw ? JSON.parse(userRaw) : null;
+          const booking = {
+            id,
+            listingId: last.listingId || last.listingId || null,
+            listingTitle: last.listing || last.listingTitle || 'Бронирование',
+            userEmail: (user && user.email) ? user.email : (last.email || 'guest'),
+            from: last.from || last.arrive || null,
+            to: last.to || last.depart || null,
+            nights: last.nights || 0,
+            total: (last.price && last.price.total) ? last.price.total : (last.total || 0),
+            created: last.created || new Date().toISOString(),
+            cancelled: last.cancelled || false
+          };
+          const exists = all.some(x => x.id === booking.id);
+          if (!exists) {
+            all.unshift(booking);
+            persistBookings(all);
+            // remove ugol_last_booking to avoid duplicate ingestion
+            try { localStorage.removeItem('ugol_last_booking'); } catch(e){}
+            renderBookings();
+          }
+        } catch(e){}
+      })();
+
       // utility
       function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
