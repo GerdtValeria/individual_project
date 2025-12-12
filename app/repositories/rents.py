@@ -15,7 +15,6 @@ class RentsRepository(BaseRepository):
         title: Optional[str] = None,
         address: Optional[str] = None,  # Исправлено adress на address
         price: Optional[int] = None,
-        guests: Optional[int] = None,
         description: Optional[str] = None,
         id_category: Optional[int] = None,
         id_user: Optional[int] = None,
@@ -54,9 +53,6 @@ class RentsRepository(BaseRepository):
         
         if price is not None:
             conditions.append(RentsModel.price == price)
-        
-        if guests is not None:
-            conditions.append(RentsModel.guests == guests)
         
         if description:
             conditions.append(RentsModel.description.ilike(f"%{description}%"))
