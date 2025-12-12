@@ -13,13 +13,12 @@ class RentsRepository(BaseRepository):
         self,
         id_category: Optional[int] = None,
         id_user: Optional[int] = None,
-        price_from: Optional[int] = None,
-        price_to: Optional[int] = None,
+        price: Optional[int] = None,
+        guests: Optional[int] = None,
         title: Optional[str] = None,
         active: Optional[bool] = None,
-        address: Optional[str] = None,
-        city: Optional[str] = None,        
-        district: Optional[str] = None,      
+        adress: Optional[str] = None,    
+        description: Optional[str] = None,      
         search_query: Optional[str] = None,   
     ) -> List[int]:
         """
@@ -27,44 +26,32 @@ class RentsRepository(BaseRepository):
         """
         query = select(RentsModel.id)
         
-        # Собираем условия фильтрации
         conditions = []
-        
-        # Фильтр по категории
+
         if id_category is not None:
             conditions.append(RentsModel.id_category == id_category)
+
+
+        if price is not None:
+            conditions.append(RentsModel.price == price)
         
-        # Фильтр по пользователю
-        if id_user is not None:
-            conditions.append(RentsModel.id_user == id_user)
-        
-        # Фильтр по цене
-        if price_from is not None:
-            conditions.append(RentsModel.price >= price_from)
-        if price_to is not None:
-            conditions.append(RentsModel.price <= price_to)
-        
-        # Поиск по названию (регистронезависимый)
+        if guests is not None:
+            conditions.append(RentsModel.guests == guests)
+    
         if title:
             conditions.append(RentsModel.title.ilike(f"%{title}%"))
         
-        # Фильтр по активности
+
         if active is not None:
             conditions.append(RentsModel.active == active)
         
-        # Поиск по адресу (регистронезависимый)
-        if address:
-            conditions.append(RentsModel.address.ilike(f"%{address}%"))
+        if adress:
+            conditions.append(RentsModel.adress.ilike(f"%{adress}%"))
         
-        # Фильтр по городу (регистронезависимый)
-        if city:
-            conditions.append(RentsModel.city.ilike(f"%{city}%"))
+        if description:
+            conditions.append(RentsModel.description.ilike(f"%{description}%"))
         
-        # Фильтр по району (регистронезависимый)
-        if district:
-            conditions.append(RentsModel.district.ilike(f"%{district}%"))
-        
-        # Общий поисковый запрос (ищет в нескольких полях)
+    
         if search_query:
             search_lower = f"%{search_query.lower()}%"
             search_conditions = [
@@ -90,13 +77,13 @@ class RentsRepository(BaseRepository):
         self,
         id_category: Optional[int] = None,
         id_user: Optional[int] = None,
-        price_from: Optional[int] = None,
-        price_to: Optional[int] = None,
+        id_image: Optional[int] = None,
+        price: Optional[int] = None,
+        guests: Optional[int] = None,
         title: Optional[str] = None,
         active: Optional[bool] = None,
-        address: Optional[str] = None,
-        city: Optional[str] = None,         
-        district: Optional[str] = None,       
+        adress: Optional[str] = None,    
+        description: Optional[str] = None,       
         search_query: Optional[str] = None,   
         limit: int = 100,
         offset: int = 0,
@@ -105,13 +92,13 @@ class RentsRepository(BaseRepository):
         rent_ids_to_get = await self._get_filtered_rent_ids(
             id_category=id_category,
             id_user=id_user,
-            price_from=price_from,
-            price_to=price_to,
+            id_image=id_image,
+            price=price,
+            guests=guests,
             title=title,
             active=active,
-            address=address,
-            city=city,
-            district=district,
+            adress=adress,
+            district=description,
             search_query=search_query,
         )
         

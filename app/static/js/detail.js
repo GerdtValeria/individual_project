@@ -31,6 +31,114 @@ document.addEventListener('DOMContentLoaded', function() {
         setupEventHandlers();
     }
 
+    // ==================== Аутентификация и профиль ====================
+    
+    async function checkAuth() {
+        try {
+            const response = await fetch('/auth/me', {
+                method: 'GET',
+                credentials: 'include'
+            });
+            if (response.ok) {
+                currentUser = await response.json();
+                console.log('Пользователь авторизован:', currentUser);
+                updateAuthButtons();
+            } else {
+                console.log('Пользователь не авторизован');
+            }
+        } catch (error) {
+            console.log('Ошибка при проверке авторизации:', error);
+        }
+    }
+
+    function updateAuthButtons() {
+        const authDiv = document.querySelector('.auth');
+        if (!authDiv) return;
+        
+        if (currentUser) {
+            // Меняем кнопку на "Профиль"
+            authDiv.innerHTML = `<button class="tab primary" id="profileBtn">Профиль</button>`;
+            
+            // Добавляем обработчик для кнопки "Профиль"
+            const profileBtn = document.getElementById('profileBtn');
+            if (profileBtn) {
+                profileBtn.addEventListener('click', async function(e) {
+                    e.preventDefault();
+                    await navigateToProfile();
+                });
+            }
+        } else {
+            // Оставляем кнопку "Зарегистрироваться"
+            authDiv.innerHTML = `<button class="tab primary" data-tab="signup">Зарегистрироваться</button>`;
+            
+            // Добавляем обработчик для кнопки "Зарегистрироваться"
+            const signupBtn = authDiv.querySelector('[data-tab="signup"]');
+            if (signupBtn) {
+                signupBtn.addEventListener('click', async function(e) {
+                    e.preventDefault();
+                    await navigateToRegistration();
+                });
+            }
+        }
+    }
+
+    // ==================== ФУНКЦИЯ ДЛЯ ПЕРЕХОДА В ПРОФИЛЬ ====================
+    async function navigateToProfile() {
+        console.log('Переход в профиль...');
+        
+        try {
+            // Используем роутер get_profile_html из файла web.py
+            const response = await fetch('/web/', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'text/html'
+                }
+            });
+            
+            if (response.ok) {
+                // Проверяем тип ответа
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('text/html')) {
+                    // Получаем HTML и заменяем содержимое страницы
+                    const html = await response.text();
+                    document.open();
+                    document.write(html);
+                    document.close();
+                } else {
+                    // Если ответ не HTML, просто переходим по URL
+                    window.location.href = '/web/';
+                }
+            } else if (response.status === 404) {
+                console.warn('Роутер get_profile_html не найден, пробуем альтернативный путь');
+                // Альтернативный путь к странице профиля
+                window.location.href = '/profile.html';
+            } else {
+                console.error(`Ошибка HTTP ${response.status} при переходе в профиль`);
+                showError('Не удалось загрузить страницу профиля');
+                fallbackNavigation('profile');
+            }
+        } catch (error) {
+            console.error('Ошибка сети при переходе в профиль:', error);
+            // Fallback на стандартный путь
+            window.location.href = '/profile.html';
+        }
+    }
+
+    async function navigateToRegistration() {
+        try {
+            const response = await fetch('/web/auth', {
+                method: 'GET'
+            });
+            if (response.ok) {
+                window.location.href = '/web/auth';
+            } else {
+                window.location.href = '/signup.html';
+            }
+        } catch (error) {
+            window.location.href = '/signup.html';
+        }
+    }
+
     // ==================== Навигация ====================
     
     // Обработка клика на логотип
@@ -48,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'list': '/web/', // роутер get_list_html
         'help': null,    // открытие модального окна
         'favorites': '/web/', // роутер get_favorites_html
-        'signup': '/web/auth' // роутер get_registration_html
+        'signup': null   // текущая страница
     };
 
     // Обработка кликов по кнопкам в top-tabs
@@ -100,21 +208,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ==================== Основные функции ====================
-
-    async function checkAuth() {
-        try {
-            const response = await fetch('/auth/me', {
-                method: 'GET',
-                credentials: 'include'
-            });
-            if (response.ok) {
-                currentUser = await response.json();
-                console.log('Пользователь авторизован:', currentUser);
-            }
-        } catch (error) {
-            console.log('Пользователь не авторизован');
-        }
-    }
 
     async function loadRentData(rentId) {
         try {
@@ -232,7 +325,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         try {
             // Здесь нужно получить список избранных пользователя
-            // Предполагаем, что есть эндпоинт для проверки
             const response = await fetch(`/comments/${rentId}/favorite`, {
                 method: 'GET',
                 credentials: 'include'
@@ -263,7 +355,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             if (isFavorite) {
-                // Удаление из избранного - роутер delete_rent из favorites.py
+                // Удаление из избранного
                 const response = await fetch(`/comments/${rentId}`, {
                     method: 'DELETE',
                     credentials: 'include'
@@ -277,10 +369,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     showError('Не удалось удалить из избранного');
                 }
             } else {
-                // Добавление в избранное - роутер add_rent из favorites.py
+                // Добавление в избранное
                 const favoriteData = {
-                    rent_id: rentId,
-                    user_id: currentUser.id
+                    rent_id: rentId
                 };
                 
                 const response = await fetch('/comments/', {
@@ -326,10 +417,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderComments(commentsList) {
-        const commentsContainer = document.getElementById('commentsSection');
-        if (!commentsContainer) return;
+        // Создаем секцию комментариев, если ее нет
+        let commentsSection = document.getElementById('commentsSection');
+        if (!commentsSection) {
+            commentsSection = document.createElement('section');
+            commentsSection.id = 'commentsSection';
+            commentsSection.className = 'card';
+            commentsSection.style.cssText = 'padding:12px;max-width:100%;margin:12px 0 20px';
+            
+            const parentSection = document.querySelector('main section');
+            if (parentSection) {
+                parentSection.appendChild(commentsSection);
+            }
+        }
 
-        commentsContainer.innerHTML = `
+        commentsSection.innerHTML = `
             <h3 style="margin:0 0 8px;color:#042018">Отзывы</h3>
             <div id="commentsList" style="display:flex;flex-direction:column;gap:10px;margin-bottom:12px">
                 ${commentsList.length > 0 ? 
@@ -497,6 +599,132 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // ==================== ФУНКЦИИ ДЛЯ БЛОКА "ПОМОЩЬ" ====================
+    
+    function openHelpBlock() {
+        // Создаем блок помощи, если его нет
+        let helpBlock = document.getElementById('helpBlock');
+        if (!helpBlock) {
+            helpBlock = document.createElement('div');
+            helpBlock.id = 'helpBlock';
+            helpBlock.className = 'overlay-block';
+            helpBlock.setAttribute('aria-hidden', 'true');
+            helpBlock.innerHTML = `
+                <div class="overlay-dialog" role="dialog" aria-label="Помощь">
+                    <button class="help-close" id="closeHelpBlock" aria-label="Закрыть">
+                        <i></i>
+                    </button>
+                    <header class="modal-header">
+                        <h3>Помощь</h3>
+                    </header>
+                    <div class="post-form" style="padding:20px; max-width:500px;">
+                        <p>Здесь будет информация о помощи пользователям.</p>
+                        <p>В демонстрационной версии этот блок показывает макет окна помощи.</p>
+                        
+                        <!-- Добавляем форму для отправки вопроса -->
+                        <hr style="border:0;height:1px;background:rgba(0,0,0,0.06);margin:16px 0">
+                        <form id="helpContactForm" style="display:flex;flex-direction:column;gap:10px;">
+                            <label style="font-size:13px">Ваш email
+                                <input type="email" name="email" placeholder="you@example.com" required 
+                                       style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08);width:100%">
+                            </label>
+                            <label style="font-size:13px">Ваш вопрос
+                                <textarea name="question" rows="4" placeholder="Опишите вашу проблему или вопрос" required
+                                          style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08);width:100%"></textarea>
+                            </label>
+                            <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+                                <button type="submit" class="btn">Отправить</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(helpBlock);
+            
+            // Обработчик закрытия блока помощи (кнопка cancel_17767265)
+            const closeBtn = document.getElementById('closeHelpBlock');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    helpBlock.setAttribute('aria-hidden', 'true');
+                });
+            }
+            
+            // Закрытие по клику на фон
+            helpBlock.addEventListener('click', (e) => {
+                if (e.target === helpBlock) {
+                    helpBlock.setAttribute('aria-hidden', 'true');
+                }
+            });
+            
+            // Обработчик формы помощи
+            const helpForm = document.getElementById('helpContactForm');
+            if (helpForm) {
+                helpForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    await sendHelpQuestion(helpForm);
+                });
+            }
+        }
+        
+        // Показываем блок
+        helpBlock.setAttribute('aria-hidden', 'false');
+        
+        // Фокус на поле email
+        setTimeout(() => {
+            const emailInput = helpBlock.querySelector('input[name="email"]');
+            if (emailInput) emailInput.focus();
+        }, 100);
+    }
+
+    async function sendHelpQuestion(form) {
+        const formData = new FormData(form);
+        const helpData = {
+            email: formData.get('email'),
+            question: formData.get('question')
+        };
+        
+        // Валидация
+        if (!helpData.email || !helpData.question) {
+            alert('Заполните все поля');
+            return;
+        }
+        
+        if (!isValidEmail(helpData.email)) {
+            alert('Введите корректный email');
+            return;
+        }
+        
+        try {
+            // Используем роутер add_help из файла help.py
+            const response = await fetch('/help/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    content: helpData.question,
+                    email: helpData.email,
+                    user_id: currentUser ? currentUser.id : null
+                })
+            });
+            
+            if (response.ok) {
+                alert('Ваш вопрос отправлен. Мы ответим вам на указанный email в ближайшее время.');
+                form.reset();
+                
+                // Закрываем блок помощи
+                const helpBlock = document.getElementById('helpBlock');
+                if (helpBlock) helpBlock.setAttribute('aria-hidden', 'true');
+            } else {
+                showError('Не удалось отправить вопрос. Попробуйте позже.');
+            }
+        } catch (error) {
+            console.error('Ошибка при отправке вопроса:', error);
+            showError('Ошибка сети. Проверьте подключение к интернету.');
+        }
+    }
+
     // ==================== Функции навигации ====================
 
     async function navigateToHome() {
@@ -516,7 +744,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function navigateToFavorites() {
         try {
-            const response = await fetch('/web/', { // роутер get_favorites_html
+            const response = await fetch('/web/', {
                 method: 'GET'
             });
             if (response.ok) {
@@ -531,7 +759,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function navigateToBooking(rentId) {
         try {
-            // Используем роутер get_booking_html из web.py
             const response = await fetch('/web/', {
                 method: 'GET'
             });
@@ -565,8 +792,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (response.ok) {
                 const searchResults = await response.json();
-                // Здесь можно отобразить результаты поиска
-                // Например, перейти на страницу rent.html с результатами
+                // Переходим на страницу аренды с результатами поиска
                 window.location.href = `/rent.html?q=${encodeURIComponent(query)}`;
             } else {
                 showError('Ошибка при поиске');
@@ -594,7 +820,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function navigateToRentDetail(rentId) {
         try {
-            // Используем роутер get_detail_html из web.py
             const response = await fetch('/web/', {
                 method: 'GET'
             });
@@ -608,51 +833,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function openHelpBlock() {
-        // Создаем блок помощи
-        let helpBlock = document.getElementById('helpBlock');
-        if (!helpBlock) {
-            helpBlock = document.createElement('div');
-            helpBlock.id = 'helpBlock';
-            helpBlock.className = 'overlay-block';
-            helpBlock.setAttribute('aria-hidden', 'true');
-            helpBlock.innerHTML = `
-                <div class="overlay-dialog" role="dialog" aria-label="Помощь">
-                    <button class="help-close" id="closeHelpBlock" aria-label="Закрыть">
-                        <i></i>
-                    </button>
-                    <header class="modal-header">
-                        <h3>Помощь</h3>
-                    </header>
-                    <div class="post-form" style="padding:20px; max-width:500px;">
-                        <p>Здесь будет информация о помощи пользователям.</p>
-                        <p>В демонстрационной версии этот блок показывает макет окна помощи.</p>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(helpBlock);
-            
-            // Обработчик закрытия
-            const closeBtn = document.getElementById('closeHelpBlock');
-            if (closeBtn) {
-                closeBtn.addEventListener('click', () => {
-                    helpBlock.setAttribute('aria-hidden', 'true');
-                });
-            }
-            
-            // Закрытие по клику на фон
-            helpBlock.addEventListener('click', (e) => {
-                if (e.target === helpBlock) {
-                    helpBlock.setAttribute('aria-hidden', 'true');
-                }
-            });
-        }
-        
-        helpBlock.setAttribute('aria-hidden', 'false');
-        setTimeout(() => {
-            const closeBtn = document.getElementById('closeHelpBlock');
-            if (closeBtn) closeBtn.focus();
-        }, 100);
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
     }
 
     function fallbackNavigation(tab) {
@@ -661,7 +844,8 @@ document.addEventListener('DOMContentLoaded', function() {
             'list': '/web/',
             'favorites': '/web/',
             'signup': '/web/auth',
-            'home': '/web/'
+            'home': '/web/',
+            'profile': '/profile.html'
         };
         
         if (routes[tab]) {
@@ -673,7 +857,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function showError(message) {
         console.error(message);
-        // Можно добавить более красивый вывод ошибки
         alert(message);
     }
 

@@ -21,6 +21,7 @@ class RentsModel(Base):
     title = Column(String(50))
     adress = Column(String(50))
     price = Column(Integer)
+    guests = Column(Integer)
     description = Column(String(65535))
     active = Column(Boolean)
 

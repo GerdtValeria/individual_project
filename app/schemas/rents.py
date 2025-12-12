@@ -8,6 +8,7 @@ class SRent(BaseModel):
     id_user: int
     title: str = Field(...)
     price: int = Field(...)
+    guests: int = Field (...)
     description: str = Field(..., min_length=10, max_length=65535)
     active: bool | None = None
     
@@ -18,6 +19,7 @@ class SRentAdd(BaseModel):
     title: str = Field(...)
     adress: str = Field(...)
     price: int = Field(...)
+    guests: int = Field (...)
     description: str = Field(..., min_length=10, max_length=65535)
 
 class SRentGet(SRentAdd):

@@ -24,13 +24,37 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // ==================== Кнопка "Отмена" в форме регистрации ====================
+    const cancelBtn = document.querySelector('a.btn[href="/index.html"]');
+    if (cancelBtn && cancelBtn.textContent.includes('Отмена')) {
+        cancelBtn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            console.log('Кнопка "Отмена" нажата - переход на главную страницу');
+            try {
+                // Используем роутер get_index_html из web.py
+                const response = await fetch('/web/', {
+                    method: 'GET'
+                });
+                if (response.ok) {
+                    window.location.href = '/web/'; // переход на главную
+                } else {
+                    console.error('Ошибка при переходе на главную');
+                    window.location.href = '/web/'; // fallback
+                }
+            } catch (error) {
+                console.error('Ошибка сети:', error);
+                window.location.href = '/web/'; // fallback на главную
+            }
+        });
+    }
+
     // Обработка навигационных кнопок в шапке
     const navButtons = {
-        'rent': '/web/', // роутер get_rent_html
-        'list': '/web/', // роутер get_list_html
-        'help': null,    // открытие модального окна
+        'rent': '/web/',     // роутер get_rent_html
+        'list': '/web/',     // роутер get_list_html
+        'help': null,        // открытие модального окна
         'favorites': '/web/', // роутер get_favorites_html
-        'signup': null   // текущая страница
+        'signup': null       // текущая страница
     };
 
     // Обработка кликов по кнопкам в top-tabs
@@ -65,20 +89,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Обработка кнопки "Избранное" (ссылка)
+    // Обработка кнопки "Избранное" (ссылка) - используем роутер get_favorites_html
     const favoritesLink = document.querySelector('a[href="/favorites.html"]');
     if (favoritesLink) {
         favoritesLink.addEventListener('click', async function(e) {
             e.preventDefault();
+            console.log('Кнопка "Избранное" нажата - переход на страницу избранного');
             try {
-                const response = await fetch('/web/', { // роутер get_favorites_html
+                // Используем роутер get_favorites_html из web.py
+                const response = await fetch('/web/', {
                     method: 'GET'
                 });
                 if (response.ok) {
-                    window.location.href = '/web/';
+                    window.location.href = '/web/'; // переход на страницу избранного
                 } else {
                     console.error('Ошибка при переходе в избранное');
-                    window.location.href = '/web/';
+                    window.location.href = '/web/'; // fallback
                 }
             } catch (error) {
                 console.error('Ошибка сети:', error);
@@ -167,9 +193,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Закрытие модального окна входа
+    // Закрытие модального окна входа при нажатии на кнопку "Отмена"
     if (cancelLoginBtn) {
         cancelLoginBtn.addEventListener('click', function() {
+            console.log('Кнопка "Отмена" в блоке входа нажата - закрытие модального окна');
             if (loginModal) loginModal.setAttribute('aria-hidden', 'true');
         });
     }
@@ -373,7 +400,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (routes[tab]) {
             window.location.href = routes[tab];
         } else {
-            window.location.href = '/web/';
+            window.location.href = '/web/'; // get_index_html
         }
     }
 

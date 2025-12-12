@@ -1,51 +1,49 @@
-// list-handler.js - обработчик событий для страницы list.html
+// favorites-handler.js - обработчик событий для страницы favorites.html
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Инициализация Feather Icons
-    if (typeof feather !== 'undefined') {
-        feather.replace();
-    }
+    // ==================== ИНИЦИАЛИЗАЦИЯ ====================
+    // Проверяем авторизацию пользователя
+    checkUserAuth();
+    
+    // Слушаем событие авторизации
+    window.addEventListener('ugol:login', function() {
+        updateAuthUI();
+    });
 
     // ==================== ПЕРЕХОД ПО ЛОГОТИПУ ====================
     const logoLink = document.querySelector('.logo-link');
     if (logoLink) {
         logoLink.addEventListener('click', function(e) {
             e.preventDefault();
-            // Используем роутер get_index_html из web.py
             window.location.href = '/web/';
         });
     }
 
     // ==================== ОБРАБОТЧИКИ ВКЛАДОК ВЕРХНЕГО МЕНЮ ====================
-    const tabs = document.querySelectorAll('.top-tabs .tab');
     
-    // Кнопка "Сдать в аренду" - уже активна на этой странице
-    const listTab = document.querySelector('.tab[data-tab="list"]');
-    if (listTab) {
-        listTab.addEventListener('click', function(e) {
-            e.preventDefault();
-            // Мы уже на странице "Сдать в аренду"
-            this.classList.add('active');
-        });
-    }
-
     // Кнопка "Арендовать"
-    const rentTab = document.querySelector('.tab[data-tab="rent"]');
+    const rentTab = document.querySelector('a.tab[href="/rent.html"]');
     if (rentTab) {
         rentTab.addEventListener('click', function(e) {
             e.preventDefault();
-            // Используем роутер get_rent_html из web.py
             window.location.href = '/web/';
         });
     }
 
-    // Кнопка "Избранное" (ссылка)
+    // Кнопка "Сдать в аренду"
+    const listTab = document.querySelector('a.tab[href="/list.html"]');
+    if (listTab) {
+        listTab.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '/web/';
+        });
+    }
+
+    // Кнопка "Избранное"
     const favoritesTab = document.querySelector('a.tab[href="/favorites.html"]');
     if (favoritesTab) {
         favoritesTab.addEventListener('click', function(e) {
             e.preventDefault();
-            // Используем роутер get_favorites_html из web.py
-            window.location.href = '/web/';
         });
     }
 
@@ -54,18 +52,23 @@ document.addEventListener('DOMContentLoaded', function() {
     if (helpTab) {
         helpTab.addEventListener('click', function(e) {
             e.preventDefault();
-            // Открываем блок "Помощь" поверх всей страницы
             openHelpModal();
         });
     }
 
-    // Кнопка "Зарегистрироваться"
+    // ==================== КНОПКА РЕГИСТРАЦИИ/ПРОФИЛЯ ====================
     const signupTab = document.querySelector('.tab[data-tab="signup"]');
     if (signupTab) {
         signupTab.addEventListener('click', function(e) {
             e.preventDefault();
-            // Используем роутер get_registration_html из web.py
-            window.location.href = '/web/auth';
+            const user = getUserFromStorage();
+            if (user) {
+                // Если пользователь авторизован, переходим в профиль
+                window.location.href = '/web/';
+            } else {
+                // Если не авторизован, открываем форму регистрации/входа
+                openSigninModal();
+            }
         });
     }
 
@@ -78,75 +81,35 @@ document.addEventListener('DOMContentLoaded', function() {
             const searchQuery = searchInput ? searchInput.value.trim() : '';
             
             if (searchQuery) {
-                // Используем роутер get_rents из rents.py
-                fetchRentsBySearch(searchQuery);
-            } else {
-                // Если запрос пустой, получаем все объявления
-                fetchAllRents();
+                searchRents(searchQuery);
             }
         });
     }
 
-    // ==================== МОДАЛЬНОЕ ОКНО "НОВОЕ ОБЪЯВЛЕНИЕ" ====================
-    const openPostBtn = document.getElementById('openPostBtn');
-    const postModal = document.getElementById('postModalLocal');
-    const cancelPostBtn = document.getElementById('cancelPostLocal');
-    const postForm = document.getElementById('postFormLocal');
-
-    if (openPostBtn && postModal) {
-        openPostBtn.addEventListener('click', function() {
-            // Открываем модальное окно
-            openModal(postModal);
-        });
-    }
-
-    if (cancelPostBtn && postModal) {
-        cancelPostBtn.addEventListener('click', function() {
-            closeModal(postModal);
-        });
-    }
-
-    // Закрытие модального окна при клике вне его
-    if (postModal) {
-        postModal.addEventListener('click', function(e) {
-            if (e.target === postModal) {
-                closeModal(postModal);
-            }
-        });
-    }
-
-    // ==================== ФОРМА ДОБАВЛЕНИЯ ОБЪЯВЛЕНИЯ ====================
-    if (postForm) {
-        postForm.addEventListener('submit', function(e) {
+    // ==================== КНОПКА "К СПИСКУ" ====================
+    const backToListBtn = document.querySelector('a.btn[href="/rent.html"]');
+    if (backToListBtn) {
+        backToListBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            
-            // Собираем данные формы
-            const formData = new FormData(postForm);
-            const rentData = {
-                title: formData.get('title'),
-                city: formData.get('city'),
-                description: formData.get('description'),
-                category: formData.get('category'),
-                price: parseInt(formData.get('price')) || 0,
-                district: '', // По умолчанию пустое
-                id_category: getCategoryId(formData.get('category')),
-                active: true
-            };
-
-            // Используем роутер add_rent из rents.py
-            addNewRent(rentData);
+            window.location.href = '/web/';
         });
     }
+
+    // ==================== БЛОК ПОМОЩИ ====================
+    // Инициализация блока помощи
+    initHelpBlock();
+
+    // ==================== ЗАГРУЗКА ИЗБРАННЫХ ОБЪЯВЛЕНИЙ ====================
+    loadFavorites();
 
     // ==================== ФУНКЦИИ ДЛЯ РАБОТЫ С API ====================
 
     /**
-     * Получение всех объявлений
+     * Загрузка избранных объявлений
      */
-    async function fetchAllRents() {
+    async function loadFavorites() {
         try {
-            // Используем роутер get_rents из rents.py без параметров
-            const response = await fetch('/rents/', {
+            const response = await fetch('/comments/', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -154,27 +117,54 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             if (response.ok) {
-                const rents = await response.json();
-                console.log('Получены все объявления:', rents);
-                // В реальном приложении здесь была бы обработка отображения результатов
-                showNotification(`Загружено ${rents.length} объявлений`, 'success');
+                const favorites = await response.json();
+                console.log('Получены избранные объявления:', favorites);
+                displayFavorites(favorites);
             } else {
-                console.error('Ошибка при получении объявлений');
-                showDemoSearchResults('all');
+                console.error('Ошибка при получении избранных объявлений');
+                loadFavoritesFromLocalStorage();
             }
         } catch (error) {
             console.error('Ошибка сети:', error);
-            showDemoSearchResults('all');
+            loadFavoritesFromLocalStorage();
         }
     }
 
     /**
-     * Поиск объявлений по запросу
+     * Удаление избранного объявления
+     * @param {number} id - ID объявления
+     */
+    async function removeFavorite(id) {
+        try {
+            const response = await fetch(`/comments/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Объявление удалено из избранного:', result);
+                showNotification('Объявление удалено из избранного', 'success');
+                loadFavorites();
+            } else {
+                throw new Error('Ошибка при удалении из избранного');
+            }
+        } catch (error) {
+            console.error('Ошибка при удалении из избранного:', error);
+            removeFavoriteFromLocalStorage(id);
+            showNotification('Объявление удалено из избранного (демо)', 'success');
+            loadFavorites();
+        }
+    }
+
+    /**
+     * Поиск объявлений
      * @param {string} query - Поисковый запрос
      */
-    async function fetchRentsBySearch(query) {
+    async function searchRents(query) {
         try {
-            // Используем роутер get_rents из rents.py с параметром поиска
             const response = await fetch(`/rents/?q=${encodeURIComponent(query)}`, {
                 method: 'GET',
                 headers: {
@@ -185,223 +175,398 @@ document.addEventListener('DOMContentLoaded', function() {
             if (response.ok) {
                 const rents = await response.json();
                 console.log('Найдены объявления по запросу:', query, rents);
-                showNotification(`Найдено ${rents.length} объявлений по запросу: "${query}"`, 'success');
+                window.location.href = `/rent.html?q=${encodeURIComponent(query)}`;
             } else {
                 console.error('Ошибка при поиске объявлений');
-                showDemoSearchResults(query);
+                window.location.href = '/rent.html';
             }
         } catch (error) {
             console.error('Ошибка сети:', error);
-            showDemoSearchResults(query);
+            window.location.href = '/rent.html';
         }
     }
 
     /**
-     * Добавление нового объявления
-     * @param {Object} rentData - Данные объявления
+     * Отправка вопроса в помощь
+     * @param {Object} helpData - Данные вопроса
      */
-    async function addNewRent(rentData) {
+    async function sendHelpQuestion(helpData) {
         try {
-            // Используем роутер add_rent из rents.py
-            const response = await fetch('/rents/', {
+            // Предполагаем, что есть роутер add_help в help.py
+            const response = await fetch('/help/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(rentData)
+                body: JSON.stringify(helpData)
             });
 
             if (response.ok) {
                 const result = await response.json();
-                console.log('Объявление успешно добавлено:', result);
-                
-                // Закрываем модальное окно
-                if (postModal) {
-                    closeModal(postModal);
-                }
-                
-                // Сбрасываем форму
-                if (postForm) {
-                    postForm.reset();
-                }
-                
-                // Показываем уведомление
-                showNotification('Объявление успешно добавлено!', 'success');
-                
-                // В демо-версии: добавляем карточку на страницу
-                addDemoRentCard(rentData);
+                console.log('Вопрос отправлен в поддержку:', result);
+                return { success: true, message: 'Ваш вопрос успешно отправлен в поддержку' };
             } else {
                 const errorData = await response.json();
-                throw new Error(errorData.detail || 'Ошибка при добавлении объявления');
+                throw new Error(errorData.detail || 'Ошибка при отправке вопроса');
             }
         } catch (error) {
-            console.error('Ошибка при добавлении объявления:', error);
-            
-            // Для демо-версии: имитируем успешное добавление
-            showNotification('Объявление успешно добавлено (демо-режим)!', 'success');
-            addDemoRentCard(rentData);
-            
-            // Закрываем модальное окно и сбрасываем форму
-            if (postModal) {
-                closeModal(postModal);
-            }
-            if (postForm) {
-                postForm.reset();
-            }
+            console.error('Ошибка при отправке вопроса:', error);
+            // Для демо-версии имитируем успешную отправку
+            return { 
+                success: true, 
+                message: 'Вопрос отправлен (демо-режим). В реальном приложении он будет отправлен в поддержку.' 
+            };
         }
     }
 
     // ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
 
     /**
-     * Открытие модального окна
-     * @param {HTMLElement} modal - Элемент модального окна
+     * Проверка авторизации пользователя
      */
-    function openModal(modal) {
-        modal.setAttribute('aria-hidden', 'false');
-        modal.style.visibility = 'visible';
-        modal.style.opacity = '1';
-        modal.style.display = 'grid';
-        
-        // Фокус на первое поле
-        setTimeout(() => {
-            const titleInput = modal.querySelector('input[name="title"]');
-            if (titleInput) titleInput.focus();
-        }, 100);
+    function checkUserAuth() {
+        const user = getUserFromStorage();
+        updateAuthUI(user);
     }
 
     /**
-     * Закрытие модального окна
-     * @param {HTMLElement} modal - Элемент модального окна
+     * Получение пользователя из localStorage
      */
-    function closeModal(modal) {
-        modal.setAttribute('aria-hidden', 'true');
-        modal.style.visibility = 'hidden';
-        modal.style.opacity = '0';
-        setTimeout(() => {
-            modal.style.display = 'none';
-        }, 300);
+    function getUserFromStorage() {
+        try {
+            const userData = localStorage.getItem('ugol_user');
+            return userData ? JSON.parse(userData) : null;
+        } catch (error) {
+            console.error('Ошибка при получении пользователя:', error);
+            return null;
+        }
+    }
+
+    /**
+     * Обновление UI в зависимости от авторизации
+     * @param {Object} user - Данные пользователя
+     */
+    function updateAuthUI(user = null) {
+        if (!user) {
+            user = getUserFromStorage();
+        }
+        
+        const signupTab = document.querySelector('.tab[data-tab="signup"]');
+        if (!signupTab) return;
+        
+        if (user) {
+            // Меняем "Зарегистрироваться" на "Профиль"
+            signupTab.textContent = 'Профиль';
+            signupTab.classList.remove('primary');
+            signupTab.classList.add('profile-tab');
+            
+            // Обновляем обработчик
+            signupTab.onclick = function(e) {
+                e.preventDefault();
+                window.location.href = '/web/';
+            };
+        } else {
+            // Возвращаем "Зарегистрироваться"
+            signupTab.textContent = 'Зарегистрироваться';
+            signupTab.classList.add('primary');
+            signupTab.classList.remove('profile-tab');
+            
+            // Обновляем обработчик
+            signupTab.onclick = function(e) {
+                e.preventDefault();
+                openSigninModal();
+            };
+        }
     }
 
     /**
      * Открытие модального окна помощи
      */
     function openHelpModal() {
-        // Проверяем, существует ли уже блок помощи в HTML
-        let helpBlock = document.getElementById('helpBlock');
-        
+        const helpBlock = document.getElementById('helpBlock');
         if (helpBlock) {
-            // Если блок уже есть в HTML (добавлен сервером), просто показываем его
             helpBlock.setAttribute('aria-hidden', 'false');
             helpBlock.style.visibility = 'visible';
             helpBlock.style.opacity = '1';
-            helpBlock.style.display = 'grid';
             
-            // Фокус на кнопку закрытия для доступности
             setTimeout(() => {
-                const closeBtn = helpBlock.querySelector('#closeHelpBlock');
-                if (closeBtn) closeBtn.focus();
-            }, 100);
-        } else {
-            // Создаем блок помощи динамически
-            helpBlock = document.createElement('div');
-            helpBlock.id = 'helpBlock';
-            helpBlock.className = 'overlay-block';
-            helpBlock.setAttribute('aria-hidden', 'false');
-            helpBlock.innerHTML = `
-                <div class="overlay-dialog" role="dialog" aria-label="Помощь">
-                    <header class="modal-header">
-                        <h3>Помощь и поддержка</h3>
-                        <button id="closeHelpBlock" class="help-close" aria-label="Закрыть"></button>
-                    </header>
-                    <div class="post-form" style="max-width:520px; padding:20px;">
-                        <p style="margin:0 0 15px; color:var(--muted)">
-                            На этой странице вы можете разместить объявление о сдаче жилья в аренду. 
-                            Заполните форму "Новое объявление" и ваше предложение станет доступным для арендаторов.
-                        </p>
-                        
-                        <h4 style="margin:20px 0 10px; color:#042018">Часто задаваемые вопросы:</h4>
-                        <ul style="margin:0 0 20px; color:var(--muted); line-height:1.5; padding-left:20px;">
-                            <li><strong>Как правильно заполнить объявление?</strong><br>Укажите точный адрес, описание, цену и загрузите качественные фото.</li>
-                            <li><strong>Как общаться с арендаторами?</strong><br>Используйте встроенный чат или укажите контакты в описании.</li>
-                            <li><strong>Как изменить или удалить объявление?</strong><br>В личном кабинете во вкладке "Мои объявления".</li>
-                            <li><strong>Какие документы нужны для сдачи?</strong><br>Договор аренды и документы, подтверждающие право собственности.</li>
-                        </ul>
-                        
-                        <div style="margin-top:25px; padding-top:15px; border-top:1px solid rgba(0,0,0,0.1)">
-                            <h4 style="margin:0 0 10px; color:#042018">Техническая поддержка</h4>
-                            <p style="margin:0 0 15px; color:var(--muted); font-size:14px">
-                                <strong>Email:</strong> support@ugolkomforta.ru<br>
-                                <strong>Телефон:</strong> 8-800-123-45-67<br>
-                                <strong>Часы работы:</strong> 9:00-21:00 ежедневно
-                            </p>
-                            <div style="display:flex; justify-content:flex-end; gap:10px;">
-                                <button id="contactSupportBtn" class="btn">Написать в поддержку</button>
-                                <button id="closeHelpBtn" class="btn primary">Закрыть</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(helpBlock);
-            
-            // Показываем блок
-            helpBlock.style.visibility = 'visible';
-            helpBlock.style.opacity = '1';
-            helpBlock.style.display = 'grid';
-            
-            // Добавляем обработчики для кнопок
-            const closeHelpBlock = document.getElementById('closeHelpBlock');
-            const closeHelpBtn = document.getElementById('closeHelpBtn');
-            const contactSupportBtn = document.getElementById('contactSupportBtn');
-            
-            if (closeHelpBlock) {
-                closeHelpBlock.addEventListener('click', function() {
-                    closeModal(helpBlock);
-                });
-            }
-            
-            if (closeHelpBtn) {
-                closeHelpBtn.addEventListener('click', function() {
-                    closeModal(helpBlock);
-                });
-            }
-            
-            if (contactSupportBtn) {
-                contactSupportBtn.addEventListener('click', function() {
-                    window.location.href = 'mailto:support@ugolkomforta.ru?subject=Вопрос по размещению объявления';
-                });
-            }
-            
-            // Закрытие при клике вне блока
-            helpBlock.addEventListener('click', function(e) {
-                if (e.target === helpBlock) {
-                    closeModal(helpBlock);
-                }
-            });
-            
-            // Фокус на кнопку закрытия для доступности
-            setTimeout(() => {
-                if (closeHelpBlock) closeHelpBlock.focus();
+                const emailInput = helpBlock.querySelector('input[name="email"]');
+                if (emailInput) emailInput.focus();
             }, 100);
         }
     }
 
     /**
-     * Получение ID категории по названию
-     * @param {string} categoryName - Название категории
-     * @returns {number} ID категории
+     * Закрытие модального окна помощи
      */
-    function getCategoryId(categoryName) {
-        const categoryMap = {
-            'Студия': 1,
-            '1‑комнатная': 2,
-            '2‑комнатная': 3,
-            'Дом': 4,
-            'Апартаменты с видом': 5
-        };
-        return categoryMap[categoryName] || 0;
+    function closeHelpModal() {
+        const helpBlock = document.getElementById('helpBlock');
+        if (helpBlock) {
+            helpBlock.setAttribute('aria-hidden', 'true');
+            helpBlock.style.visibility = 'hidden';
+            helpBlock.style.opacity = '0';
+        }
+    }
+
+    /**
+     * Инициализация блока помощи
+     */
+    function initHelpBlock() {
+        const helpBlock = document.getElementById('helpBlock');
+        if (!helpBlock) return;
+
+        // Кнопка закрытия (cancel_17767265.png)
+        const closeHelpBtn = document.getElementById('closeHelpBlock');
+        if (closeHelpBtn) {
+            closeHelpBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                closeHelpModal();
+            });
+        }
+
+        // Закрытие при клике вне блока
+        helpBlock.addEventListener('click', function(e) {
+            if (e.target === helpBlock) {
+                closeHelpModal();
+            }
+        });
+
+        // Форма помощи
+        const helpForm = document.getElementById('helpContactFormFavorites');
+        if (helpForm) {
+            helpForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(helpForm);
+                const email = formData.get('email') || '';
+                const message = formData.get('message') || '';
+                
+                // Получаем текущего пользователя
+                const user = getUserFromStorage();
+                const userName = user ? user.name : 'Гость';
+                
+                // Данные для отправки
+                const helpData = {
+                    email: email,
+                    message: message,
+                    user_name: userName,
+                    page: 'favorites',
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Отправляем вопрос через роутер add_help
+                const submitBtn = helpForm.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+                
+                // Показываем индикатор загрузки
+                submitBtn.textContent = 'Отправка...';
+                submitBtn.disabled = true;
+                
+                try {
+                    const result = await sendHelpQuestion(helpData);
+                    
+                    if (result.success) {
+                        showNotification(result.message, 'success');
+                        helpForm.reset();
+                        closeHelpModal();
+                    } else {
+                        showNotification('Ошибка при отправке вопроса', 'error');
+                    }
+                } catch (error) {
+                    console.error('Ошибка:', error);
+                    showNotification('Ошибка при отправке вопроса', 'error');
+                } finally {
+                    // Восстанавливаем кнопку
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }
+            });
+        }
+    }
+
+    /**
+     * Открытие модального окна регистрации/входа
+     */
+    function openSigninModal() {
+        const signinBlock = document.getElementById('signin');
+        if (signinBlock) {
+            signinBlock.setAttribute('aria-hidden', 'false');
+            signinBlock.style.visibility = 'visible';
+            signinBlock.style.opacity = '1';
+            
+            setTimeout(() => {
+                const nameInput = signinBlock.querySelector('input[name="name"]');
+                if (nameInput) nameInput.focus();
+            }, 100);
+        }
+    }
+
+    /**
+     * Отображение избранных объявлений
+     * @param {Array} favorites - Массив избранных объявлений
+     */
+    function displayFavorites(favorites) {
+        const container = document.getElementById('favoritesList');
+        const emptyMsg = document.getElementById('favoritesEmptyMsg');
+        
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        if (!favorites || favorites.length === 0) {
+            if (emptyMsg) {
+                emptyMsg.style.display = 'block';
+                emptyMsg.textContent = 'У вас пока нет сохранённых объявлений.';
+            }
+            return;
+        }
+        
+        if (emptyMsg) {
+            emptyMsg.style.display = 'none';
+        }
+        
+        favorites.forEach(favorite => {
+            const card = createFavoriteCard(favorite);
+            container.appendChild(card);
+        });
+    }
+
+    /**
+     * Создание карточки избранного объявления
+     * @param {Object} favorite - Данные объявления
+     */
+    function createFavoriteCard(favorite) {
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.dataset.id = favorite.id;
+        
+        const photoUrl = favorite.photos && favorite.photos[0] 
+            ? favorite.photos[0] 
+            : '/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg';
+        
+        card.innerHTML = `
+            <img class="thumb" src="${escapeHtml(photoUrl)}" alt="${escapeHtml(favorite.title || 'Объявление')}">
+            <div class="card-body">
+                <div class="card-top">
+                    <h3 class="title">${escapeHtml(favorite.title || 'Без названия')}</h3>
+                </div>
+                <p class="meta">${escapeHtml(favorite.city || '')}${favorite.district ? ' · ' + escapeHtml(favorite.district) : ''}</p>
+                <p class="desc-snippet">${escapeHtml(favorite.description ? 
+                    (favorite.description.length > 120 ? 
+                        favorite.description.substring(0, 117) + '...' : 
+                        favorite.description) : 
+                    '')}</p>
+                <p class="price">₽${escapeHtml(favorite.price || 0)}/ночь</p>
+                <div style="display: flex; gap: 8px; margin-top: auto;">
+                    <button class="btn view-details" data-id="${favorite.id}">Подробнее</button>
+                    <button class="fav favorite-btn active" data-id="${favorite.id}" aria-label="Удалить из избранного" aria-pressed="true"></button>
+                </div>
+            </div>
+        `;
+        
+        // Обработчики событий для кнопок карточки
+        const viewBtn = card.querySelector('.view-details');
+        const favBtn = card.querySelector('.favorite-btn');
+        
+        if (viewBtn) {
+            viewBtn.addEventListener('click', function() {
+                const id = this.dataset.id;
+                if (id) {
+                    window.location.href = `/detail.html?id=${encodeURIComponent(id)}`;
+                }
+            });
+        }
+        
+        if (favBtn) {
+            favBtn.addEventListener('click', function() {
+                const id = this.dataset.id;
+                if (id) {
+                    removeFavorite(parseInt(id));
+                }
+            });
+        }
+        
+        return card;
+    }
+
+    /**
+     * Загрузка избранных из localStorage (для демо-версии)
+     */
+    function loadFavoritesFromLocalStorage() {
+        try {
+            const favoritesData = localStorage.getItem('ugol_favorites');
+            if (favoritesData) {
+                const favorites = JSON.parse(favoritesData);
+                console.log('Загружены избранные из localStorage:', favorites);
+                displayFavorites(favorites);
+            } else {
+                displayDemoFavorites();
+            }
+        } catch (error) {
+            console.error('Ошибка при загрузке избранных из localStorage:', error);
+            displayDemoFavorites();
+        }
+    }
+
+    /**
+     * Удаление избранного из localStorage (для демо-версии)
+     * @param {number} id - ID объявления
+     */
+    function removeFavoriteFromLocalStorage(id) {
+        try {
+            const favoritesData = localStorage.getItem('ugol_favorites');
+            if (favoritesData) {
+                let favorites = JSON.parse(favoritesData);
+                favorites = favorites.filter(fav => fav.id !== id);
+                localStorage.setItem('ugol_favorites', JSON.stringify(favorites));
+                console.log('Удалено из избранного в localStorage:', id);
+            }
+        } catch (error) {
+            console.error('Ошибка при удалении из избранного в localStorage:', error);
+        }
+    }
+
+    /**
+     * Отображение демо-избранных
+     */
+    function displayDemoFavorites() {
+        const demoFavorites = [
+            {
+                id: 1,
+                title: 'Уютная квартира в центре',
+                city: 'Москва',
+                district: 'Центральный',
+                description: 'Просторная квартира с современным ремонтом в самом центре города. Рядом метро, магазины, кафе.',
+                price: 3500,
+                photos: ['/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg']
+            },
+            {
+                id: 2,
+                title: 'Студия с видом на парк',
+                city: 'Санкт-Петербург',
+                district: 'Василеостровский',
+                description: 'Светлая студия с панорамным видом на парк. Современная техника, консьерж.',
+                price: 2800,
+                photos: ['/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg']
+            },
+            {
+                id: 3,
+                title: 'Дом у озера',
+                city: 'Казань',
+                district: 'Приозерный',
+                description: 'Уютный дом для отдыха на берегу озера. Сауна, мангал, всё для комфортного отдыха.',
+                price: 4500,
+                photos: ['/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg']
+            }
+        ];
+        
+        displayFavorites(demoFavorites);
+        
+        try {
+            localStorage.setItem('ugol_favorites', JSON.stringify(demoFavorites));
+        } catch (error) {
+            console.error('Ошибка при сохранении демо-данных в localStorage:', error);
+        }
     }
 
     /**
@@ -410,7 +575,6 @@ document.addEventListener('DOMContentLoaded', function() {
      * @param {string} type - Тип уведомления (success, error, info)
      */
     function showNotification(message, type = 'info') {
-        // Создаем элемент уведомления
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
         notification.style.cssText = `
@@ -433,7 +597,6 @@ document.addEventListener('DOMContentLoaded', function() {
         notification.textContent = message;
         document.body.appendChild(notification);
         
-        // Удаляем уведомление через 3 секунды
         setTimeout(() => {
             notification.style.animation = 'slideOut 0.3s ease';
             setTimeout(() => {
@@ -445,71 +608,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /**
-     * Добавление демо-карточки объявления
-     * @param {Object} rentData - Данные объявления
-     */
-    function addDemoRentCard(rentData) {
-        const card = document.createElement('article');
-        card.className = 'card';
-        card.style.cssText = `
-            animation: fadeIn 0.5s ease;
-            margin: 12px auto;
-            max-width: 900px;
-        `;
-        
-        // Формируем HTML карточки
-        card.innerHTML = `
-            <img class="thumb" src="/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg" alt="${rentData.title}">
-            <div class="card-body">
-                <div class="card-top">
-                    <h3 class="title">${escapeHtml(rentData.title)}</h3>
-                </div>
-                <p class="meta">${escapeHtml(rentData.city)} · ${escapeHtml(rentData.category)}</p>
-                <p class="desc-snippet">${escapeHtml(rentData.description)}</p>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
-                    <p class="price" style="margin: 0; font-weight: 700; color: #042018;">₽${rentData.price}/ночь</p>
-                    <div style="display: flex; gap: 8px;">
-                        <button class="btn" style="padding: 6px 12px; font-size: 13px;">Редактировать</button>
-                        <button class="btn primary" style="padding: 6px 12px; font-size: 13px;">Скрыть</button>
-                    </div>
-                </div>
-                <div style="margin-top: 10px; font-size: 12px; color: var(--muted);">
-                    <span style="background: #f1f9f7; padding: 4px 8px; border-radius: 6px;">Добавлено только что</span>
-                </div>
-            </div>
-        `;
-        
-        // Вставляем карточку после инструкций
-        const container = document.querySelector('main section');
-        if (container) {
-            // Находим карточку с инструкциями
-            const instructionCard = container.querySelector('.card');
-            if (instructionCard) {
-                container.insertBefore(card, instructionCard.nextSibling);
-            } else {
-                container.appendChild(card);
-            }
-        }
-    }
-
-    /**
-     * Показ демо-результатов поиска
-     * @param {string} query - Поисковый запрос
-     */
-    function showDemoSearchResults(query) {
-        console.log(`Демо-поиск: "${query}"`);
-        const message = query === 'all' 
-            ? 'Загружены демо-объявления (в демо-режиме)' 
-            : `Показаны демо-результаты по запросу: "${query}"`;
-        showNotification(message, 'info');
-    }
-
-    /**
      * Экранирование HTML-символов
      * @param {string} text - Текст для экранирования
-     * @returns {string} Экранированный текст
      */
     function escapeHtml(text) {
+        if (!text) return '';
         const map = {
             '&': '&amp;',
             '<': '&lt;',
@@ -520,22 +623,11 @@ document.addEventListener('DOMContentLoaded', function() {
         return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
     }
 
-    // ==================== ДОБАВЛЕНИЕ СТИЛЕЙ ДЛЯ АНИМАЦИЙ ====================
-    if (!document.querySelector('#list-handler-styles')) {
+    // ==================== ИНИЦИАЛИЗАЦИЯ СТИЛЕЙ ДЛЯ АНИМАЦИЙ ====================
+    if (!document.querySelector('#favorites-handler-styles')) {
         const style = document.createElement('style');
-        style.id = 'list-handler-styles';
+        style.id = 'favorites-handler-styles';
         style.textContent = `
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                    transform: translateY(10px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-            
             @keyframes slideIn {
                 from {
                     transform: translateX(100%);
@@ -562,22 +654,52 @@ document.addEventListener('DOMContentLoaded', function() {
                 transition: all 0.3s ease;
             }
             
-            .modal[aria-hidden="true"] {
+            .favorite-btn.active {
+                background-color: rgba(127,211,198,0.14) !important;
+            }
+            
+            .profile-tab {
+                background: #f1f9f7 !important;
+                color: #044036 !important;
+                border: 1px solid #e6f5f2 !important;
+            }
+            
+            .profile-tab:hover,
+            .profile-tab:focus {
+                background: #e6f5f2 !important;
+                transform: translateY(-2px) !important;
+            }
+            
+            /* Стили для кнопки закрытия помощи */
+            #closeHelpBlock {
+                background-image: url('/cancel_17767265.png');
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: 22px 22px;
+                background-color: transparent;
+                border: none;
+                width: 44px;
+                height: 44px;
+                padding: 6px;
+                border-radius: 8px;
+                cursor: pointer;
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                display: inline-block;
+            }
+            
+            #closeHelpBlock i {
                 display: none !important;
             }
             
-            .modal[aria-hidden="false"] {
-                display: grid !important;
+            #closeHelpBlock:focus {
+                outline: 2px solid rgba(4,64,54,0.16);
+                outline-offset: 2px;
             }
         `;
         document.head.appendChild(style);
     }
 
-    // ==================== ИНИЦИАЛИЗАЦИЯ ПО УМОЛЧАНИЮ ====================
-    console.log('Обработчик событий для страницы "Сдать в аренду" загружен');
-    
-    // Автоматически загружаем все объявления при загрузке страницы
-    setTimeout(() => {
-        fetchAllRents();
-    }, 500);
+    console.log('Обработчик событий для страницы "Избранное" загружен');
 });
