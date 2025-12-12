@@ -14,7 +14,6 @@ class RentService(BaseService):
         title: Optional[str] = None,
         address: Optional[str] = None,  # Исправлено adress на address
         price: Optional[int] = None,
-        guests: Optional[int] = None,
         description: Optional[str] = None,
         id_category: Optional[int] = None,
         id_user: Optional[int] = None,
@@ -36,7 +35,6 @@ class RentService(BaseService):
             title=title,
             address=address,
             price=price,
-            guests=guests,
             description=description,
             id_category=id_category,
             id_user=id_user,

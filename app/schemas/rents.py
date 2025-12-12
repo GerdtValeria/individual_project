@@ -10,7 +10,6 @@ class SRent(BaseModel):
     title: str = Field(..., min_length=1, max_length=50)
     address: str = Field(..., min_length=1, max_length=50) 
     price: int = Field(..., ge=0)
-    guests: int = Field(..., ge=1)
     description: str = Field(..., min_length=10, max_length=65535)
     active: Optional[bool] = True
     
@@ -21,7 +20,6 @@ class SRentAdd(BaseModel):
     title: str = Field(..., min_length=1, max_length=50)
     address: str = Field(..., min_length=1, max_length=50) 
     price: int = Field(..., ge=0)
-    guests: int = Field(..., ge=1)
     description: str = Field(..., min_length=10, max_length=65535)
 
 class SRentGet(SRentAdd):
