@@ -12,7 +12,7 @@ class RentService(BaseService):
         pagination: dict,
         search_query: Optional[str] = None,
         title: Optional[str] = None,
-        address: Optional[str] = None,
+        adress: Optional[str] = None,
         price: Optional[int] = None,
         guests: Optional[int] = None,
         description: Optional[str] = None,
@@ -33,16 +33,16 @@ class RentService(BaseService):
         # Если нет search_query, но есть отдельные поля, используем их
         if search_query:
             # Поиск по общему запросу
-            rents = await self.repository.get_filtered_rents(
+            rents = await self.db.rents.get_filtered_rents(
                 search_query=search_query,
                 limit=page_size,
                 offset=offset
             )
         else:
             # Фильтрация по отдельным полям
-            rents = await self.repository.get_filtered_rents(
+            rents = await self.db.rents.get_filtered_rents(
                 title=title,
-                address=address,
+                adress=adress,
                 price=price,  # Если нужно фильтровать по точной цене
                 # Для диапазона цен используйте price_from и price_to
                 guests=guests,
