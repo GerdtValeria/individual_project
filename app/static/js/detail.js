@@ -87,55 +87,19 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Переход в профиль...');
         
         try {
-            // Используем роутер get_profile_html из файла web.py
-            const response = await fetch('/web/', {
-                method: 'GET',
-                headers: {
-                    'Accept': 'text/html'
-                }
-            });
-            
-            if (response.ok) {
-                // Проверяем тип ответа
-                const contentType = response.headers.get('content-type');
-                if (contentType && contentType.includes('text/html')) {
-                    // Получаем HTML и заменяем содержимое страницы
-                    const html = await response.text();
-                    document.open();
-                    document.write(html);
-                    document.close();
-                } else {
-                    // Если ответ не HTML, просто переходим по URL
-                    window.location.href = '/web/';
-                }
-            } else if (response.status === 404) {
-                console.warn('Роутер get_profile_html не найден, пробуем альтернативный путь');
-                // Альтернативный путь к странице профиля
-                window.location.href = '/profile.html';
-            } else {
-                console.error(`Ошибка HTTP ${response.status} при переходе в профиль`);
-                showError('Не удалось загрузить страницу профиля');
-                fallbackNavigation('profile');
-            }
+            window.location.href = '/web/profile';
         } catch (error) {
             console.error('Ошибка сети при переходе в профиль:', error);
             // Fallback на стандартный путь
-            window.location.href = '/profile.html';
+            window.location.href = '/web/profile';
         }
     }
 
     async function navigateToRegistration() {
         try {
-            const response = await fetch('/web/auth', {
-                method: 'GET'
-            });
-            if (response.ok) {
-                window.location.href = '/web/auth';
-            } else {
-                window.location.href = '/signup.html';
-            }
+            window.location.href = '/web/auth';
         } catch (error) {
-            window.location.href = '/signup.html';
+            window.location.href = '/web/auth';
         }
     }
 
@@ -152,10 +116,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Обработка навигационных кнопок в шапке
     const navButtons = {
-        'rent': '/web/', // роутер get_rent_html
-        'list': '/web/', // роутер get_list_html
+        'rent': '/web/rent', // роутер get_rent_html
+        'list': '/web/list', // роутер get_list_html
         'help': null,    // открытие модального окна
-        'favorites': '/web/', // роутер get_favorites_html
+        'favorites': '/web/favorites', // роутер get_favorites_html
         'signup': null   // текущая страница
     };
 
@@ -172,15 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (navButtons[tab]) {
                 try {
-                    const response = await fetch(navButtons[tab], {
-                        method: 'GET'
-                    });
-                    if (response.ok) {
-                        window.location.href = navButtons[tab];
-                    } else {
-                        console.error(`Ошибка при переходе на ${tab}`);
-                        fallbackNavigation(tab);
-                    }
+                    window.location.href = navButtons[tab];
                 } catch (error) {
                     console.error('Ошибка сети:', error);
                     fallbackNavigation(tab);
@@ -283,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <button id="favoriteBtn" class="fav" aria-pressed="false" title="Добавить в избранное">
                             <i></i>
                         </button>
-                        <a href="/rent.html" class="btn" style="background:transparent">К списку</a>
+                        <a href="/web/rent" class="btn" style="background:transparent">К списку</a>
                     </div>
 
                     <div id="availability" style="margin-top:12px;background:#fbfffe;padding:10px;border-radius:8px;border:1px solid #eef7f4">
@@ -626,7 +582,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <form id="helpContactForm" style="display:flex;flex-direction:column;gap:10px;">
                             <label style="font-size:13px">Ваш email
                                 <input type="email" name="email" placeholder="you@example.com" required 
-                                       style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08);width:100%">
+                                       style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08);width:100%"></input>
                             </label>
                             <label style="font-size:13px">Ваш вопрос
                                 <textarea name="question" rows="4" placeholder="Опишите вашу проблему или вопрос" required
@@ -729,14 +685,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function navigateToHome() {
         try {
-            const response = await fetch('/web/', {
-                method: 'GET'
-            });
-            if (response.ok) {
-                window.location.href = '/web/';
-            } else {
-                fallbackNavigation('home');
-            }
+            window.location.href = '/web/index';
         } catch (error) {
             fallbackNavigation('home');
         }
@@ -744,14 +693,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function navigateToFavorites() {
         try {
-            const response = await fetch('/web/', {
-                method: 'GET'
-            });
-            if (response.ok) {
-                window.location.href = '/web/';
-            } else {
-                fallbackNavigation('favorites');
-            }
+            window.location.href = '/web/favorites';
         } catch (error) {
             fallbackNavigation('favorites');
         }
@@ -759,16 +701,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function navigateToBooking(rentId) {
         try {
-            const response = await fetch('/web/', {
-                method: 'GET'
-            });
-            if (response.ok) {
-                window.location.href = `/web/?id=${rentId}`;
-            } else {
-                window.location.href = `/booking.html?id=${rentId}`;
-            }
+            window.location.href = `/web/booking?id=${rentId}`;
         } catch (error) {
-            window.location.href = `/booking.html?id=${rentId}`;
+            window.location.href = `/web/booking?id=${rentId}`;
         }
     }
 
@@ -793,7 +728,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (response.ok) {
                 const searchResults = await response.json();
                 // Переходим на страницу аренды с результатами поиска
-                window.location.href = `/rent.html?q=${encodeURIComponent(query)}`;
+                window.location.href = `/web/rent?q=${encodeURIComponent(query)}`;
             } else {
                 showError('Ошибка при поиске');
             }
@@ -820,16 +755,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function navigateToRentDetail(rentId) {
         try {
-            const response = await fetch('/web/', {
-                method: 'GET'
-            });
-            if (response.ok) {
-                window.location.href = `/detail.html?id=${rentId}`;
-            } else {
-                window.location.href = `/detail.html?id=${rentId}`;
-            }
+            window.location.href = `/web/detail?id=${rentId}`;
         } catch (error) {
-            window.location.href = `/detail.html?id=${rentId}`;
+            window.location.href = `/web/detail?id=${rentId}`;
         }
     }
 
@@ -840,18 +768,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function fallbackNavigation(tab) {
         const routes = {
-            'rent': '/web/',
-            'list': '/web/',
-            'favorites': '/web/',
+            'rent': '/web/rent',
+            'list': '/web/list',
+            'favorites': '/web/favorites',
             'signup': '/web/auth',
-            'home': '/web/',
-            'profile': '/profile.html'
+            'home': '/web/index',
+            'profile': '/web/profile'
         };
         
         if (routes[tab]) {
             window.location.href = routes[tab];
         } else {
-            window.location.href = '/web/';
+            window.location.href = '/web/index';
         }
     }
 

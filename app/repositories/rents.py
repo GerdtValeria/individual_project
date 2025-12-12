@@ -31,6 +31,8 @@ class RentsRepository(BaseRepository):
         if id_category is not None:
             conditions.append(RentsModel.id_category == id_category)
 
+        if id_user is not None:
+            conditions.append(RentsModel.id_user == id_user)
 
         if price is not None:
             conditions.append(RentsModel.price == price)

@@ -8,18 +8,10 @@ document.addEventListener('DOMContentLoaded', function() {
         logoLink.addEventListener('click', async function(e) {
             e.preventDefault();
             try {
-                const response = await fetch('/web/', {
-                    method: 'GET'
-                });
-                if (response.ok) {
-                    window.location.href = '/web/';
-                } else {
-                    console.error('Ошибка при переходе на главную');
-                    window.location.href = '/web/'; // fallback
-                }
+                window.location.href = '/web/index';
             } catch (error) {
                 console.error('Ошибка сети:', error);
-                window.location.href = '/web/'; // fallback
+                window.location.href = '/web/index'; // fallback
             }
         });
     }
@@ -32,28 +24,20 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Кнопка "Отмена" нажата - переход на главную страницу');
             try {
                 // Используем роутер get_index_html из web.py
-                const response = await fetch('/web/', {
-                    method: 'GET'
-                });
-                if (response.ok) {
-                    window.location.href = '/web/'; // переход на главную
-                } else {
-                    console.error('Ошибка при переходе на главную');
-                    window.location.href = '/web/'; // fallback
-                }
+                window.location.href = '/web/index'; // переход на главную
             } catch (error) {
                 console.error('Ошибка сети:', error);
-                window.location.href = '/web/'; // fallback на главную
+                window.location.href = '/web/index'; // fallback на главную
             }
         });
     }
 
     // Обработка навигационных кнопок в шапке
     const navButtons = {
-        'rent': '/web/',     // роутер get_rent_html
-        'list': '/web/',     // роутер get_list_html
+        'rent': '/web/rent',     // роутер get_rent_html
+        'list': '/web/list',     // роутер get_list_html
         'help': null,        // открытие модального окна
-        'favorites': '/web/', // роутер get_favorites_html
+        'favorites': '/web/favorites', // роутер get_favorites_html
         'signup': null       // текущая страница
     };
 
@@ -71,16 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (navButtons[tab]) {
                 try {
-                    const response = await fetch(navButtons[tab], {
-                        method: 'GET'
-                    });
-                    if (response.ok) {
-                        window.location.href = navButtons[tab];
-                    } else {
-                        console.error(`Ошибка при переходе на ${tab}`);
-                        // Fallback навигация
-                        fallbackNavigation(tab);
-                    }
+                    window.location.href = navButtons[tab];
                 } catch (error) {
                     console.error('Ошибка сети:', error);
                     fallbackNavigation(tab);
@@ -97,18 +72,10 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Кнопка "Избранное" нажата - переход на страницу избранного');
             try {
                 // Используем роутер get_favorites_html из web.py
-                const response = await fetch('/web/', {
-                    method: 'GET'
-                });
-                if (response.ok) {
-                    window.location.href = '/web/'; // переход на страницу избранного
-                } else {
-                    console.error('Ошибка при переходе в избранное');
-                    window.location.href = '/web/'; // fallback
-                }
+                window.location.href = '/web/favorites'; // переход на страницу избранного
             } catch (error) {
                 console.error('Ошибка сети:', error);
-                window.location.href = '/web/';
+                window.location.href = '/web/favorites';
             }
         });
     }
@@ -366,20 +333,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Функция перехода в профиль
     async function navigateToProfile() {
         try {
-            const response = await fetch('/web/', { // роутер get_profile_html
-                method: 'GET'
-            });
-            if (response.ok) {
-                window.location.href = '/web/';
-            } else {
-                console.error('Ошибка при переходе в профиль');
-                alert('Вход выполнен успешно!');
-                window.location.href = '/web/'; // fallback на главную
-            }
+            window.location.href = '/web/profile';
         } catch (error) {
             console.error('Ошибка сети при переходе в профиль:', error);
             alert('Вход выполнен успешно!');
-            window.location.href = '/web/';
+            window.location.href = '/web/profile';
         }
     }
 
@@ -392,15 +350,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fallback навигация для случаев ошибок сети
     function fallbackNavigation(tab) {
         const routes = {
-            'rent': '/web/',
-            'list': '/web/',
-            'favorites': '/web/'
+            'rent': '/web/rent',
+            'list': '/web/list',
+            'favorites': '/web/favorites'
         };
         
         if (routes[tab]) {
             window.location.href = routes[tab];
         } else {
-            window.location.href = '/web/'; // get_index_html
+            window.location.href = '/web/index'; // get_index_html
         }
     }
 

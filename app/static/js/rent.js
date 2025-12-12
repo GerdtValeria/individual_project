@@ -43,9 +43,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Обработка навигационных кнопок в шапке
     const navButtons = {
         'rent': null,    // текущая страница
-        'list': '/web/', // роутер get_list_html
+        'list': '/web/list', // роутер get_list_html
         'help': null,    // открытие модального окна
-        'favorites': '/web/', // роутер get_favorites_html
+        'favorites': '/web/favorites', // роутер get_favorites_html
         'signup': '/web/auth' // роутер get_registration_html
     };
 
@@ -62,15 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (navButtons[tab]) {
                 try {
-                    const response = await fetch(navButtons[tab], {
-                        method: 'GET'
-                    });
-                    if (response.ok) {
-                        window.location.href = navButtons[tab];
-                    } else {
-                        console.error(`Ошибка при переходе на ${tab}`);
-                        fallbackNavigation(tab);
-                    }
+                    window.location.href = navButtons[tab];
                 } catch (error) {
                     console.error('Ошибка сети:', error);
                     fallbackNavigation(tab);
@@ -133,40 +125,19 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Переход в профиль...');
         
         try {
-            // Используем роутер get_profile_html из файла web.py
-            const response = await fetch('/web/', {
-                method: 'GET',
-                headers: {
-                    'Accept': 'text/html'
-                }
-            });
-            
-            if (response.ok) {
-                // Проверяем тип ответа
-                const contentType = response.headers.get('content-type');
-                if (contentType && contentType.includes('text/html')) {
-                    // Получаем HTML и заменяем содержимое страницы
-                    const html = await response.text();
-                    document.open();
-                    document.write(html);
-                    document.close();
-                } else {
-                    // Если ответ не HTML, просто переходим по URL
-                    window.location.href = '/web/';
-                }
-            } else if (response.status === 404) {
-                console.warn('Роутер get_profile_html не найден, пробуем альтернативный путь');
-                // Альтернативный путь к странице профиля
-                window.location.href = '/profile.html';
-            } else {
-                console.error(`Ошибка HTTP ${response.status} при переходе в профиль`);
-                showError('Не удалось загрузить страницу профиля');
-                fallbackNavigation('profile');
-            }
+            window.location.href = '/web/profile';
         } catch (error) {
             console.error('Ошибка сети при переходе в профиль:', error);
             // Fallback на стандартный путь
-            window.location.href = '/profile.html';
+            window.location.href = '/web/profile';
+        }
+    }
+
+    async function navigateToRegistration() {
+        try {
+            window.location.href = '/web/auth';
+        } catch (error) {
+            window.location.href = '/web/auth';
         }
     }
 
@@ -595,14 +566,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function navigateToHome() {
         try {
-            const response = await fetch('/web/', {
-                method: 'GET'
-            });
-            if (response.ok) {
-                window.location.href = '/web/';
-            } else {
-                fallbackNavigation('home');
-            }
+            window.location.href = '/web/index';
         } catch (error) {
             fallbackNavigation('home');
         }
@@ -610,47 +574,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function navigateToFavorites() {
         try {
-            const response = await fetch('/web/', { // роутер get_favorites_html
-                method: 'GET'
-            });
-            if (response.ok) {
-                window.location.href = '/web/';
-            } else {
-                fallbackNavigation('favorites');
-            }
+            window.location.href = '/web/favorites';
         } catch (error) {
             fallbackNavigation('favorites');
         }
     }
 
-    async function navigateToRegistration() {
-        try {
-            const response = await fetch('/web/auth', { // роутер get_registration_html
-                method: 'GET'
-            });
-            if (response.ok) {
-                window.location.href = '/web/auth';
-            } else {
-                window.location.href = '/signup.html';
-            }
-        } catch (error) {
-            window.location.href = '/signup.html';
-        }
-    }
-
     async function navigateToRentDetail(rentId) {
         try {
-            // Используем роутер get_detail_html из web.py
-            const response = await fetch('/web/', {
-                method: 'GET'
-            });
-            if (response.ok) {
-                window.location.href = `/detail.html?id=${rentId}`;
-            } else {
-                window.location.href = `/detail.html?id=${rentId}`;
-            }
+            window.location.href = `/web/detail?id=${rentId}`;
         } catch (error) {
-            window.location.href = `/detail.html?id=${rentId}`;
+            window.location.href = `/web/detail?id=${rentId}`;
         }
     }
 
@@ -698,17 +632,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function fallbackNavigation(tab) {
         const routes = {
-            'list': '/web/',
-            'favorites': '/web/',
+            'list': '/web/list',
+            'favorites': '/web/favorites',
             'signup': '/web/auth',
-            'home': '/web/',
-            'profile': '/profile.html'
+            'home': '/web/index',
+            'profile': '/web/profile'
         };
         
         if (routes[tab]) {
             window.location.href = routes[tab];
         } else {
-            window.location.href = '/web/';
+            window.location.href = '/web/index';
         }
     }
 

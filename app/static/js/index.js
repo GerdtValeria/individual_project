@@ -99,7 +99,7 @@ function initNavigation() {
             if (href && href !== '#') {
                 e.preventDefault();
                 
-                if (href === '/index.html') {
+                if (href === '/index.html' || href === '/') {
                     navigateToIndexPage();
                 } else if (href === '/rent.html') {
                     navigateToRentPage();
@@ -428,24 +428,10 @@ function initListings() {
  */
 async function navigateToRentPage() {
     try {
-        const response = await fetch('/web/', {
-            method: 'GET',
-            headers: {
-                'Accept': 'text/html'
-            }
-        });
-        
-        if (response.ok) {
-            const html = await response.text();
-            document.open();
-            document.write(html);
-            document.close();
-        } else {
-            window.location.href = '/rent.html';
-        }
+        window.location.href = '/web/rent';
     } catch (error) {
         console.error('Ошибка при переходе на страницу аренды:', error);
-        window.location.href = '/rent.html';
+        window.location.href = '/web/rent';
     }
 }
 
@@ -454,24 +440,10 @@ async function navigateToRentPage() {
  */
 async function navigateToListPage() {
     try {
-        const response = await fetch('/web/', {
-            method: 'GET',
-            headers: {
-                'Accept': 'text/html'
-            }
-        });
-        
-        if (response.ok) {
-            const html = await response.text();
-            document.open();
-            document.write(html);
-            document.close();
-        } else {
-            window.location.href = '/list.html';
-        }
+        window.location.href = '/web/list';
     } catch (error) {
         console.error('Ошибка при переходе на страницу сдачи:', error);
-        window.location.href = '/list.html';
+        window.location.href = '/web/list';
     }
 }
 
@@ -480,24 +452,10 @@ async function navigateToListPage() {
  */
 async function navigateToFavoritesPage() {
     try {
-        const response = await fetch('/web/', {
-            method: 'GET',
-            headers: {
-                'Accept': 'text/html'
-            }
-        });
-        
-        if (response.ok) {
-            const html = await response.text();
-            document.open();
-            document.write(html);
-            document.close();
-        } else {
-            window.location.href = '/favorites.html';
-        }
+        window.location.href = '/web/favorites';
     } catch (error) {
         console.error('Ошибка при переходе на страницу избранного:', error);
-        window.location.href = '/favorites.html';
+        window.location.href = '/web/favorites';
     }
 }
 
@@ -506,24 +464,10 @@ async function navigateToFavoritesPage() {
  */
 async function navigateToProfilePage() {
     try {
-        const response = await fetch('/web/', {
-            method: 'GET',
-            headers: {
-                'Accept': 'text/html'
-            }
-        });
-        
-        if (response.ok) {
-            const html = await response.text();
-            document.open();
-            document.write(html);
-            document.close();
-        } else {
-            window.location.href = '/profile.html';
-        }
+        window.location.href = '/web/profile';
     } catch (error) {
         console.error('Ошибка при переходе на страницу профиля:', error);
-        window.location.href = '/profile.html';
+        window.location.href = '/web/profile';
     }
 }
 
@@ -532,22 +476,7 @@ async function navigateToProfilePage() {
  */
 async function navigateToRegistrationPage() {
     try {
-        const response = await fetch('/web/auth', {
-            method: 'GET',
-            headers: {
-                'Accept': 'text/html'
-            }
-        });
-        
-        if (response.ok) {
-            const html = await response.text();
-            document.open();
-            document.write(html);
-            document.close();
-        } else {
-            // Открываем модальное окно регистрации как fallback
-            openRegisterModal();
-        }
+        window.location.href = '/web/auth';
     } catch (error) {
         console.error('Ошибка при переходе на страницу регистрации:', error);
         openRegisterModal();
@@ -559,24 +488,10 @@ async function navigateToRegistrationPage() {
  */
 async function navigateToIndexPage() {
     try {
-        const response = await fetch('/web/', {
-            method: 'GET',
-            headers: {
-                'Accept': 'text/html'
-            }
-        });
-        
-        if (response.ok) {
-            const html = await response.text();
-            document.open();
-            document.write(html);
-            document.close();
-        } else {
-            window.location.href = '/index.html';
-        }
+        window.location.href = '/web/index';
     } catch (error) {
         console.error('Ошибка при переходе на главную страницу:', error);
-        window.location.href = '/index.html';
+        window.location.href = '/web/index';
     }
 }
 
@@ -1128,7 +1043,6 @@ async function submitHelpRequest() {
         };
         
         // Вызов роутера add_help (предполагаем, что есть файл help.py)
-        // В демо-версии используем имитацию запроса
         const response = await fetch('/help/', {
             method: 'POST',
             headers: {
@@ -1147,7 +1061,6 @@ async function submitHelpRequest() {
             messageInput.value = '';
         } else {
             // Если роутер не доступен, показываем демо-сообщение
-            console.log('Роутер /help/ не доступен, показываем демо-сообщение');
             showNotification('Демо: Ваш вопрос отправлен. Мы свяжемся с вами в ближайшее время.', 'success');
             helpModal.setAttribute('aria-hidden', 'true');
             

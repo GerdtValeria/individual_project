@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
         logoLink.addEventListener('click', function(e) {
             e.preventDefault();
             // Используем роутер get_index_html из web.py
-            window.location.href = '/web/';
+            window.location.href = '/web/index';
         });
     }
 
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
         rentTab.addEventListener('click', function(e) {
             e.preventDefault();
             // Используем роутер get_rent_html из web.py
-            window.location.href = '/web/';
+            window.location.href = '/web/rent';
         });
     }
 
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
         favoritesTab.addEventListener('click', function(e) {
             e.preventDefault();
             // Используем роутер get_favorites_html из web.py
-            window.location.href = '/web/';
+            window.location.href = '/web/favorites';
         });
     }
 
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const user = getUserFromStorage();
             if (user) {
                 // Если пользователь авторизован, переходим в профиль
-                window.location.href = '/web/';
+                window.location.href = '/web/profile';
             } else {
                 // Если не авторизован, открываем форму регистрации/входа
                 openSigninModal();
@@ -369,7 +369,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Обновляем обработчик
             signupTab.onclick = function(e) {
                 e.preventDefault();
-                window.location.href = '/web/';
+                window.location.href = '/web/profile';
             };
         } else {
             // Возвращаем "Зарегистрироваться"

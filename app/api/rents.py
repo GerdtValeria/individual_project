@@ -18,6 +18,7 @@ async def get_rents(
     guests: Optional[int] = Query(None, description="Количество гостей"),
     description: Optional[int] = Query(None, description="Описание"),
     id_category: Optional[int] = Query(None, description="Категория"),
+    id_user: Optional[int] = Query(None, description="ID пользователя"),
 ) -> List[SRentGet]:
     """
     Получить все объявления с возможностью фильтрации.
@@ -34,6 +35,7 @@ async def get_rents(
         price=price,
         guests=guests,
         id_category=id_category,
+        id_user=id_user,
         description=description,
         active=True 
     )

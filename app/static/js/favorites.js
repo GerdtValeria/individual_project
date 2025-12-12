@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (logoLink) {
         logoLink.addEventListener('click', function(e) {
             e.preventDefault();
-            window.location.href = '/web/';
+            window.location.href = '/web/index';
         });
     }
 
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (rentTab) {
         rentTab.addEventListener('click', function(e) {
             e.preventDefault();
-            window.location.href = '/web/';
+            window.location.href = '/web/rent';
         });
     }
 
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (listTab) {
         listTab.addEventListener('click', function(e) {
             e.preventDefault();
-            window.location.href = '/web/';
+            window.location.href = '/web/list';
         });
     }
 
@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (favoritesTab) {
         favoritesTab.addEventListener('click', function(e) {
             e.preventDefault();
+            // Текущая страница
         });
     }
 
@@ -64,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const user = getUserFromStorage();
             if (user) {
                 // Если пользователь авторизован, переходим в профиль
-                window.location.href = '/web/';
+                window.location.href = '/web/profile';
             } else {
                 // Если не авторизован, открываем форму регистрации/входа
                 openSigninModal();
@@ -91,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (backToListBtn) {
         backToListBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            window.location.href = '/web/';
+            window.location.href = '/web/rent';
         });
     }
 
@@ -175,14 +176,14 @@ document.addEventListener('DOMContentLoaded', function() {
             if (response.ok) {
                 const rents = await response.json();
                 console.log('Найдены объявления по запросу:', query, rents);
-                window.location.href = `/rent.html?q=${encodeURIComponent(query)}`;
+                window.location.href = `/web/rent?q=${encodeURIComponent(query)}`;
             } else {
                 console.error('Ошибка при поиске объявлений');
-                window.location.href = '/rent.html';
+                window.location.href = '/web/rent';
             }
         } catch (error) {
             console.error('Ошибка сети:', error);
-            window.location.href = '/rent.html';
+            window.location.href = '/web/rent';
         }
     }
 
@@ -263,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Обновляем обработчик
             signupTab.onclick = function(e) {
                 e.preventDefault();
-                window.location.href = '/web/';
+                window.location.href = '/web/profile';
             };
         } else {
             // Возвращаем "Зарегистрироваться"
@@ -472,7 +473,7 @@ document.addEventListener('DOMContentLoaded', function() {
             viewBtn.addEventListener('click', function() {
                 const id = this.dataset.id;
                 if (id) {
-                    window.location.href = `/detail.html?id=${encodeURIComponent(id)}`;
+                    window.location.href = `/web/detail?id=${encodeURIComponent(id)}`;
                 }
             });
         }

@@ -24,22 +24,22 @@ async function navigateToRoute(routeFunction, params = {}) {
         // Для демо просто перенаправляем на соответствующий HTML файл
         switch(routeFunction) {
             case 'get_index_html':
-                window.location.href = '/';
+                window.location.href = '/web/index';
                 break;
             case 'get_rent_html':
-                window.location.href = '/rent.html';
+                window.location.href = '/web/rent';
                 break;
             case 'get_list_html':
-                window.location.href = '/list.html';
+                window.location.href = '/web/list';
                 break;
             case 'get_favorites_html':
-                window.location.href = '/favorites.html';
+                window.location.href = '/web/favorites';
                 break;
             case 'get_profile_html':
-                window.location.href = '/profile.html';
+                window.location.href = '/web/profile';
                 break;
             case 'get_booking_html':
-                window.location.href = '/booking.html';
+                window.location.href = '/web/booking';
                 break;
             case 'get_rent':
                 // Получение информации об объявлении через API
@@ -55,7 +55,13 @@ async function navigateToRoute(routeFunction, params = {}) {
                         console.warn('Не удалось получить данные об объявлении:', error);
                     }
                 }
-                window.location.href = '/rent.html' + (params.id ? `?id=${params.id}` : '');
+                window.location.href = '/web/rent' + (params.id ? `?id=${params.id}` : '');
+                break;
+            case 'get_detail_html':
+                window.location.href = '/web/detail' + (params.id ? `?id=${params.id}` : '');
+                break;
+            case 'get_registration_html':
+                window.location.href = '/web/auth';
                 break;
             default:
                 console.warn('Неизвестный роутер:', routeFunction);
@@ -344,7 +350,7 @@ function setupEventListeners() {
             // 1. get_booking_html из web.py - для отображения HTML страницы
             // 2. get_rent из rents.py - для получения данных об объявлении
             if (rentId) {
-                await navigateToRoute('get_rent', { id: rentId });
+                await navigateToRoute('get_detail_html', { id: rentId });
             } else {
                 // Если нет ID, просто переходим на страницу аренды
                 await navigateToRoute('get_rent_html');
