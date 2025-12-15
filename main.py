@@ -26,12 +26,3 @@ app.include_router(router_users)
 app.include_router(router_favorites)
 app.include_router(router_help)
 app.include_router(router_web)
-
-
-@app.get("/")
-async def root():
-    return {"message": "Угол Комфорта API"}
-
-@app.get("/health")
-async def health_check():
-    return {"status": "healthy"}

@@ -51,6 +51,10 @@ class RentService(BaseService):
         rents = await self.db.rents.get_all()
         return rents
     
+    async def get_category_rents(self) -> list[SRentGet]:
+        rents = await self.db.rents.get_category_rents()
+        return rents
+    
     async def add_rent(self, rent_data: SRentAdd) -> SRentGet:
         rent = await self.db.rents.add_rent(rent_data)
         await self.db.commit()

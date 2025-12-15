@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Request
 from app.services.rents import RentService
 from app.api.dependencies import DBDep
+
 from fastapi.templating import Jinja2Templates
 
 
