@@ -21,6 +21,7 @@ class SRentAdd(BaseModel):
     address: str = Field(..., min_length=1, max_length=50) 
     price: int = Field(..., ge=0)
     description: str = Field(..., min_length=10, max_length=65535)
+    active: Optional[bool] = True
 
 class SRentGet(SRentAdd):
     id: int

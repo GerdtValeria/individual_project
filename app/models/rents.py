@@ -22,7 +22,7 @@ class RentsModel(Base):
     address = Column(String(50))
     price = Column(Integer)
     description = Column(String(65535))
-    active = Column(Boolean)
+    active = Column(Boolean, default=True)
 
     user: Mapped["UserModel"] = relationship(back_populates="rents")
     booking: Mapped["BookingsModel"] = relationship(back_populates="rent")
