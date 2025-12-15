@@ -651,7 +651,10 @@ function displayRents(rents) {
         const detailsBtn = card.querySelector('.details');
         
         // Изображение
-        if (rent.photos && rent.photos.length > 0) {
+        if (rent.image_url) {
+            thumb.src = rent.image_url;
+            thumb.alt = rent.title || 'Фото аренды';
+        } else if (rent.photos && rent.photos.length > 0) {
             thumb.src = rent.photos[0];
             thumb.alt = rent.title || 'Фото аренды';
         } else {
@@ -966,7 +969,10 @@ function showRentDetails(card) {
             
             // Изображение
             if (viewImg) {
-                if (rent.photos && rent.photos.length > 0) {
+                if (rent.image_url) {
+                    viewImg.src = rent.image_url;
+                    viewImg.alt = rent.title || 'Фото аренды';
+                } else if (rent.photos && rent.photos.length > 0) {
                     viewImg.src = rent.photos[0];
                     viewImg.alt = rent.title || 'Фото аренды';
                 } else {

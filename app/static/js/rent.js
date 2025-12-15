@@ -277,8 +277,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function renderRentCard(rent) {
         const isFavorite = currentFavorites.has(rent.id);
-        const mainPhoto = rent.image_url || rent.photos && rent.photos.length > 0 ? rent.photos[0] :
-                         rent.img || '/default-image.jpg';
+        const mainPhoto = rent.image_url || (rent.photos && rent.photos.length > 0 ? rent.photos[0] :
+                         rent.img || '/default-image.jpg');
         
         return `
             <article class="card" data-id="${rent.id}">
