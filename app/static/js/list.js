@@ -104,17 +104,18 @@ function closePostModal() {
 // ---------- Отправка объявления ----------
 async function handleAddRent(e) {
   e.preventDefault();
+
   const form = e.target;
   const formData = new FormData(form);
 
-  const title = formData.get('title')?.toString().trim() || '';
-  const city = formData.get('city')?.toString().trim() || '';
-  const description = formData.get('description')?.toString().trim() || '';
-  const category = formData.get('category')?.toString() || '';
-  const price = parseInt(formData.get('price'), 10) || 0;
+  const title = (formData.get('title') || '').toString().trim();
+  const city = (formData.get('city') || '').toString().trim();
+  const description = (formData.get('description') || '').toString().trim();
+  const categoryRaw = formData.get('category');
+  const price = Number(formData.get('price')) || 0;
   const photo = formData.get('photo');
 
-  if (!title || !city || !description || !category || price <= 0) {
+  if (!title || !city || !description || !categoryRaw || price <= 0) {
     alert('Заполните все поля формы и укажите корректную цену');
     return;
   }
@@ -126,20 +127,28 @@ async function handleAddRent(e) {
     return;
   }
 
+  const idCategory = Number(categoryRaw);
+  if (!Number.isInteger(idCategory)) {
+    alert('Ошибка: категория должна быть числом (id категории)');
+    return;
+  }
+
+  // ТЕЛО, которое ждёт SRentAdd на бэке
   const rentPayload = {
-  title,
-  address: city,               // или переименуй поле во что‑то более подходящее
-  description,
-  price,
-  id_category: Number(category),
-  id_user: user.id,
+    title,
+    address: city,          // address вместо city
+    description,
+    price,
+    id_category: idCategory,
+    id_user: user.id,
+    active: true            // если в схеме есть обязательное поле active
+    // id_image НЕ отправляем, если он не обязателен.
   };
 
   const submitBtn = form.querySelector('button[type="submit"]');
   const originalText = submitBtn.textContent;
   submitBtn.disabled = true;
   submitBtn.textContent = 'Публикация...';
-
 
   try {
     // 1. Создаём объявление
@@ -150,13 +159,12 @@ async function handleAddRent(e) {
     });
 
     if (!rentRes.ok) {
-        const err = await rentRes.json().catch(() => ({}));
-        console.error('Ошибка создания объявления:', err);
-        alert('Ошибка создания объявления: ' + JSON.stringify(err));
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalText;
-        return;
-}
+      const err = await rentRes.json().catch(() => ({}));
+      console.error('Ошибка создания объявления:', err);
+      alert('Ошибка создания объявления: ' + JSON.stringify(err));
+      return;
+    }
+
     const rent = await rentRes.json();
     const rentId = rent.id;
 
@@ -172,7 +180,8 @@ async function handleAddRent(e) {
       });
 
       if (!imgRes.ok) {
-        console.warn('Фото не загрузилось');
+        const imgErr = await imgRes.json().catch(() => ({}));
+        console.warn('Фото не загрузилось:', imgErr);
       }
     }
 
@@ -181,15 +190,16 @@ async function handleAddRent(e) {
     closePostModal();
     setTimeout(() => {
       window.location.href = '/web/rent';
-    }, 1000);
+    }, 800);
   } catch (err) {
     console.error(err);
-    alert('Ошибка: ' + err.message);
+    alert('Не удалось создать объявление: ' + err.message);
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = originalText;
   }
 }
+
 
 // ---------- Авторизация ----------
 function getUserFromStorage() {
