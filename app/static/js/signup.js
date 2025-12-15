@@ -1,367 +1,196 @@
-// signup-handler.js
-document.addEventListener('DOMContentLoaded', function() {
-    // ==================== Навигация по логотипу и кнопкам ====================
-    
-    // Обработка клика на логотип (переход на главную)
-    const logoLink = document.querySelector('.logo-link');
-    if (logoLink) {
-        logoLink.addEventListener('click', async function(e) {
-            e.preventDefault();
-            try {
-                window.location.href = '/web/index';
-            } catch (error) {
-                console.error('Ошибка сети:', error);
-                window.location.href = '/web/index'; // fallback
-            }
+// static/js/signup.js
+
+const API_BASE = 'http://localhost:8000';
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Элементы форм (переименуй под свои id, если нужно)
+  const registerForm = document.getElementById('register-form');
+  const loginForm = document.getElementById('login-form');
+
+  const regNameInput = document.getElementById('register-name');
+  const regEmailInput = document.getElementById('register-email');
+  const regPasswordInput = document.getElementById('register-password');
+  const regPasswordConfirmInput = document.getElementById('register-password-confirm');
+
+  const loginEmailInput = document.getElementById('login-email');
+  const loginPasswordInput = document.getElementById('login-password');
+
+  const errorBox = document.getElementById('auth-error');     // div для ошибок
+  const successBox = document.getElementById('auth-success'); // div для успеха
+
+  function showError(message) {
+    if (errorBox) {
+      errorBox.textContent = message;
+      errorBox.style.display = 'block';
+    } else {
+      alert(message);
+    }
+    if (successBox) successBox.style.display = 'none';
+  }
+
+  function showSuccess(message) {
+    if (successBox) {
+      successBox.textContent = message;
+      successBox.style.display = 'block';
+    }
+    if (errorBox) errorBox.style.display = 'none';
+  }
+
+  function validateEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  // ====== РЕГИСТРАЦИЯ ======
+  if (registerForm) {
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = regNameInput?.value.trim();
+      const email = regEmailInput?.value.trim();
+      const password = regPasswordInput?.value;
+      const passwordConfirm = regPasswordConfirmInput?.value;
+
+      if (!name || !email || !password || !passwordConfirm) {
+        showError('Заполните все поля');
+        return;
+      }
+
+      if (name.length < 2) {
+        showError('Имя должно быть не короче 2 символов');
+        return;
+      }
+
+      if (!validateEmail(email)) {
+        showError('Некорректный email');
+        return;
+      }
+
+      if (password.length < 6) {
+        showError('Пароль должен содержать не менее 6 символов');
+        return;
+      }
+
+      if (password !== passwordConfirm) {
+        showError('Пароли не совпадают');
+        return;
+      }
+
+      const submitBtn = registerForm.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.disabled = true;
+
+      try {
+        const resp = await fetch(`${API_BASE}/auth/register`, {
+          method: 'POST',
+          headers: {
+            'accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name,
+            email,
+            password,
+          }),
         });
-    }
 
-    // ==================== Кнопка "Отмена" в форме регистрации ====================
-    const cancelBtn = document.querySelector('a.btn[href="/index.html"]');
-    if (cancelBtn && cancelBtn.textContent.includes('Отмена')) {
-        cancelBtn.addEventListener('click', async function(e) {
-            e.preventDefault();
-            console.log('Кнопка "Отмена" нажата - переход на главную страницу');
-            try {
-                // Используем роутер get_index_html из web.py
-                window.location.href = '/web/index'; // переход на главную
-            } catch (error) {
-                console.error('Ошибка сети:', error);
-                window.location.href = '/web/index'; // fallback на главную
-            }
-        });
-    }
+        const data = await resp.json().catch(() => ({}));
 
-    // Обработка навигационных кнопок в шапке
-    const navButtons = {
-        'rent': '/web/rent',     // роутер get_rent_html
-        'list': '/web/list',     // роутер get_list_html
-        'help': null,        // открытие модального окна
-        'favorites': '/web/favorites', // роутер get_favorites_html
-        'signup': null       // текущая страница
-    };
-
-    // Обработка кликов по кнопкам в top-tabs
-    document.querySelectorAll('.top-tabs .tab[data-tab]').forEach(button => {
-        button.addEventListener('click', async function(e) {
-            e.preventDefault();
-            const tab = this.dataset.tab;
-            
-            if (tab === 'help') {
-                // Открытие блока "Помощь"
-                openHelpBlock();
-                return;
-            }
-            
-            if (navButtons[tab]) {
-                try {
-                    window.location.href = navButtons[tab];
-                } catch (error) {
-                    console.error('Ошибка сети:', error);
-                    fallbackNavigation(tab);
-                }
-            }
-        });
-    });
-
-    // Обработка кнопки "Избранное" (ссылка) - используем роутер get_favorites_html
-    const favoritesLink = document.querySelector('a[href="/favorites.html"]');
-    if (favoritesLink) {
-        favoritesLink.addEventListener('click', async function(e) {
-            e.preventDefault();
-            console.log('Кнопка "Избранное" нажата - переход на страницу избранного');
-            try {
-                // Используем роутер get_favorites_html из web.py
-                window.location.href = '/web/favorites'; // переход на страницу избранного
-            } catch (error) {
-                console.error('Ошибка сети:', error);
-                window.location.href = '/web/favorites';
-            }
-        });
-    }
-
-    // ==================== Форма регистрации ====================
-    const signupForm = document.getElementById('signupForm');
-    if (signupForm) {
-        signupForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const userData = {
-                name: formData.get('name'),
-                email: formData.get('email'),
-                password: formData.get('password')
-            };
-            
-            // Валидация
-            if (!userData.name || !userData.email || !userData.password) {
-                alert('Пожалуйста, заполните все поля');
-                return;
-            }
-            
-            if (!isValidEmail(userData.email)) {
-                alert('Пожалуйста, введите корректный email');
-                return;
-            }
-            
-            if (userData.password.length < 6) {
-                alert('Пароль должен содержать не менее 6 символов');
-                return;
-            }
-            
-            try {
-                // Отправка запроса на регистрацию
-                const response = await fetch('/auth/register', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(userData)
-                });
-                
-                if (response.ok) {
-                    const result = await response.json();
-                    console.log('Регистрация успешна:', result);
-                    
-                    // Автоматический вход после регистрации
-                    await loginAfterRegistration(userData.email, userData.password);
-                    
-                } else if (response.status === 409) {
-                    alert('Пользователь с таким email уже существует');
-                } else {
-                    const error = await response.json();
-                    alert('Ошибка регистрации: ' + (error.detail || 'Неизвестная ошибка'));
-                }
-            } catch (error) {
-                console.error('Ошибка при регистрации:', error);
-                alert('Ошибка сети. Попробуйте позже.');
-            }
-        });
-    }
-
-    // ==================== Модальное окно входа ====================
-    const openLoginBtn = document.getElementById('openLogin');
-    const loginModal = document.getElementById('loginModal');
-    const cancelLoginBtn = document.getElementById('cancelLogin');
-    const loginForm = document.getElementById('loginForm');
-
-    // Открытие модального окна входа
-    if (openLoginBtn) {
-        openLoginBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            if (loginModal) {
-                loginModal.setAttribute('aria-hidden', 'false');
-                // Фокус на поле email
-                setTimeout(() => {
-                    const emailInput = loginModal.querySelector('input[name="email"]');
-                    if (emailInput) emailInput.focus();
-                }, 100);
-            }
-        });
-    }
-
-    // Закрытие модального окна входа при нажатии на кнопку "Отмена"
-    if (cancelLoginBtn) {
-        cancelLoginBtn.addEventListener('click', function() {
-            console.log('Кнопка "Отмена" в блоке входа нажата - закрытие модального окна');
-            if (loginModal) loginModal.setAttribute('aria-hidden', 'true');
-        });
-    }
-
-    // Закрытие по клику на фон
-    if (loginModal) {
-        loginModal.addEventListener('click', function(e) {
-            if (e.target === loginModal) {
-                loginModal.setAttribute('aria-hidden', 'true');
-            }
-        });
-    }
-
-    // Форма входа
-    if (loginForm) {
-        loginForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const authData = {
-                email: formData.get('email'),
-                password: formData.get('password')
-            };
-            
-            // Валидация
-            if (!authData.email || !authData.password) {
-                alert('Пожалуйста, заполните все поля');
-                return;
-            }
-            
-            if (!isValidEmail(authData.email)) {
-                alert('Пожалуйста, введите корректный email');
-                return;
-            }
-            
-            try {
-                // Отправка запроса на авторизацию
-                const response = await fetch('/auth/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(authData)
-                });
-                
-                if (response.ok) {
-                    const result = await response.json();
-                    console.log('Вход успешен:', result);
-                    
-                    // Закрытие модального окна
-                    if (loginModal) loginModal.setAttribute('aria-hidden', 'true');
-                    
-                    // Переход в профиль
-                    await navigateToProfile();
-                    
-                } else if (response.status === 404) {
-                    alert('Пользователь не найден');
-                } else if (response.status === 401) {
-                    alert('Неверный пароль');
-                } else {
-                    const error = await response.json();
-                    alert('Ошибка входа: ' + (error.detail || 'Неизвестная ошибка'));
-                }
-            } catch (error) {
-                console.error('Ошибка при входе:', error);
-                alert('Ошибка сети. Попробуйте позже.');
-            }
-        });
-    }
-
-    // ==================== Вспомогательные функции ====================
-    
-    // Функция открытия блока "Помощь"
-    function openHelpBlock() {
-        // Создаем блок помощи, если его нет
-        let helpBlock = document.getElementById('helpBlock');
-        if (!helpBlock) {
-            helpBlock = document.createElement('div');
-            helpBlock.id = 'helpBlock';
-            helpBlock.className = 'overlay-block';
-            helpBlock.setAttribute('aria-hidden', 'true');
-            helpBlock.innerHTML = `
-                <div class="overlay-dialog" role="dialog" aria-label="Помощь">
-                    <button class="help-close" id="closeHelpBlock" aria-label="Закрыть">
-                        <i></i>
-                    </button>
-                    <header class="modal-header">
-                        <h3>Помощь</h3>
-                    </header>
-                    <div class="post-form" style="padding:20px; max-width:500px;">
-                        <p>Здесь будет информация о помощи пользователям.</p>
-                        <p>В демонстрационной версии этот блок показывает макет окна помощи.</p>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(helpBlock);
-            
-            // Обработчик закрытия
-            const closeBtn = document.getElementById('closeHelpBlock');
-            if (closeBtn) {
-                closeBtn.addEventListener('click', () => {
-                    helpBlock.setAttribute('aria-hidden', 'true');
-                });
-            }
-            
-            // Закрытие по клику на фон
-            helpBlock.addEventListener('click', (e) => {
-                if (e.target === helpBlock) {
-                    helpBlock.setAttribute('aria-hidden', 'true');
-                }
-            });
-        }
-        
-        // Показываем блок
-        helpBlock.setAttribute('aria-hidden', 'false');
-        
-        // Фокус на кнопке закрытия для доступности
-        setTimeout(() => {
-            const closeBtn = document.getElementById('closeHelpBlock');
-            if (closeBtn) closeBtn.focus();
-        }, 100);
-    }
-
-    // Функция для автоматического входа после регистрации
-    async function loginAfterRegistration(email, password) {
-        try {
-            const response = await fetch('/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email, password })
-            });
-            
-            if (response.ok) {
-                const result = await response.json();
-                console.log('Автоматический вход после регистрации:', result);
-                
-                // Переход в профиль
-                await navigateToProfile();
-            } else {
-                // Если автоматический вход не удался, переходим на страницу входа
-                alert('Регистрация прошла успешно! Теперь войдите в систему.');
-                if (loginModal) {
-                    loginModal.setAttribute('aria-hidden', 'false');
-                    const emailInput = loginModal.querySelector('input[name="email"]');
-                    if (emailInput) {
-                        emailInput.value = email;
-                        emailInput.focus();
-                    }
-                }
-            }
-        } catch (error) {
-            console.error('Ошибка автоматического входа:', error);
-            alert('Регистрация прошла успешно! Теперь войдите в систему.');
-            if (loginModal) {
-                loginModal.setAttribute('aria-hidden', 'false');
-                const emailInput = loginModal.querySelector('input[name="email"]');
-                if (emailInput) {
-                    emailInput.value = email;
-                    emailInput.focus();
-                }
-            }
-        }
-    }
-
-    // Функция перехода в профиль
-    async function navigateToProfile() {
-        try {
-            window.location.href = '/web/profile';
-        } catch (error) {
-            console.error('Ошибка сети при переходе в профиль:', error);
-            alert('Вход выполнен успешно!');
-            window.location.href = '/web/profile';
-        }
-    }
-
-    // Функция валидации email
-    function isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    }
-
-    // Fallback навигация для случаев ошибок сети
-    function fallbackNavigation(tab) {
-        const routes = {
-            'rent': '/web/rent',
-            'list': '/web/list',
-            'favorites': '/web/favorites'
-        };
-        
-        if (routes[tab]) {
-            window.location.href = routes[tab];
+        if (resp.status === 200) {
+          showSuccess('Регистрация успешна! Теперь вы можете войти.');
+          // Можно автоматически переключить на форму логина
+          const toLoginBtn = document.getElementById('toggle-login');
+          if (toLoginBtn) toLoginBtn.click();
+        } else if (resp.status === 409) {
+          // detail: "Пользователь с таким email уже существует"
+          showError(data.detail || 'Пользователь с таким email уже существует');
         } else {
-            window.location.href = '/web/index'; // get_index_html
+          showError(data.detail || `Ошибка регистрации (код ${resp.status})`);
         }
-    }
+      } catch (err) {
+        showError('Ошибка сети. Проверьте подключение к серверу.');
+        console.error(err);
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    });
+  }
 
-    // ==================== Инициализация ====================
-    console.log('Signup handler initialized');
+  // ====== АВТОРИЗАЦИЯ ======
+  if (loginForm) {
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = loginEmailInput?.value.trim();
+      const password = loginPasswordInput?.value;
+
+      if (!email || !password) {
+        showError('Заполните все поля');
+        return;
+      }
+
+      if (!validateEmail(email)) {
+        showError('Некорректный email');
+        return;
+      }
+
+      const submitBtn = loginForm.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.disabled = true;
+
+      try {
+        const resp = await fetch(`${API_BASE}/auth/login`, {
+          method: 'POST',
+          headers: {
+            'accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+          // если бекенд ставит access_token в cookie — нужно отправлять credentials
+          credentials: 'include',
+        });
+
+        const data = await resp.json().catch(() => ({}));
+
+        if (resp.status === 200 && data.access_token) {
+          // Успешная авторизация — редирект на /web
+          showSuccess('Успешный вход, перенаправление...');
+          window.location.href = '/web';
+        } else if (resp.status === 401 || resp.status === 400) {
+          showError(data.detail || 'Неверный email или пароль');
+        } else {
+          showError(data.detail || `Ошибка авторизации (код ${resp.status})`);
+        }
+      } catch (err) {
+        showError('Ошибка сети. Проверьте подключение к серверу.');
+        console.error(err);
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    });
+  }
+
+  // ====== ПЕРЕКЛЮЧЕНИЕ МЕЖДУ ФОРМАМИ (если сделано на одной странице) ======
+  const toggleToRegister = document.getElementById('toggle-register');
+  const toggleToLogin = document.getElementById('toggle-login');
+
+  if (toggleToRegister && loginForm && registerForm) {
+    toggleToRegister.addEventListener('click', (e) => {
+      e.preventDefault();
+      loginForm.style.display = 'none';
+      registerForm.style.display = 'block';
+      if (errorBox) errorBox.style.display = 'none';
+      if (successBox) successBox.style.display = 'none';
+    });
+  }
+
+  if (toggleToLogin && loginForm && registerForm) {
+    toggleToLogin.addEventListener('click', (e) => {
+      e.preventDefault();
+      registerForm.style.display = 'none';
+      loginForm.style.display = 'block';
+      if (errorBox) errorBox.style.display = 'none';
+      if (successBox) successBox.style.display = 'none';
+    });
+  }
 });

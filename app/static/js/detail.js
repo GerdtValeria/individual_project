@@ -8,13 +8,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // ==================== Инициализация ====================
     initPage();
 
+function getRentIdFromUrl() {
+    const pathParts = window.location.pathname.split('/');
+    return pathParts[3];
+}
     async function initPage() {
         // Проверка авторизации
         await checkAuth();
         
         // Получение ID объявления из URL
-        const urlParams = new URLSearchParams(window.location.search);
-        currentRentId = urlParams.get('id');
+        
+        currentRentId = getRentIdFromUrl();
         
         if (!currentRentId) {
             showError('ID объявления не указан');
@@ -168,7 +172,8 @@ document.addEventListener('DOMContentLoaded', function() {
     async function loadRentData(rentId) {
         try {
             // Используем роутер get_rent из rents.py
-            const response = await fetch(`/rents/${rentId}`, {
+            console.log(`/rents/${rentId}`);
+                const response = await fetch(`/rents/${rentId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -194,43 +199,54 @@ document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('detailCard');
         if (!container) return;
 
-        const photos = rentData.photos || [rentData.img || '/default-image.jpg'];
-        const firstPhoto = photos[0];
+        // Используем структуру данных как в задании: {"id_category":1,"id_image":0,"id_user":1,"title":"Cтудия в Москве","address":"Москва","price":2000,"description":"Очень крутая студия","active":true,"id":3,"created_at":"2025-12-15T08:05:54","updated_at":"2025-12-15T08:05:54"}
+        const title = rentData.title || rentData.name || 'Без названия';
+        const address = rentData.address || rentData.city || '';
+        const price = rentData.price || 0;
+        const description = rentData.description || '';
+        const id = rentData.id || '';
+        const id_category = rentData.id_category;
+        const id_image = rentData.id_image;
+        const id_user = rentData.id_user;
+        const active = rentData.active;
+        const created_at = rentData.created_at;
+        const updated_at = rentData.updated_at;
+        
+        // Формируем путь к изображению (предполагаем, что у нас есть эндпоинт для получения изображений)
+        const imageSrc = id_image ? `/images/${id_image}` : '/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg';
         
         container.innerHTML = `
             <div style="display:flex;gap:18px;flex-direction:row;align-items:flex-start;">
                 <div style="flex:0 0 48%;display:flex;flex-direction:column;gap:8px">
                     <div style="border-radius:12px;overflow:hidden;box-shadow:var(--card-shadow)">
-                        <img src="${firstPhoto}" alt="${rentData.title || 'Объявление'}" 
+                        <img src="${imageSrc}" alt="${title}"
                              style="width:100%;height:280px;object-fit:cover;border-radius:8px;">
                     </div>
                     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
-                        ${photos.map((photo, index) => `
-                            <button class="thumbNav" data-src="${photo}" 
-                                    aria-label="Показать фото ${index + 1}"
-                                    style="min-width:60px;height:60px;border-radius:8px;
-                                           border:1px solid rgba(0,0,0,0.06);
-                                           background-image:url('${photo}');
-                                           background-size:cover;background-position:center">
-                            </button>
-                        `).join('')}
+                        <button class="thumbNav" data-src="${imageSrc}"
+                                aria-label="Показать фото 1"
+                                style="min-width:60px;height:60px;border-radius:8px;
+                                       border:1px solid rgba(0,0,0,0.06);
+                                       background-image:url('${imageSrc}');
+                                       background-size:cover;background-position:center">
+                        </button>
                     </div>
                 </div>
                 <div style="flex:1;display:flex;flex-direction:column;gap:8px">
-                    <h2 style="margin:0">${rentData.title || 'Без названия'}</h2>
+                    <h2 style="margin:0">${title}</h2>
                     <div style="color:var(--muted);font-weight:700">
-                        ${rentData.city || ''} · ${rentData.beds === 0 ? 'Студия' : rentData.beds + ' спальни'}
+                        ${address} · Студия
                     </div>
                     <div style="display:flex;gap:12px;align-items:center;margin-top:6px">
                         <div style="font-size:20px;font-weight:800;color:#044036">
-                            ₽${rentData.price || 0}/ночь
+                            ₽${price}/ночь
                         </div>
                     </div>
                     <div id="detailDescription" style="margin-top:8px;color:var(--muted)">
-                        ${rentData.description || ''}
+                        ${description}
                     </div>
                     <div style="margin-top:10px">
-                        ${rentData.category ? `<span class="tag-pill">${rentData.category}</span>` : ''}
+                        ${id_category ? `<span class="tag-pill">Категория: ${id_category}</span>` : ''}
                     </div>
 
                     <!-- Действия -->
@@ -239,11 +255,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         <button id="favoriteBtn" class="fav" aria-pressed="false" title="Добавить в избранное">
                             <i></i>
                         </button>
-                        <a href="/web/rent" class="btn" style="background:transparent">К списку</a>
+                        <a href="/web/rents" class="btn" style="background:transparent">К списку</a>
                     </div>
 
                     <div id="availability" style="margin-top:12px;background:#fbfffe;padding:10px;border-radius:8px;border:1px solid #eef7f4">
-                        Доступность: с ${rentData.avail_from || '—'} до ${rentData.avail_to || '—'}
+                        Статус: ${active ? 'Активно' : 'Неактивно'}
                     </div>
                 </div>
             </div>
