@@ -8,37 +8,36 @@ document.addEventListener('DOMContentLoaded', function() {
         logoLink.addEventListener('click', async function(e) {
             e.preventDefault();
             try {
-                window.location.href = '/web/index';
+                window.location.href = '/web/';
             } catch (error) {
                 console.error('Ошибка сети:', error);
-                window.location.href = '/web/index'; // fallback
+                window.location.href = '/web/';
             }
         });
     }
 
     // ==================== Кнопка "Отмена" в форме регистрации ====================
-    const cancelBtn = document.querySelector('a.btn[href="/index.html"]');
+    const cancelBtn = document.querySelector('a.btn[href="/"]');
     if (cancelBtn && cancelBtn.textContent.includes('Отмена')) {
         cancelBtn.addEventListener('click', async function(e) {
             e.preventDefault();
             console.log('Кнопка "Отмена" нажата - переход на главную страницу');
             try {
-                // Используем роутер get_index_html из web.py
-                window.location.href = '/web/index'; // переход на главную
+                window.location.href = '/web/';
             } catch (error) {
                 console.error('Ошибка сети:', error);
-                window.location.href = '/web/index'; // fallback на главную
+                window.location.href = '/web/';
             }
         });
     }
 
     // Обработка навигационных кнопок в шапке
     const navButtons = {
-        'rent': '/web/rent',     // роутер get_rent_html
-        'list': '/web/list',     // роутер get_list_html
-        'help': null,        // открытие модального окна
-        'favorites': '/web/favorites', // роутер get_favorites_html
-        'signup': null       // текущая страница
+        'rent': '/web/rent',
+        'list': '/web/list',
+        'help': null,
+        'favorites': '/web/favorites',
+        'signup': null
     };
 
     // Обработка кликов по кнопкам в top-tabs
@@ -48,7 +47,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const tab = this.dataset.tab;
             
             if (tab === 'help') {
-                // Открытие блока "Помощь"
                 openHelpBlock();
                 return;
             }
@@ -64,15 +62,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Обработка кнопки "Избранное" (ссылка) - используем роутер get_favorites_html
-    const favoritesLink = document.querySelector('a[href="/favorites.html"]');
+    // Обработка кнопки "Избранное" (ссылка)
+    const favoritesLink = document.querySelector('a[href="/web/favorites"]');
     if (favoritesLink) {
         favoritesLink.addEventListener('click', async function(e) {
             e.preventDefault();
             console.log('Кнопка "Избранное" нажата - переход на страницу избранного');
             try {
-                // Используем роутер get_favorites_html из web.py
-                window.location.href = '/web/favorites'; // переход на страницу избранного
+                window.location.href = '/web/favorites';
             } catch (error) {
                 console.error('Ошибка сети:', error);
                 window.location.href = '/web/favorites';
@@ -110,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             try {
-                // Отправка запроса на регистрацию
+                // Используем роутер /auth/register из auth.py
                 const response = await fetch('/auth/register', {
                     method: 'POST',
                     headers: {
@@ -151,7 +148,6 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             if (loginModal) {
                 loginModal.setAttribute('aria-hidden', 'false');
-                // Фокус на поле email
                 setTimeout(() => {
                     const emailInput = loginModal.querySelector('input[name="email"]');
                     if (emailInput) emailInput.focus();
@@ -200,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             try {
-                // Отправка запроса на авторизацию
+                // Используем роутер /auth/login из auth.py
                 const response = await fetch('/auth/login', {
                     method: 'POST',
                     headers: {
@@ -216,8 +212,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Закрытие модального окна
                     if (loginModal) loginModal.setAttribute('aria-hidden', 'true');
                     
-                    // Переход в профиль
-                    await navigateToProfile();
+                    // Перенаправление на страницу профиля через роутер get_profile_html
+                    window.location.href = '/web/profile';
                     
                 } else if (response.status === 404) {
                     alert('Пользователь не найден');
@@ -238,7 +234,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Функция открытия блока "Помощь"
     function openHelpBlock() {
-        // Создаем блок помощи, если его нет
         let helpBlock = document.getElementById('helpBlock');
         if (!helpBlock) {
             helpBlock = document.createElement('div');
@@ -261,7 +256,6 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             document.body.appendChild(helpBlock);
             
-            // Обработчик закрытия
             const closeBtn = document.getElementById('closeHelpBlock');
             if (closeBtn) {
                 closeBtn.addEventListener('click', () => {
@@ -269,7 +263,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
             
-            // Закрытие по клику на фон
             helpBlock.addEventListener('click', (e) => {
                 if (e.target === helpBlock) {
                     helpBlock.setAttribute('aria-hidden', 'true');
@@ -277,10 +270,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
         
-        // Показываем блок
         helpBlock.setAttribute('aria-hidden', 'false');
         
-        // Фокус на кнопке закрытия для доступности
         setTimeout(() => {
             const closeBtn = document.getElementById('closeHelpBlock');
             if (closeBtn) closeBtn.focus();
@@ -290,6 +281,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Функция для автоматического входа после регистрации
     async function loginAfterRegistration(email, password) {
         try {
+            // Используем роутер /auth/login из auth.py
             const response = await fetch('/auth/login', {
                 method: 'POST',
                 headers: {
@@ -302,10 +294,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 const result = await response.json();
                 console.log('Автоматический вход после регистрации:', result);
                 
-                // Переход в профиль
-                await navigateToProfile();
+                // Перенаправление на страницу профиля через роутер get_profile_html
+                window.location.href = '/web/profile';
             } else {
-                // Если автоматический вход не удался, переходим на страницу входа
                 alert('Регистрация прошла успешно! Теперь войдите в систему.');
                 if (loginModal) {
                     loginModal.setAttribute('aria-hidden', 'false');
@@ -330,17 +321,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Функция перехода в профиль
-    async function navigateToProfile() {
-        try {
-            window.location.href = '/web/profile';
-        } catch (error) {
-            console.error('Ошибка сети при переходе в профиль:', error);
-            alert('Вход выполнен успешно!');
-            window.location.href = '/web/profile';
-        }
-    }
-
     // Функция валидации email
     function isValidEmail(email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -358,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (routes[tab]) {
             window.location.href = routes[tab];
         } else {
-            window.location.href = '/web/index'; // get_index_html
+            window.location.href = '/web/';
         }
     }
 
