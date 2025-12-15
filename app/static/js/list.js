@@ -1,70 +1,17 @@
 // list.js — логика страницы "Сдать в аренду"
+
+// Запускаем код ПОСЛЕ общего common.js
 document.addEventListener('DOMContentLoaded', () => {
-  if (typeof feather !== 'undefined') feather.replace();
+  // Здесь НЕТ повторного feather, навигации и поиска:
+  // это уже сделано в common.js
 
-  setupNavigation();
-  setupPostModal();
-  setupSearch();
-  checkUserAuth();
-  initHelpBlock();
+  setupPostModal();   // только модалка объявления
 });
-
-// ---------- Навигация ----------
-function setupNavigation() {
-  const logoLink = document.querySelector('.logo-link');
-  if (logoLink) {
-    logoLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.location.href = '/web/index';
-    });
-  }
-
-  document.querySelectorAll('.top-tabs .tab').forEach(tab => {
-    tab.addEventListener('click', (e) => {
-      const type = tab.dataset.tab;
-      if (!type) return;
-
-      e.preventDefault();
-      const user = getUserFromStorage();
-
-      switch (type) {
-        case 'rent':
-          window.location.href = '/web/rent';
-          break;
-        case 'list':
-          window.location.href = '/web/list';
-          break;
-        case 'favorites':
-          window.location.href = '/web/favorites';
-          break;
-        case 'signup':
-          if (user) window.location.href = '/web/profile';
-          else window.location.href = '/web/auth';
-          break;
-        case 'help':
-          openHelpModal();
-          break;
-      }
-    });
-  });
-}
-
-// ---------- Поиск ----------
-function setupSearch() {
-  const form = document.getElementById('searchForm');
-  if (!form) return;
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const q = document.getElementById('q')?.value.trim();
-    if (q) window.location.href = `/web/rent?q=${encodeURIComponent(q)}`;
-  });
-}
 
 // ---------- Отправка объявления ----------
 async function handleAddRent(e) {
   e.preventDefault();
-  console.log('SUBMIT WORKS'); 
+  console.log('SUBMIT WORKS');
 
   const form = e.target;
   const formData = new FormData(form);
@@ -81,7 +28,7 @@ async function handleAddRent(e) {
     return;
   }
 
-  const user = getUserFromStorage();
+  const user = CommonAPI.getUserFromStorage();
   if (!user) {
     alert('Для добавления объявления нужно войти');
     window.location.href = '/web/auth';
@@ -94,16 +41,14 @@ async function handleAddRent(e) {
     return;
   }
 
-  // ТЕЛО, которое ждёт SRentAdd на бэке
   const rentPayload = {
     title,
-    address: city,          // address вместо city
+    address: city,
     description,
     price,
     id_category: idCategory,
     id_user: user.id,
-    active: true            // если в схеме есть обязательное поле active
-    // id_image НЕ отправляем, если он не обязателен.
+    active: true,
   };
 
   const submitBtn = form.querySelector('button[type="submit"]');
@@ -122,7 +67,7 @@ async function handleAddRent(e) {
     if (!rentRes.ok) {
       const err = await rentRes.json().catch(() => ({}));
       console.error('Ошибка создания объявления:', err);
-      alert('Ошибка создания объявления: ' + JSON.stringify(err));
+      alert('Ошибка создания объявления');
       return;
     }
 
@@ -154,13 +99,12 @@ async function handleAddRent(e) {
     }, 800);
   } catch (err) {
     console.error(err);
-    alert('Не удалось создать объявление: ' + err.message);
+    alert('Не удалось создать объявление');
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = originalText;
   }
 }
-
 
 // ---------- Модалка объявления ----------
 function setupPostModal() {
@@ -173,7 +117,7 @@ function setupPostModal() {
 
   if (openBtn) {
     openBtn.addEventListener('click', () => {
-      const user = getUserFromStorage();
+      const user = CommonAPI.getUserFromStorage();
       if (!user) {
         alert('Для добавления объявления нужно войти в аккаунт');
         window.location.href = '/web/auth';
@@ -200,42 +144,4 @@ function closePostModal() {
   if (!modal) return;
   modal.style.display = 'none';
   modal.setAttribute('aria-hidden', 'true');
-}
-
-
-// ---------- Авторизация ----------
-function getUserFromStorage() {
-  try {
-    const raw = localStorage.getItem('ugol_user');
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    return null;
-  }
-}
-
-function checkUserAuth() {
-  const user = getUserFromStorage();
-  const signupTab = document.querySelector('.tab[data-tab="signup"]');
-  if (!signupTab) return;
-
-  if (user) {
-    signupTab.textContent = 'Профиль';
-  } else {
-    signupTab.textContent = 'Зарегистрироваться';
-  }
-}
-
-// ---------- Помощь (простейший заглушечный вариант) ----------
-function openHelpModal() {
-  alert('Напишите нам, если нужна помощь по размещению объявления.');
-}
-
-function initHelpBlock() {
-  const footerHelpLink = document.getElementById('footerHelpLink');
-  if (footerHelpLink) {
-    footerHelpLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      openHelpModal();
-    });
-  }
 }
