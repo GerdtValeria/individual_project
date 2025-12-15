@@ -127,18 +127,25 @@ async function handleAddRent(e) {
   }
 
   const rentPayload = {
-    title,
-    city,
-    description,
-    category,
-    price,
-    user_id: user.id,
+  title,
+  address: city,               // или переименуй поле во что‑то более подходящее
+  description,
+  price,
+  id_category: Number(category),
+  id_user: user.id,
   };
 
   const submitBtn = form.querySelector('button[type="submit"]');
   const originalText = submitBtn.textContent;
   submitBtn.disabled = true;
   submitBtn.textContent = 'Публикация...';
+  
+  if (!rentRes.ok) {
+  const err = await rentRes.json().catch(() => ({}));
+  console.error('Ошибка создания объявления:', err);
+  alert('Ошибка: ' + JSON.stringify(err));
+  return;
+}
 
   try {
     // 1. Создаём объявление
