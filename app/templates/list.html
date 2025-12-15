@@ -1,134 +1,132 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <title>Сдать в аренду</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="/static/styles.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Угол Комфорта — Сдать в аренду</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
-
-  <!-- ШАПКА -->
   <header class="site-header">
-    <a href="/web/index" class="logo-link">
-      <span class="logo-text">Угол</span>
-    </a>
-
-    <nav class="top-tabs">
+    <div class="brand">
+      <div class="logo" aria-hidden="false">
+        <a href="/" class="logo-link" aria-label="Перейти на главную">
+          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
+        </a>
+      </div>
+    </div>
+    <form id="searchForm" class="search-form" aria-label="Поиск аренды" style="margin-left:12px;">
+      <input id="q" name="q" type="search" placeholder="Поиск по городу, району или опции" />
+    </form>
+    <nav class="top-tabs" aria-label="Главная навигация">
       <button class="tab" data-tab="rent">Арендовать</button>
-      <button class="tab active" data-tab="list">Сдать в аренду</button>
-      <button class="tab" data-tab="favorites">Избранное</button>
+      <button class="tab active" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
+      <a class="tab" href="/web/favorites">Избранное</a>
       <button class="tab" data-tab="help">Помощь</button>
-      <button class="tab" data-tab="signup">Зарегистрироваться</button>
+      <div class="auth">
+        <button class="tab primary" data-tab="signup">Зарегистрироваться</button>
+      </div>
     </nav>
   </header>
 
-  <main class="page page-list">
-    <section class="page-title">
-      <h1>Сдать жильё в аренду</h1>
-      <p>Заполните форму и разместите объявление. После модерации оно появится в общем списке.</p>
-    </section>
+  <main class="container" style="padding:18px;">
+    <section style="max-width:900px;margin:0 auto">
+      <h1 style="margin:0 0 12px;font-size:28px;color:#042018">Сдать в аренду — размещение объявления</h1>
+      <p style="color:var(--muted);margin:0 0 18px">Здесь вы можете разместить объявление о сдаче жилья: заполните форму и публикуйте предложение.</p>
 
-    <!-- КНОПКА ОТКРЫТИЯ МОДАЛКИ -->
-    <section class="new-rent-section">
-      <button id="openPostBtn" class="btn primary">Новое объявление</button>
-    </section>
-
-    <!-- МОДАЛЬНОЕ ОКНО ДОБАВЛЕНИЯ ОБЪЯВЛЕНИЯ -->
-    <div id="postModalLocal" class="modal-overlay" style="display:none;" aria-hidden="true">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2>Новое объявление</h2>
-          <button id="closePostLocal" class="modal-close" aria-label="Закрыть">×</button>
-        </div>
-
-        <div class="modal-body">
-          <form id="postFormLocal" enctype="multipart/form-data">
-            <div class="form-group">
-              <label for="title">Заголовок</label>
-              <input id="title" name="title" type="text" required placeholder="Например: Уютная студия в центре" />
-            </div>
-
-            <div class="form-group">
-              <label for="city">Город</label>
-              <input id="city" name="city" type="text" required placeholder="Москва" />
-            </div>
-
-            <div class="form-group">
-              <label for="description">Описание</label>
-              <textarea id="description" name="description" rows="4" required
-                        placeholder="Кратко опишите жильё, условия, инфраструктуру рядом"></textarea>
-            </div>
-
-            <div class="form-group">
-              <label for="category">Категория</label>
-              <select id="category" name="category" required>
-                <option value="" disabled selected>Выберите категорию</option>
-                <option value="Квартира">Квартира</option>
-                <option value="Комната">Комната</option>
-                <option value="Дом">Дом</option>
-                <option value="Апартаменты">Апартаменты</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="price">Цена в сутки, ₽</label>
-              <input id="price" name="price" type="number" min="1" required placeholder="2500" />
-            </div>
-
-            <div class="form-group">
-              <label for="photo">Фотография (необязательно)</label>
-              <input id="photo" name="photo" type="file" accept="image/*" />
-            </div>
-
-            <div class="form-actions">
-              <button id="cancelPostLocal" type="button" class="btn secondary">Отмена</button>
-              <button type="submit" class="btn primary">Опубликовать</button>
-            </div>
-          </form>
-        </div>
+      <!-- БЛОК ИЗМЕНЁН: убрали упоминание демо -->
+      <div class="card" style="padding:18px;max-width:900px;margin:12px auto">
+        <strong>Разместить объявление</strong>
+        <p style="color:var(--muted)">
+          Форма публикации доступна в разделе «Новое объявление». Подготовьте данные, загрузите фото и подтвердите публикацию.
+        </p>
+        <ol style="color:var(--muted)">
+          <li>Подготовьте заголовок, описание и фотографии.</li>
+          <li>Укажите цену и при необходимости даты доступности.</li>
+          <li>Нажмите «Добавить объявление» и заполните форму.</li>
+        </ol>
+        <p style="margin-top:12px">
+          <button id="openPostBtn" class="btn">Добавить объявление</button>
+        </p>
       </div>
-    </div>
+      <!-- КОНЕЦ ИЗМЕНЁННОГО БЛОКА -->
 
-    <!-- БЛОК ПОМОЩИ (для openHelpModal / initHelpBlock) -->
-    <div id="helpBlock" class="modal-overlay" style="display:none;" aria-hidden="true">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2>Помощь</h2>
-          <button id="closeHelpBlock" class="modal-close" aria-label="Закрыть">×</button>
-        </div>
-        <div class="modal-body">
-          <p>Если у вас возникли вопросы по размещению объявления, опишите проблему, и мы поможем.</p>
-          <form id="helpContactFormList">
-            <div class="form-group">
-              <label for="helpEmail">Email для ответа</label>
-              <input id="helpEmail" name="email" type="email" required />
-            </div>
-            <div class="form-group">
-              <label for="helpMessage">Сообщение</label>
-              <textarea id="helpMessage" name="message" rows="4" required></textarea>
-            </div>
-            <div class="form-actions">
-              <button type="submit" class="btn primary">Отправить</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-
+    </section>
   </main>
 
-  <footer class="site-footer">
-    <nav>
-      <a href="/web/index" data-nav="home">Главная</a>
-      <a href="/web/rent" data-nav="rent">Арендовать</a>
-      <a href="/web/list" data-nav="list">Сдать</a>
-      <a href="/web/favorites" data-nav="favorites">Избранное</a>
-      <a href="#" id="footerHelpLink" data-nav="help">Помощь</a>
-    </nav>
+  <footer class="site-footer" aria-label="Сайт футер" style="margin-top:28px">
+    <div class="footer-inner">
+      <div class="footer-col footer-contact">
+        <div class="footer-brand">
+          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
+          <div class="company-name">Угол Комфорта</div>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-heading">Меню</h4>
+        <ul>
+          <li><a href="/web/rent" data-nav="rent">Арендовать</a></li>
+          <li><a href="/web/list" data-nav="list">Сдать в аренду</a></li>
+          <li><a href="/" data-nav="help">Помощь</a></li>
+          <li><a href="/" data-nav="home">Главная</a></li>
+          <li><a href="/web/auth" data-nav="signup">Зарегистрироваться</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">О проекте</h4>
+        <ul>
+          <li><a href="/#team">Команда</a></li>
+          <li><a href="/#history">Наша история</a></li>
+          <li><a href="/#mission">Миссия проекта</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Мы в соцсетях</h4>
+        <ul class="social-list">
+          <li><a href="#">ВК</a></li>
+          <li><a href="#">Телеграмм</a></li>
+          <li><a href="#">Одноклассники</a></li>
+        </ul>
+      </div>
+    </div>
   </footer>
 
-  <script src="/static/js/common.js"></script>
+  <!-- Post modal (local to list.html) -->
+  <div id="postModalLocal" class="modal" aria-hidden="true">
+    <div class="modal-dialog" role="dialog" aria-label="Форма добавления объявления">
+      <header class="modal-header">
+        <h3>Новое объявление</h3>
+      </header>
+      <form id="postFormLocal" class="post-form" enctype="multipart/form-data">
+        <label>Заголовок<input name="title" required></label>
+        <label>Город<input name="city" required></label>
+        <label>Описание<textarea name="description" rows="3" required></textarea></label>
+        <label>Категория
+          <select name="category" required>
+            <option value="">— Выберите —</option>
+            <option value="Студия">Студия</option>
+            <option value="1‑комнатная">1‑комнатная</option>
+            <option value="2‑комнатная">2‑комнатная</option>
+            <option value="Дом">Дом</option>
+            <option value="Апартаменты с видом">Апартаменты с видом</option>
+          </select>
+        </label>
+        <label>Цена (₽/ночь)<input name="price" type="number" min="0" required></label>
+        <label>Загрузите фото</label>
+        <input name="photo" type="file" accept="image/*">
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+          <button type="button" id="cancelPostLocal" class="btn">Отмена</button>
+          <button type="submit" class="btn primary">Опубликовать</button>
+        </div>
+        <!-- СТРОКУ ПРО ДЕМО УДАЛИЛИ -->
+      </form>
+    </div>
+  </div>
+
   <script src="/static/js/list.js"></script>
+  <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
 </body>
 </html>
