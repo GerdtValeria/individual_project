@@ -4,227 +4,150 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Угол Комфорта — Регистрация</title>
-  
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&family=Lobster&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
-  
-  <!-- Основные стили -->
-  <link rel="stylesheet" href="/static/css/styles.css">
-  
-  <style>
-    /* Дополнительные стили для страницы регистрации */
-    .auth-container {
-      max-width: 480px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
-    
-    .auth-title {
-      font-size: 32px;
-      color: #042018;
-      margin: 0 0 8px;
-      font-weight: 700;
-    }
-    
-    .auth-subtitle {
-      color: #666;
-      font-size: 16px;
-      line-height: 1.5;
-    }
-    
-    .auth-card {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-      padding: 32px;
-      margin-bottom: 24px;
-    }
-    
-    .auth-form {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-    
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    
-    .form-label {
-      color: #042018;
-      font-weight: 500;
-      font-size: 14px;
-    }
-    
-    .form-input {
-      padding: 14px 16px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 16px;
-      transition: border-color 0.2s;
-    }
-    
-    .form-input:focus {
-      outline: none;
-      border-color: #044036;
-    }
-    
-    .auth-footer {
-      text-align: center;
-      color: #666;
-      font-size: 14px;
-    }
-    
-    .auth-link {
-      color: #044036;
-      text-decoration: none;
-      font-weight: 600;
-    }
-    
-    @media (max-width: 480px) {
-      .auth-title {
-        font-size: 24px;
-      }
-      
-      .auth-card {
-        padding: 20px;
-      }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
   <header class="site-header">
     <div class="brand">
       <div class="logo" aria-hidden="false">
-        <a href="/web/index" class="logo-link" aria-label="Перейти на главную">
-          <img src="/static/img/logo.png" alt="Угол Комфорта логотип">
+        <a href="/" class="logo-link" aria-label="Перейти на главную">
+          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
         </a>
       </div>
     </div>
-    <form id="searchForm" class="search-form" aria-label="Поиск аренды">
-      <input id="q" name="q" type="search" placeholder="Поиск по городу, району или опции" />
-      <button type="submit" class="btn">
-        <i data-feather="search"></i> Найти
-      </button>
-    </form>
     <nav class="top-tabs" aria-label="Главная навигация">
-      <a href="/web/rent" class="tab">Арендовать</a>
-      <a href="/web/list" class="tab"><span class="two-line">Сдать<br>в аренду</span></a>
-      <a href="/web/favorites" class="tab">Избранное</a>
+      <button class="tab" data-tab="rent">Арендовать</button>
+      <button class="tab" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
+      <a class="tab" href="/web/favorites">Избранное</a>
       <button class="tab" data-tab="help">Помощь</button>
       <div class="auth">
-        <a href="/web/auth" class="tab active primary">Зарегистрироваться</a>
+        <button class="tab active primary" data-tab="signup">Зарегистрироваться</button>
       </div>
     </nav>
   </header>
 
-  <main class="container">
-    <div class="auth-container">
-      <div class="auth-header">
-        <h1 class="auth-title">Создать аккаунт</h1>
-        <p class="auth-subtitle">Зарегистрируйтесь, чтобы сохранять избранное, бронировать жильё и получать персональные предложения</p>
-      </div>
+  <main class="container" style="padding:18px;">
+    <section style="max-width:700px;margin:0 auto">
+      <h1 style="margin:0 0 12px;font-size:28px;color:#042018">Регистрация</h1>
+      <p style="color:var(--muted);margin:0 0 18px">Создайте аккаунт, чтобы сохранять объявления и управлять бронированиями.</p>
 
-      <div class="auth-card">
-        <form id="signupForm" class="auth-form">
-          <div class="form-group">
-            <label class="form-label">Имя и фамилия</label>
-            <input type="text" class="form-input" name="name" placeholder="Александр Иванов" required>
+      <div class="card" style="padding:18px;max-width:540px;margin:12px auto">
+        <form id="signupForm" style="display:grid;grid-template-columns:1fr;gap:10px;max-width:540px">
+          <label style="display:grid;grid-template-columns:140px 1fr;align-items:center;gap:8px">Имя
+            <input name="name" required>
+          </label>
+          <label style="display:grid;grid-template-columns:140px 1fr;align-items:center;gap:8px">Электронная почта
+            <input name="email" type="email" required>
+          </label>
+          <label style="display:grid;grid-template-columns:140px 1fr;align-items:center;gap:8px">Пароль
+            <input name="password" type="password" required>
+          </label>
+          <div style="grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+            <a class="btn" href="/" data-nav="home">Отмена</a>
+            <button class="btn primary" type="submit">Зарегистрироваться</button>
           </div>
-
-          <div class="form-group">
-            <label class="form-label">Электронная почта</label>
-            <input type="email" class="form-input" name="email" placeholder="example@email.com" required>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Пароль</label>
-            <input type="password" class="form-input" name="password" placeholder="Не менее 6 символов" required>
-            <div style="color: #999; font-size: 12px; margin-top: 4px;">Пароль должен содержать не менее 6 символов</div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Подтвердите пароль</label>
-            <input type="password" class="form-input" name="confirm_password" placeholder="Повторите пароль" required>
-          </div>
-
-          <div class="form-group" style="margin-top: 8px;">
-            <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 14px; color: #666;">
-              <input type="checkbox" style="margin-top: 3px;" required>
-              <span>Я соглашаюсь с <a href="#" style="color: #044036; text-decoration: none;">Условиями использования</a> и <a href="#" style="color: #044036; text-decoration: none;">Политикой конфиденциальности</a></span>
-            </label>
-          </div>
-
-          <button type="submit" class="btn primary" style="padding: 16px; font-size: 16px; font-weight: 600; margin-top: 8px;">
-            Создать аккаунт
-          </button>
         </form>
+        <p style="color:var(--muted);font-size:13px;margin-top:12px">В демонстрационной версии форма не отправляет данные — она показывает макет страницы регистрации.</p>
+        <p style="margin-top:12px;font-size:14px;color:var(--muted);">
+          Уже есть аккаунт? <a href="#" id="openLogin" style="color:#044036;text-decoration:none;font-weight:700">Войти</a>
+        </p>
       </div>
-
-      <div class="auth-footer">
-        Уже есть аккаунт? <a href="/web/auth?mode=login" class="auth-link">Войти</a>
-      </div>
-    </div>
+    </section>
   </main>
 
-  <!-- Футер -->
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <div class="footer-col">
-        <div class="footer-brand">
-          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта" class="footer-logo">
-          <div>
-            <div class="company-name">Угол Комфорта</div>
-            <div style="color:#666;font-size:14px;">Платформа для аренды жилья</div>
-          </div>
+  <!-- Login modal -->
+  <div id="loginModal" class="modal" aria-hidden="true">
+    <div class="modal-dialog" role="dialog" aria-label="Вход в аккаунт">
+      <header class="modal-header">
+        <h3>Вход</h3>
+      </header>
+      <form id="loginForm" class="post-form" style="max-width:420px;">
+        <label>Электронная почта<input name="email" type="email" required></label>
+        <label>Пароль<input name="password" type="password" required></label>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+          <button type="button" id="cancelLogin" class="btn">Отмена</button>
+          <button type="submit" class="btn primary">Войти</button>
         </div>
-        <p class="footer-address">Москва, ул. Примерная, д. 1</p>
+        <p style="color:var(--muted);font-size:13px;margin-top:12px">Демонстрация: форма не отправляет данные.</p>
+      </form>
+    </div>
+  </div>
+
+  <footer class="site-footer" aria-label="Сайт футер" style="margin-top:28px">
+    <div class="footer-inner">
+      <div class="footer-col footer-contact">
+        <div class="footer-brand">
+          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
+          <div class="company-name">Угол Комфорта</div>
+        </div>
       </div>
+
       <div class="footer-col">
         <h4 class="footer-heading">Меню</h4>
         <ul>
-          <li><a href="/web/index" data-nav="home">Главная</a></li>
           <li><a href="/web/rent" data-nav="rent">Арендовать</a></li>
           <li><a href="/web/list" data-nav="list">Сдать в аренду</a></li>
-          <li><a href="/web/favorites" data-nav="favorites">Избранное</a></li>
-          <li><a href="/web/profile" data-nav="profile">Профиль</a></li>
-          <li><a href="#" data-nav="help" id="footerHelpLink">Помощь</a></li>
+          <li><a href="/" data-nav="help">Помощь</a></li>
+          <li><a href="/" data-nav="home">Главная</a></li>
           <li><a href="/web/auth" data-nav="signup">Зарегистрироваться</a></li>
+          <li><a href="/web/favorites" data-nav="favorites">Избранное</a></li>
         </ul>
       </div>
+
       <div class="footer-col">
-        <h4 class="footer-heading">Контакты</h4>
+        <h4 class="footer-heading">О проекте</h4>
         <ul>
-          <li>support@ugolkomforta.ru</li>
-          <li>+7 (999) 123-45-67</li>
+          <li><a href="/#team">Команда</a></li>
+          <li><a href="/#history">Наша история</a></li>
+          <li><a href="/#mission">Миссия проекта</a></li>
         </ul>
       </div>
+
       <div class="footer-col">
         <h4 class="footer-heading">Мы в соцсетях</h4>
-        <ul>
-          <li><a href="#" style="color:#0077ff;">ВКонтакте</a></li>
-          <li><a href="#" style="color:#0088cc;">Телеграм</a></li>
-          <li><a href="#" style="color:#ff8800;">Одноклассники</a></li>
+        <ul class="social-list">
+          <li><a href="#">ВК</a></li>
+          <li><a href="#">Телеграмм</a></li>
+          <li><a href="#">Одноклассники</a></li>
         </ul>
       </div>
-    </div>
-    <div class="footer-bar">
-      © 2024 Угол Комфорта. Все права защищены.
     </div>
   </footer>
 
-  <!-- Подключение библиотек и скриптов -->
-  <!-- Feather Icons -->
-  <script src="https://unpkg.com/feather-icons"></script>
-  
-  <!-- API клиент -->
-  <script type="module" src="/static/js/api.js"></script>
-  <script type="module" src="/static/js/common.js"></script>
-  <script type="module" src="/static/js/signup.js"></script>
+  <script>
+    // top-tab navigation: redirect where appropriate
+    document.querySelectorAll('.top-tabs .tab').forEach(tb=>{
+      tb.addEventListener('click', ()=>{
+        if (tb.dataset.tab === 'signup') return; // already on signup page
+        if (tb.dataset.tab === 'rent') { window.location.href = '/web/rent'; return; }
+        if (tb.dataset.tab === 'favorites') { window.location.href = '/web/favorites'; return; }
+        if (tb.dataset.tab === 'list') { window.location.href = '/web/list'; return; }
+        const map = { travel: '/travel.html', help: '/index.html' };
+        const target = map[tb.dataset.tab] || '/index.html';
+        window.location.href = target;
+      });
+    });
 
+    // prevent actual form submission in demo
+    document.getElementById('signupForm').addEventListener('submit', e=>{
+      e.preventDefault();
+      alert('Регистрация (демо): данные не отправляются.');
+    });
 
-
+    // Login modal handlers
+    (function(){
+      const openLogin = document.getElementById('openLogin');
+      const loginModal = document.getElementById('loginModal');
+      const closeLogin = document.getElementById('closeLogin');
+      const cancelLogin = document.getElementById('cancelLogin');
+      const loginForm = document.getElementById('loginForm');
+      if (openLogin) openLogin.addEventListener('click', (e)=>{ e.preventDefault(); if (loginModal) loginModal.setAttribute('aria-hidden','false'); setTimeout(()=>loginModal.querySelector('input[name="email"]')?.focus(),120); });
+      if (closeLogin) closeLogin.addEventListener('click', ()=> loginModal.setAttribute('aria-hidden','true'));
+      if (cancelLogin) cancelLogin.addEventListener('click', ()=> loginModal.setAttribute('aria-hidden','true'));
+      if (loginModal) loginModal.addEventListener('click', (e)=> { if (e.target === loginModal) loginModal.setAttribute('aria-hidden','true'); });
+      if (loginForm) loginForm.addEventListener('submit', (e)=>{ e.preventDefault(); alert('Вход (демо): данные не отправляются.'); loginModal.setAttribute('aria-hidden','true'); });
+    })();
+  </script>
 </body>
 </html>

@@ -4,514 +4,302 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Угол Комфорта — Сдать в аренду</title>
-  
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&family=Lobster&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
-  
-  <!-- Основные стили -->
-  <link rel="stylesheet" href="/static/css/styles.css">
-  
-  <style>
-    /* Дополнительные стили для страницы сдачи в аренду */
-    .list-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    
-    .page-title {
-      font-size: 32px;
-      color: #042018;
-      margin: 0 0 12px;
-      font-weight: 700;
-    }
-    
-    .page-description {
-      color: #666;
-      font-size: 16px;
-      line-height: 1.6;
-      max-width: 800px;
-    }
-    
-    .steps-section {
-      background: linear-gradient(135deg, #f0f9f7 0%, #e6f4f1 100%);
-      border-radius: 12px;
-      padding: 32px;
-      margin-bottom: 40px;
-    }
-    
-    .steps-title {
-      font-size: 24px;
-      color: #042018;
-      margin: 0 0 24px;
-      font-weight: 600;
-    }
-    
-    .steps-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 24px;
-    }
-    
-    .step-card {
-      background: white;
-      border-radius: 10px;
-      padding: 24px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
-    
-    .step-number {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      background: #044036;
-      color: white;
-      border-radius: 50%;
-      font-weight: 700;
-      margin-bottom: 16px;
-    }
-    
-    .step-title {
-      font-size: 18px;
-      color: #042018;
-      margin: 0 0 12px;
-      font-weight: 600;
-    }
-    
-    .step-description {
-      color: #666;
-      line-height: 1.5;
-      margin: 0;
-    }
-    
-    .cta-section {
-      text-align: center;
-      padding: 48px 32px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-      margin-bottom: 40px;
-    }
-    
-    .cta-title {
-      font-size: 28px;
-      color: #042018;
-      margin: 0 0 16px;
-      font-weight: 700;
-    }
-    
-    .cta-description {
-      color: #666;
-      font-size: 16px;
-      line-height: 1.6;
-      max-width: 600px;
-      margin: 0 auto 32px;
-    }
-    
-    .cta-button {
-      display: inline-block;
-      background: #044036;
-      color: white;
-      padding: 16px 32px;
-      border-radius: 8px;
-      font-size: 18px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: background 0.2s;
-      border: none;
-      cursor: pointer;
-    }
-    
-    .cta-button:hover {
-      background: #033028;
-    }
-    
-    .benefits-section {
-      margin-bottom: 40px;
-    }
-    
-    .benefits-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
-    }
-    
-    .benefit-card {
-      background: white;
-      border-radius: 10px;
-      padding: 24px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
-    
-    .benefit-icon {
-      width: 48px;
-      height: 48px;
-      background: #f0f9f7;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 16px;
-      color: #044036;
-    }
-    
-    .benefit-title {
-      font-size: 18px;
-      color: #042018;
-      margin: 0 0 12px;
-      font-weight: 600;
-    }
-    
-    .benefit-description {
-      color: #666;
-      line-height: 1.5;
-      margin: 0;
-    }
-    
-    .faq-section {
-      margin-bottom: 40px;
-    }
-    
-    .faq-title {
-      font-size: 24px;
-      color: #042018;
-      margin: 0 0 24px;
-      font-weight: 600;
-    }
-    
-    .faq-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    
-    .faq-item {
-      background: white;
-      border-radius: 10px;
-      padding: 24px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-    
-    .faq-question {
-      font-size: 16px;
-      color: #042018;
-      margin: 0 0 12px;
-      font-weight: 600;
-    }
-    
-    .faq-answer {
-      color: #666;
-      line-height: 1.6;
-      margin: 0;
-    }
-    
-    @media (max-width: 880px) {
-      .steps-grid,
-      .benefits-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .steps-section,
-      .cta-section {
-        padding: 24px;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .page-title {
-        font-size: 24px;
-      }
-      
-      .cta-title {
-        font-size: 22px;
-      }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
   <header class="site-header">
     <div class="brand">
       <div class="logo" aria-hidden="false">
-        <a href="/web/index" class="logo-link" aria-label="Перейти на главную">
-          <img src="/static/img/logo.png" alt="Угол Комфорта логотип">
+        <a href="/" class="logo-link" aria-label="Перейти на главную">
+          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
         </a>
       </div>
     </div>
-    <form id="searchForm" class="search-form" aria-label="Поиск аренды">
+    <form id="searchForm" class="search-form" aria-label="Поиск аренды" style="margin-left:12px;">
       <input id="q" name="q" type="search" placeholder="Поиск по городу, району или опции" />
-      <button type="submit" class="btn">
-        <i data-feather="search"></i> Найти
-      </button>
     </form>
     <nav class="top-tabs" aria-label="Главная навигация">
-      <a href="/web/rent" class="tab">Арендовать</a>
-      <a href="/web/list" class="tab active"><span class="two-line">Сдать<br>в аренду</span></a>
-      <a href="/web/favorites" class="tab">Избранное</a>
+      <button class="tab" data-tab="rent">Арендовать</button>
+      <button class="tab active" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
+      <a class="tab" href="/web/favorites">Избранное</a>
       <button class="tab" data-tab="help">Помощь</button>
       <div class="auth">
-        <a href="/web/auth" class="tab primary">Зарегистрироваться</a>
+        <button class="tab primary" data-tab="signup">Зарегистрироваться</button>
       </div>
     </nav>
   </header>
 
-  <main class="container">
-    <div class="list-container">
-      <!-- Заголовок страницы -->
-      <div class="page-header">
-        <h1 class="page-title">Сдайте своё жильё в аренду</h1>
-        <p class="page-description">
-          Разместите объявление на нашей платформе и начните зарабатывать на недвижимости. 
-          Мы поможем найти ответственных арендаторов и обеспечим безопасность сделки.
-        </p>
+  <main class="container" style="padding:18px;">
+    <section style="max-width:900px;margin:0 auto">
+      <h1 style="margin:0 0 12px;font-size:28px;color:#042018">Сдать в аренду — размещение объявления</h1>
+      <p style="color:var(--muted);margin:0 0 18px">Здесь вы можете разместить объявление о сдаче жилья: заполните форму и публикуйте предложение.</p>
+
+      <div class="card" style="padding:18px;max-width:900px;margin:12px auto">
+        <strong>Разместить объявление</strong>
+        <p style="color:var(--muted)">Форма публикации доступна в разделе "Новое объявление". В демонстрационной версии — инструкции и пример.</p>
+        <ol style="color:var(--muted)">
+          <li>Подготовьте заголовок, описание и фотографии.</li>
+          <li>Укажите цены и даты доступности.</li>
+          <li>Опубликуйте — объявление появится в списке предложений.</li>
+        </ol>
+        <p style="margin-top:12px"><button id="openPostBtn" class="btn">Добавить объявление</button></p>
       </div>
 
-      <!-- Шаги размещения -->
-      <section class="steps-section">
-        <h2 class="steps-title">Как разместить объявление</h2>
-        <div class="steps-grid">
-          <div class="step-card">
-            <div class="step-number">1</div>
-            <h3 class="step-title">Зарегистрируйтесь</h3>
-            <p class="step-description">
-              Создайте аккаунт на нашей платформе, чтобы получить доступ к личному кабинету и управлению объявлениями.
-            </p>
-          </div>
-          
-          <div class="step-card">
-            <div class="step-number">2</div>
-            <h3 class="step-title">Заполните информацию</h3>
-            <p class="step-description">
-              Добавьте фотографии, описание, цену и условия аренды. Чем подробнее информация, тем больше откликов.
-            </p>
-          </div>
-          
-          <div class="step-card">
-            <div class="step-number">3</div>
-            <h3 class="step-title">Опубликуйте</h3>
-            <p class="step-description">
-              После модерации ваше объявление станет доступно для тысяч пользователей, ищущих жильё для аренды.
-            </p>
-          </div>
-          
-          <div class="step-card">
-            <div class="step-number">4</div>
-            <h3 class="step-title">Получайте заявки</h3>
-            <p class="step-description">
-              Общайтесь с потенциальными арендаторами, выбирайте подходящие варианты и заключайте договоры аренды.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Призыв к действию -->
-      <section class="cta-section">
-        <h2 class="cta-title">Начните зарабатывать уже сегодня</h2>
-        <p class="cta-description">
-          Присоединяйтесь к тысячам довольных арендодателей, которые используют нашу платформу для сдачи жилья. 
-          Мы обеспечим вам безопасность, удобство и постоянный поток клиентов.
-        </p>
-        <button id="startListingBtn" class="cta-button">Разместить объявление</button>
-      </section>
-
-      <!-- Преимущества -->
-      <section class="benefits-section">
-        <h2 class="steps-title" style="margin-bottom: 32px;">Почему выбирают нас</h2>
-        <div class="benefits-grid">
-          <div class="benefit-card">
-            <div class="benefit-icon">
-              <i data-feather="shield"></i>
-            </div>
-            <h3 class="benefit-title">Безопасность</h3>
-            <p class="benefit-description">
-              Проверка арендаторов, страховка имущества и юридическая поддержка на всех этапах сделки.
-            </p>
-          </div>
-          
-          <div class="benefit-card">
-            <div class="benefit-icon">
-              <i data-feather="dollar-sign"></i>
-            </div>
-            <h3 class="benefit-title">Выгодные условия</h3>
-            <p class="benefit-description">
-              Комиссия ниже рыночной, гибкие тарифы и специальные условия для постоянных партнёров.
-            </p>
-          </div>
-          
-          <div class="benefit-card">
-            <div class="benefit-icon">
-              <i data-feather="users"></i>
-            </div>
-            <h3 class="benefit-title">Большая аудитория</h3>
-            <p class="benefit-description">
-              Доступ к тысячам потенциальных арендаторов по всей России и странам СНГ.
-            </p>
-          </div>
-          
-          <div class="benefit-card">
-            <div class="benefit-icon">
-              <i data-feather="headphones"></i>
-            </div>
-            <h3 class="benefit-title">Поддержка 24/7</h3>
-            <p class="benefit-description">
-              Круглосуточная поддержка по всем вопросам: техническим, юридическим и организационным.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Часто задаваемые вопросы -->
-      <section class="faq-section">
-        <h2 class="faq-title">Часто задаваемые вопросы</h2>
-        <div class="faq-grid">
-          <div class="faq-item">
-            <h4 class="faq-question">Сколько стоит размещение объявления?</h4>
-            <p class="faq-answer">
-              Размещение объявления бесплатно. Мы берём комиссию только после успешной аренды. 
-              Размер комиссии зависит от стоимости аренды и выбранного тарифа.
-            </p>
-          </div>
-          
-          <div class="faq-item">
-            <h4 class="faq-question">Как происходит проверка арендаторов?</h4>
-            <p class="faq-answer">
-              Мы проверяем документы, историю аренды и отзывы предыдущих арендодателей. 
-              Также доступна дополнительная проверка через партнёрские сервисы.
-            </p>
-          </div>
-          
-          <div class="faq-item">
-            <h4 class="faq-question">Можно ли сдать жильё посуточно?</h4>
-            <p class="faq-answer">
-              Да, вы можете выбрать любые условия аренды: посуточно, понедельно или помесячно. 
-              Настройки доступны в личном кабинете.
-            </p>
-          </div>
-          
-          <div class="faq-item">
-            <h4 class="faq-question">Как я получу деньги?</h4>
-            <p class="faq-answer">
-              Оплата поступает на ваш счёт после заселения арендатора. Доступны различные способы вывода: 
-              банковская карта, электронные кошельки или банковский перевод.
-            </p>
-          </div>
-        </div>
-      </section>
-    </div>
+    </section>
   </main>
 
-  <!-- Футер -->
-  <footer class="site-footer">
+  <footer class="site-footer" aria-label="Сайт футер" style="margin-top:28px">
     <div class="footer-inner">
-      <div class="footer-col">
+      <div class="footer-col footer-contact">
         <div class="footer-brand">
-          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта" class="footer-logo">
-          <div>
-            <div class="company-name">Угол Комфорта</div>
-            <div style="color:#666;font-size:14px;">Платформа для аренды жилья</div>
-          </div>
+          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
+          <div class="company-name">Угол Комфорта</div>
         </div>
-        <p class="footer-address">Москва, ул. Примерная, д. 1</p>
       </div>
       <div class="footer-col">
         <h4 class="footer-heading">Меню</h4>
         <ul>
-          <li><a href="/web/index" data-nav="home">Главная</a></li>
           <li><a href="/web/rent" data-nav="rent">Арендовать</a></li>
           <li><a href="/web/list" data-nav="list">Сдать в аренду</a></li>
-          <li><a href="/web/favorites" data-nav="favorites">Избранное</a></li>
-          <li><a href="/web/profile" data-nav="profile">Профиль</a></li>
-          <li><a href="#" data-nav="help" id="footerHelpLink">Помощь</a></li>
+          <li><a href="/" data-nav="help">Помощь</a></li>
+          <li><a href="/" data-nav="home">Главная</a></li>
           <li><a href="/web/auth" data-nav="signup">Зарегистрироваться</a></li>
         </ul>
       </div>
+
       <div class="footer-col">
-        <h4 class="footer-heading">Контакты</h4>
+        <h4 class="footer-heading">О проекте</h4>
         <ul>
-          <li>support@ugolkomforta.ru</li>
-          <li>+7 (999) 123-45-67</li>
+          <li><a href="/#team">Команда</a></li>
+          <li><a href="/#history">Наша история</a></li>
+          <li><a href="/#mission">Миссия проекта</a></li>
         </ul>
       </div>
+
       <div class="footer-col">
         <h4 class="footer-heading">Мы в соцсетях</h4>
-        <ul>
-          <li><a href="#" style="color:#0077ff;">ВКонтакте</a></li>
-          <li><a href="#" style="color:#0088cc;">Телеграм</a></li>
-          <li><a href="#" style="color:#ff8800;">Одноклассники</a></li>
+        <ul class="social-list">
+          <li><a href="#">ВК</a></li>
+          <li><a href="#">Телеграмм</a></li>
+          <li><a href="#">Одноклассники</a></li>
         </ul>
       </div>
-    </div>
-    <div class="footer-bar">
-      © 2024 Угол Комфорта. Все права защищены.
     </div>
   </footer>
 
-  <!-- Модальное окно размещения объявления -->
-  <div id="listingModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
-    <div style="background: white; width: 90%; max-width: 600px; border-radius: 12px; padding: 32px; max-height: 90vh; overflow-y: auto;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-        <h2 style="margin: 0; color: #042018; font-size: 24px;">Новое объявление</h2>
-        <button id="closeModalBtn" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #999;">×</button>
-      </div>
-      
-      <form id="listingForm" style="display: flex; flex-direction: column; gap: 20px;">
-        <div>
-          <label style="display: block; margin-bottom: 8px; color: #042018; font-weight: 500;">Название</label>
-          <input type="text" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;" placeholder="Например: Уютная квартира в центре" required>
+  <!-- Post modal (local to list.html) -->
+  <div id="postModalLocal" class="modal" aria-hidden="true">
+    <div class="modal-dialog" role="dialog" aria-label="Форма добавления объявления">
+      <header class="modal-header">
+        <h3>Новое объявление</h3>
+      </header>
+      <form id="postFormLocal" class="post-form">
+        <label>Заголовок<input name="title" required></label>
+        <label>Город<input name="city" required></label>
+        <label>Описание<textarea name="description" rows="3" required></textarea></label>
+        <label>Категория
+          <select name="category" required>
+            <option value="">— Выберите —</option>
+            <option value="Студия">Студия</option>
+            <option value="1‑комнатная">1‑комнатная</option>
+            <option value="2‑комнатная">2‑комнатная</option>
+            <option value="Дом">Дом</option>
+            <option value="Апартаменты с видом">Апартаменты с видом</option>
+          </select>
+        </label>
+        <label>Цена (₽/ночь)<input name="price" type="number" min="0" required></label>
+        <label>Загрузите фото</label>
+        <input name="photo" type="file" accept="image/*">
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+          <button type="button" id="cancelPostLocal" class="btn">Отмена</button>
+          <button type="submit" class="btn primary">Опубликовать</button>
         </div>
-        
-        <div>
-          <label style="display: block; margin-bottom: 8px; color: #042018; font-weight: 500;">Адрес</label>
-          <input type="text" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;" placeholder="Город, улица, дом" required>
-        </div>
-        
-        <div>
-          <label style="display: block; margin-bottom: 8px; color: #042018; font-weight: 500;">Описание</label>
-          <textarea style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; min-height: 100px;" placeholder="Опишите ваше жильё..." required></textarea>
-        </div>
-        
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-          <div>
-            <label style="display: block; margin-bottom: 8px; color: #042018; font-weight: 500;">Цена за ночь</label>
-            <input type="number" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;" placeholder="₽" required>
-          </div>
-          
-          <div>
-            <label style="display: block; margin-bottom: 8px; color: #042018; font-weight: 500;">Количество гостей</label>
-            <select style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;">
-              <option>1 гость</option>
-              <option>2 гостя</option>
-              <option>3 гостя</option>
-              <option>4 гостя</option>
-              <option>5+ гостей</option>
-            </select>
-          </div>
-        </div>
-        
-        <div>
-          <label style="display: block; margin-bottom: 8px; color: #042018; font-weight: 500;">Фотографии</label>
-          <div style="border: 2px dashed #ddd; border-radius: 6px; padding: 32px; text-align: center; color: #999;">
-            Перетащите фотографии сюда или нажмите для загрузки
-          </div>
-        </div>
-        
-        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
-          <button type="button" id="cancelBtn" style="padding: 12px 24px; background: #f5f5f5; border: none; border-radius: 6px; cursor: pointer; color: #666;">Отмена</button>
-          <button type="submit" style="padding: 12px 24px; background: #044036; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500;">Опубликовать</button>
-        </div>
+        <p style="color:var(--muted);font-size:13px;margin-top:12px">Демонстрация: форма не отправляет данные на сервер — объявление добавляется на странице.</p>
       </form>
     </div>
   </div>
 
-  <!-- Подключение библиотек и скриптов -->
-  <!-- Feather Icons -->
-  <script src="https://unpkg.com/feather-icons"></script>
-  
-  <!-- API клиент -->
-  <script type="module" src="/static/js/api.js"></script>
-  <script type="module" src="/static/js/common.js"></script>
-  <script type="module" src="/static/js/list.js"></script>
+  <script>
+    // Local post modal handlers for list.html
+    (function(){
+      const openBtn = document.getElementById('openPostBtn');
+      const modal = document.getElementById('postModalLocal');
+      const closeBtn = document.getElementById('closePostLocal');
+      const cancelBtn = document.getElementById('cancelPostLocal');
+      const form = document.getElementById('postFormLocal');
+      const listingsWrap = document.querySelector('main .card')?.parentElement || document.querySelector('main .card').parentElement;
 
+      function close() { modal.setAttribute('aria-hidden','true'); }
+      function open() { modal.setAttribute('aria-hidden','false'); setTimeout(()=>modal.querySelector('input[name="title"]')?.focus(),100); }
+      if (openBtn) openBtn.addEventListener('click', open);
+      if (closeBtn) closeBtn.addEventListener('click', close);
+      if (cancelBtn) cancelBtn.addEventListener('click', close);
+      if (modal) modal.addEventListener('click', (e)=> { if (e.target === modal) close(); });
+      if (form) {
+        form.addEventListener('submit', (e)=>{
+          e.preventDefault();
+          const data = new FormData(form);
+          const title = data.get('title') || 'Без названия';
+          const city = data.get('city') || '';
+          const category = data.get('category') || '';
+          const desc = data.get('description') || '';
+          const price = data.get('price') || '0';
+          const photoFile = data.get('photo');
+          const photo = (photoFile && photoFile.size) ? URL.createObjectURL(photoFile) : '/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg';
+          // create a simple card and insert into the page (include category)
+          const card = document.createElement('article');
+          card.className = 'card';
+          card.innerHTML = `
+            <img class="thumb" src="${photo}" alt="">
+            <div class="card-body">
+              <div class="card-top"><h3 class="title">${escapeHtml(title)}</h3></div>
+              <p class="meta">${escapeHtml(city)}${category ? ' · ' + escapeHtml(category) : ''}</p>
+              <p class="desc-snippet">${escapeHtml(desc)}</p>
+              <p class="price">₽${escapeHtml(price)}/ночь</p>
+            </div>
+          `;
+          // insert after the static instruction card
+          const container = document.querySelector('#rentListings') || document.querySelector('main section');
+          if (container) container.insertAdjacentElement('afterbegin', card);
+          close();
+          form.reset();
+        });
+      }
+      function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    })();
+  </script>
+
+  <script>
+    // top-tab navigation: redirect where appropriate
+    document.querySelectorAll('.top-tabs .tab').forEach(tb=>{
+      tb.addEventListener('click', ()=>{
+        if (tb.dataset.tab === 'list') return; // already on list page
+        if (tb.dataset.tab === 'rent') { window.location.href = '/web/rent'; return; }
+        if (tb.dataset.tab === 'favorites') { window.location.href = '/web/favorites'; return; }
+        // open in-page register block instead of redirecting to signup page
+        if (tb.dataset.tab === 'signup') {
+          // visually activate tab
+          document.querySelectorAll('.top-tabs .tab').forEach(t=>t.classList.remove('active'));
+          tb.classList.add('active');
+          const block = document.getElementById('registerBlock');
+          if (block) { block.setAttribute('aria-hidden','false'); setTimeout(()=>block.querySelector('input[name="name"]')?.focus(),120); return; }
+          // fallback: redirect
+          window.location.href = '/web/auth';
+        }
+        // open in-page Help block instead of redirecting
+        if (tb.dataset.tab === 'help') {
+          document.querySelectorAll('.top-tabs .tab').forEach(t=>t.classList.remove('active'));
+          tb.classList.add('active');
+          const block = document.getElementById('helpBlock');
+          if (block) { block.setAttribute('aria-hidden','false'); setTimeout(()=>block.querySelector('button, a, input')?.focus(),120); return; }
+          window.location.href = '/';
+        }
+        const map = { travel: '/travel.html', help: '/index.html' };
+        const target = map[tb.dataset.tab] || '/index.html';
+        window.location.href = target;
+      });
+    });
+    // Register modal handlers
+    (function(){
+      // Handlers for the in-page register block
+      const registerBlock = document.getElementById('registerBlock');
+      const closeBtn = document.getElementById('closeRegisterBlock');
+      const cancelBtn = document.getElementById('cancelRegisterBlock');
+      const form = document.getElementById('registerBlockForm');
+      if (closeBtn) closeBtn.addEventListener('click', ()=> registerBlock.setAttribute('aria-hidden','true'));
+      if (cancelBtn) cancelBtn.addEventListener('click', ()=> registerBlock.setAttribute('aria-hidden','true'));
+      if (registerBlock) registerBlock.addEventListener('click', (e)=> { if (e.target === registerBlock) registerBlock.setAttribute('aria-hidden','true'); });
+      if (form) {
+        form.addEventListener('submit', (e)=> {
+          e.preventDefault();
+          alert('Регистрация (демо): данные не отправляются.');
+          registerBlock.setAttribute('aria-hidden','true');
+          form.reset();
+        });
+      }
+    })();
+    // Help overlay handlers: add a helpBlock element if not present and wire close/open
+    (function(){
+      if (!document.getElementById('helpBlock')) {
+        const wrapper = document.createElement('div');
+        wrapper.id = 'helpBlock';
+        wrapper.className = 'overlay-block';
+        wrapper.setAttribute('aria-hidden','true');
+        wrapper.innerHTML = `
+          <div class="overlay-dialog" role="dialog" aria-label="Помощь">
+            <header class="modal-header">
+              <h3>Помощь</h3>
+              <button id="closeHelpBlock" class="help-close" aria-label="Закрыть"><i data-feather="x"></i></button>
+            </header>
+            <div class="post-form" style="max-width:520px;">
+              <p style="margin:0 0 8px;color:var(--muted)">Здесь вы найдёте ответы на частые вопросы, инструкции по бронированию и контакты службы поддержки.</p>
+              <ul style="margin:0 0 8px;color:var(--muted);line-height:1.5">
+                <li>Как забронировать жильё?</li>
+                <li>Как отменить бронирование?</li>
+                <li>Как разместить объявление?</li>
+              </ul>
+              <hr style="border:0;height:1px;background:rgba(0,0,0,0.06);margin:8px 0">
+              <form id="helpContactFormList" class="help-contact-form" style="display:flex;flex-direction:column;gap:8px;">
+                <label style="font-size:13px">Ваш e-mail
+                  <input type="email" name="email" placeholder="you@example.com" required style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)">
+                </label>
+                <label style="font-size:13px">Сообщение
+                  <textarea name="message" rows="3" placeholder="Опишите проблему или вопрос" required style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)"></textarea>
+                </label>
+                <div style="display:flex;justify-content:flex-end;gap:8px">
+                  <button type="submit" class="btn">Отправить</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(wrapper);
+        if (window.feather) feather.replace();
+      }
+      const helpBlock = document.getElementById('helpBlock');
+      const closeBtn = document.getElementById('closeHelpBlock');
+      if (closeBtn) closeBtn.addEventListener('click', ()=> helpBlock.setAttribute('aria-hidden','true'));
+      if (helpBlock) helpBlock.addEventListener('click', (e)=> { if (e.target === helpBlock) helpBlock.setAttribute('aria-hidden','true'); });
+      
+      // contact form handler for list helpBlock
+      const listForm = document.getElementById('helpContactFormList');
+      if (listForm) {
+        listForm.addEventListener('submit', (e)=> {
+          e.preventDefault();
+          const fm = new FormData(listForm);
+          const email = (fm.get('email')||'').toString().trim();
+          const msg = (fm.get('message')||'').toString().trim();
+          const subject = encodeURIComponent('Поддержка — Угол Комфорта');
+          const body = encodeURIComponent(`От: ${email}\n\n${msg}`);
+          window.location.href = `mailto:support@ugolkomforta.example?subject=${subject}&body=${body}`;
+          // keep overlay visible after sending (no explicit close button)
+        });
+      }
+    })();
+  </script>
+
+  <script>
+    // open login modal from register block and perform demo auth (persist ugol_user)
+    (function(){
+      const openLogin = document.getElementById('openLoginFromRegister');
+      const loginModal = document.getElementById('loginModal');
+      const closeLogin = document.getElementById('closeLogin');
+      const cancelLogin = document.getElementById('cancelLogin');
+      const loginForm = document.getElementById('loginForm');
+      if (openLogin) openLogin.addEventListener('click', (e)=>{ 
+        e.preventDefault(); 
+        const registerBlock = document.getElementById('registerBlock');
+        if (registerBlock) registerBlock.setAttribute('aria-hidden','true');
+        if (loginModal) { loginModal.setAttribute('aria-hidden','false'); setTimeout(()=> loginModal.querySelector('input[name=\"email\"]')?.focus(),120); }
+      });
+      if (closeLogin) closeLogin.addEventListener('click', ()=> loginModal.setAttribute('aria-hidden','true'));
+      if (cancelLogin) cancelLogin.addEventListener('click', ()=> loginModal.setAttribute('aria-hidden','true'));
+      if (loginModal) loginModal.addEventListener('click', (e)=> { if (e.target === loginModal) loginModal.setAttribute('aria-hidden','true'); });
+      if (loginForm) loginForm.addEventListener('submit', (e)=>{ e.preventDefault(); const fm=new FormData(loginForm); const email=(fm.get('email')||'').toString().trim(); const user={ email, name: email.split('@')[0]||'user' }; try{ localStorage.setItem('ugol_user', JSON.stringify(user)); }catch(e){} window.dispatchEvent(new CustomEvent('ugol:login',{detail:{user}})); loginModal.setAttribute('aria-hidden','true'); });
+    })();
+  </script>
+
+  <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
 </body>
 </html>

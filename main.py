@@ -10,7 +10,6 @@ from app.api.bookings import router as router_bookings
 from app.api.favorites import router as router_favorites
 from app.api.help import router as router_help
 from app.api.web import router as router_web
-from app.database.database import create_tables
 
 app = FastAPI()
 
@@ -28,9 +27,6 @@ app.include_router(router_favorites)
 app.include_router(router_help)
 app.include_router(router_web)
 
-@app.on_event("startup")
-async def startup():
-    await create_tables()
 
 @app.get("/")
 async def root():
