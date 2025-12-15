@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (logoLink) {
         logoLink.addEventListener('click', function(e) {
             e.preventDefault();
-            window.location.href = '/web/index';
+            window.location.href = '/web/';
         });
     }
 
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (rentTab) {
         rentTab.addEventListener('click', function(e) {
             e.preventDefault();
-            window.location.href = '/web/rent';
+            window.location.href = '/web/rents';
         });
     }
 
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (backToListBtn) {
         backToListBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            window.location.href = '/web/rent';
+            window.location.href = '/web/rents';
         });
     }
 
@@ -179,11 +179,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.location.href = `/web/rent?q=${encodeURIComponent(query)}`;
             } else {
                 console.error('Ошибка при поиске объявлений');
-                window.location.href = '/web/rent';
+                window.location.href = '/web/rents';
             }
         } catch (error) {
             console.error('Ошибка сети:', error);
-            window.location.href = '/web/rent';
+            window.location.href = '/web/rents';
         }
     }
 

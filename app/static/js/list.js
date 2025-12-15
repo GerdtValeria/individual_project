@@ -1,29 +1,17 @@
-// list-handler.js - обработчик событий для страницы list.html
-
 document.addEventListener('DOMContentLoaded', function() {
-    // Инициализация Feather Icons
-    if (typeof feather !== 'undefined') {
-        feather.replace();
-    }
+  if (typeof feather !== 'undefined') { feather.replace(); }
+  
+  checkUserAuth();
+  window.addEventListener('ugol:login', function() { updateAuthUI(); });
 
-    // ==================== ИНИЦИАЛИЗАЦИЯ ====================
-    // Проверяем авторизацию пользователя
-    checkUserAuth();
-    
-    // Слушаем событие авторизации
-    window.addEventListener('ugol:login', function() {
-        updateAuthUI();
+  // ЛОГОТИП → /web/index
+  const logoLink = document.querySelector('.logo-link');
+  if (logoLink) {
+    logoLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      window.location.href = '/web/';
     });
-
-    // ==================== ПЕРЕХОД ПО ЛОГОТИПУ ====================
-    const logoLink = document.querySelector('.logo-link');
-    if (logoLink) {
-        logoLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            // Используем роутер get_index_html из web.py
-            window.location.href = '/web/index';
-        });
-    }
+  }
 
     // ==================== ОБРАБОТЧИКИ ВКЛАДОК ВЕРХНЕГО МЕНЮ ====================
     
@@ -43,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
         rentTab.addEventListener('click', function(e) {
             e.preventDefault();
             // Используем роутер get_rent_html из web.py
-            window.location.href = '/web/rent';
+            window.location.href = '/web/rents';
         });
     }
 

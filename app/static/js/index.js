@@ -1,34 +1,15 @@
-// main-handler.js - Главный обработчик для index.html
-
 document.addEventListener('DOMContentLoaded', function() {
-    // Инициализация иконок
-    initIcons();
-    
-    // Инициализация навигации
-    initNavigation();
-    
-    // Инициализация поиска
-    initSearch();
-    
-    // Инициализация фильтров
-    initFilters();
-    
-    // Инициализация модальных окон
-    initModals();
-    
-    // Инициализация карточек объявлений
-    initListings();
-    
-    // Загрузка объявлений при загрузке страницы
-    loadInitialRents();
-    
-    // Проверка авторизации пользователя
-    checkUserAuth();
+  initIcons();
+  initNavigation();
+  initSearch();
+  initFilters();
+  initModals();
+  initListings();
+  loadInitialRents();
+  checkUserAuth();
 });
 
-/**
- * Инициализация иконок
- */
+
 function initIcons() {
     if (typeof feather !== 'undefined') {
         feather.replace();
@@ -43,88 +24,80 @@ function initIcons() {
  * Инициализация навигационных элементов
  */
 function initNavigation() {
-    // Кнопка "Арендовать" - роутинг на get_rent_html
-    const rentTab = document.querySelector('.top-tabs a[href="/rent.html"]');
-    if (rentTab) {
-        rentTab.addEventListener('click', function(e) {
-            e.preventDefault();
-            navigateToRentPage();
-        });
-    }
-    
-    // Кнопка "Сдать в аренду" - роутинг на get_list_html
-    const listTab = document.querySelector('.top-tabs a[href="/list.html"]');
-    if (listTab) {
-        listTab.addEventListener('click', function(e) {
-            e.preventDefault();
-            navigateToListPage();
-        });
-    }
-    
-    // Кнопка "Избранное" - роутинг на get_favorites_html
-    const favoritesTab = document.querySelector('.top-tabs a[href="/favorites.html"]');
-    if (favoritesTab) {
-        favoritesTab.addEventListener('click', function(e) {
-            e.preventDefault();
-            navigateToFavoritesPage();
-        });
-    }
-    
-    // Кнопка "Помощь" - открытие модального окна
-    const helpButton = document.querySelector('.top-tabs button[onclick="openHelpModal()"]');
-    if (helpButton) {
-        helpButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            openHelpModal();
-        });
-    }
-    
-    // Кнопка "Зарегистрироваться" или "Профиль" (проверяется в checkUserAuth)
-    initAuthButton();
-    
-    // Логотип - переход на главную
-    const logoLink = document.querySelector('.logo-link');
-    if (logoLink) {
-        logoLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            navigateToIndexPage();
-        });
-    }
-    
-    // Ссылки в футере
-    const footerLinks = document.querySelectorAll('.site-footer a');
-    footerLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            const href = this.getAttribute('href');
-            if (href && href !== '#') {
-                e.preventDefault();
-                
-                if (href === '/index.html' || href === '/') {
-                    navigateToIndexPage();
-                } else if (href === '/rent.html') {
-                    navigateToRentPage();
-                } else if (href === '/list.html') {
-                    navigateToListPage();
-                } else if (href === '/favorites.html') {
-                    navigateToFavoritesPage();
-                } else if (href.startsWith('/signup')) {
-                    navigateToRegistrationPage();
-                } else if (href === '#team' || href === '#history' || href === '#mission') {
-                    // Плавная прокрутка к якорям
-                    const targetId = href.substring(1);
-                    const targetElement = document.getElementById(targetId);
-                    if (targetElement) {
-                        targetElement.scrollIntoView({ behavior: 'smooth' });
-                    }
-                } else if (href === '#') {
-                    // Обработка кликов на "Помощь" в футере
-                    openHelpModal();
-                }
-            }
-        });
+  // Кнопка "Арендовать" - роутинг на get_rent_html
+  const rentTab = document.querySelector('.top-tabs a[href="/rent.html"]');
+  if (rentTab) {
+    rentTab.addEventListener('click', function(e) {
+      e.preventDefault();
+      navigateToRentPage();
     });
+  }
+  
+  // Кнопка "Сдать в аренду" - роутинг на get_list_html
+  const listTab = document.querySelector('.top-tabs a[href="/list.html"]');
+  if (listTab) {
+    listTab.addEventListener('click', function(e) {
+      e.preventDefault();
+      navigateToListPage();
+    });
+  }
+  
+  // Кнопка "Избранное" - роутинг на get_favorites_html
+  const favoritesTab = document.querySelector('.top-tabs a[href="/favorites.html"]');
+  if (favoritesTab) {
+    favoritesTab.addEventListener('click', function(e) {
+      e.preventDefault();
+      navigateToFavoritesPage();
+    });
+  }
+
+  // Логотип - переход на главную
+  const logoLink = document.querySelector('.logo-link');
+  if (logoLink) {
+    logoLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      navigateToIndexPage();
+    });
+  }
+
+  // Ссылки в футере - ИСПРАВЛЕНО
+  const footerLinks = document.querySelectorAll('.site-footer a');
+  footerLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      if (href && href !== '#') {
+        e.preventDefault();
+        if (href === '/index.html' || href === '/') {
+          navigateToIndexPage();  // /web/index
+        } else if (href === '/rent.html') {
+          navigateToRentPage();   // /web/rent
+        } else if (href === '/list.html') {
+          navigateToListPage();   // /web/list
+        } else if (href === '/favorites.html') {
+          navigateToFavoritesPage(); // /web/favorites
+        } else if (href.startsWith('/signup')) {
+          navigateToRegistrationPage(); // /web/auth
+        } else if (href === '#team' || href === '#history' || href === '#mission') {
+          const targetId = href.substring(1);
+          const targetElement = document.getElementById(targetId);
+          if (targetElement) {
+            targetElement.scrollIntoView({ behavior: 'smooth' });
+          }
+        } else if (href === '#') {
+          openHelpModal();
+        }
+      }
+    });
+  });
 }
 
+// Навигационные функции - все правильные
+async function navigateToRentPage() { window.location.href = '/web/rents'; }
+async function navigateToListPage() { window.location.href = '/web/list'; }
+async function navigateToFavoritesPage() { window.location.href = '/web/favorites'; }
+async function navigateToProfilePage() { window.location.href = '/web/profile'; }
+async function navigateToRegistrationPage() { window.location.href = '/web/auth'; }
+async function navigateToIndexPage() { window.location.href = '/web/'; }
 /**
  * Инициализация кнопки авторизации/профиля
  */

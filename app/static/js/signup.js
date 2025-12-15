@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const navButtons = {
-    rent: '/web/rent',
+    rent: '/web/rents',
     list: '/web/list',
     help: null,
     favorites: '/web/favorites',
