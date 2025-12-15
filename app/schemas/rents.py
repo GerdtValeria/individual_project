@@ -5,7 +5,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 class SRent(BaseModel):
     id_category: int 
-    image_url: int
+    image_url: str
     id_user: int
     title: str = Field(..., min_length=1, max_length=50)
     address: str = Field(..., min_length=1, max_length=50) 
@@ -15,7 +15,7 @@ class SRent(BaseModel):
     
 class SRentAdd(BaseModel):
     id_category: int 
-    image_url: int
+    image_url: str
     id_user: int
     title: str = Field(..., min_length=1, max_length=50)
     address: str = Field(..., min_length=1, max_length=50) 
@@ -25,7 +25,7 @@ class SRentAdd(BaseModel):
 
 class SRentGet(SRentAdd):
     id: int
-    image_url: Optional[int] = None  # Поле из модели
+    image_url: Optional[str] = None # Поле из модели
     created_at: datetime
     updated_at: Optional[datetime] = None
     model_config = ConfigDict(from_attributes=True)
