@@ -11,10 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // ---------- Отправка объявления ----------
 async function handleAddRent(e) {
   e.preventDefault();
-  console.log('SUBMIT WORKS');
+  console.log('1 start');
 
   const form = e.target;
   const formData = new FormData(form);
+  console.log('2 formData', [...formData.entries()]);
 
   const title = (formData.get('title') || '').toString().trim();
   const city = (formData.get('city') || '').toString().trim();
@@ -22,24 +23,32 @@ async function handleAddRent(e) {
   const categoryRaw = formData.get('category');
   const price = Number(formData.get('price')) || 0;
   const photo = formData.get('photo');
+  console.log('3 fields', { title, city, description, categoryRaw, price, photo });
 
   if (!title || !city || !description || !categoryRaw || price <= 0) {
+    console.log('4 validation failed');
     alert('Заполните все поля формы и укажите корректную цену');
     return;
   }
 
   const user = CommonAPI.getUserFromStorage();
+  console.log('5 user', user);
   if (!user) {
+    console.log('6 no user');
     alert('Для добавления объявления нужно войти');
     window.location.href = '/web/auth';
     return;
   }
 
   const idCategory = Number(categoryRaw);
+  console.log('7 idCategory', idCategory);
   if (!Number.isInteger(idCategory)) {
+    console.log('8 bad category');
     alert('Ошибка: категория должна быть числом (id категории)');
     return;
   }
+
+  console.log('9 before fetch');
 
   const rentPayload = {
     title,
