@@ -104,6 +104,7 @@ function closePostModal() {
 // ---------- Отправка объявления ----------
 async function handleAddRent(e) {
   e.preventDefault();
+  alert('handleAddRent вызвана');
 
   const form = e.target;
   const formData = new FormData(form);
