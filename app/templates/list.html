@@ -21,8 +21,10 @@
     </form>
     <nav class="top-tabs" aria-label="Главная навигация">
       <button class="tab" data-tab="rent">Арендовать</button>
-      <button class="tab active" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
-      <a class="tab" href="/web/favorites">Избранное</a>
+      <button class="tab active" data-tab="list">
+        <span class="two-line">Сдать<br>в аренду</span>
+      </button>
+      <button class="tab" data-tab="favorites">Избранное</button>
       <button class="tab" data-tab="help">Помощь</button>
       <div class="auth">
         <button class="tab primary" data-tab="signup">Зарегистрироваться</button>
@@ -32,26 +34,28 @@
 
   <main class="container" style="padding:18px;">
     <section style="max-width:900px;margin:0 auto">
-      <h1 style="margin:0 0 12px;font-size:28px;color:#042018">Сдать в аренду — размещение объявления</h1>
-      <p style="color:var(--muted);margin:0 0 18px">Здесь вы можете разместить объявление о сдаче жилья: заполните форму и публикуйте предложение.</p>
+      <h1 style="margin:0 0 12px;font-size:28px;color:#042018">
+        Сдать в аренду — размещение объявления
+      </h1>
+      <p style="color:var(--muted);margin:0 0 18px">
+        Здесь вы можете разместить объявление о сдаче жилья: заполните форму и публикуйте предложение.
+      </p>
 
-      <!-- БЛОК ИЗМЕНЁН: убрали упоминание демо -->
+      <!-- Информационный блок (без демо) -->
       <div class="card" style="padding:18px;max-width:900px;margin:12px auto">
         <strong>Разместить объявление</strong>
         <p style="color:var(--muted)">
-          Форма публикации доступна в разделе «Новое объявление». Подготовьте данные, загрузите фото и подтвердите публикацию.
+          Форма публикации открывается по кнопке ниже. Заполните все поля и при необходимости добавьте фото.
         </p>
         <ol style="color:var(--muted)">
           <li>Подготовьте заголовок, описание и фотографии.</li>
-          <li>Укажите цену и при необходимости даты доступности.</li>
+          <li>Укажите цену и город.</li>
           <li>Нажмите «Добавить объявление» и заполните форму.</li>
         </ol>
         <p style="margin-top:12px">
           <button id="openPostBtn" class="btn">Добавить объявление</button>
         </p>
       </div>
-      <!-- КОНЕЦ ИЗМЕНЁННОГО БЛОКА -->
-
     </section>
   </main>
 
@@ -59,7 +63,8 @@
     <div class="footer-inner">
       <div class="footer-col footer-contact">
         <div class="footer-brand">
-          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
+          <img src="/static/freepik_assistant_1762764092507.png"
+               alt="Угол Комфорта логотип" class="footer-logo">
           <div class="company-name">Угол Комфорта</div>
         </div>
       </div>
@@ -68,12 +73,11 @@
         <ul>
           <li><a href="/web/rent" data-nav="rent">Арендовать</a></li>
           <li><a href="/web/list" data-nav="list">Сдать в аренду</a></li>
-          <li><a href="/" data-nav="help">Помощь</a></li>
-          <li><a href="/" data-nav="home">Главная</a></li>
+          <li><a href="#" data-nav="help" id="footerHelpLink">Помощь</a></li>
+          <li><a href="/web/index" data-nav="home">Главная</a></li>
           <li><a href="/web/auth" data-nav="signup">Зарегистрироваться</a></li>
         </ul>
       </div>
-
       <div class="footer-col">
         <h4 class="footer-heading">О проекте</h4>
         <ul>
@@ -82,7 +86,6 @@
           <li><a href="/#mission">Миссия проекта</a></li>
         </ul>
       </div>
-
       <div class="footer-col">
         <h4 class="footer-heading">Мы в соцсетях</h4>
         <ul class="social-list">
@@ -94,16 +97,22 @@
     </div>
   </footer>
 
-  <!-- Post modal (local to list.html) -->
-  <div id="postModalLocal" class="modal" aria-hidden="true">
+  <!-- Модалка нового объявления -->
+  <div id="postModalLocal" class="modal" aria-hidden="true" style="display:none;">
     <div class="modal-dialog" role="dialog" aria-label="Форма добавления объявления">
       <header class="modal-header">
         <h3>Новое объявление</h3>
       </header>
       <form id="postFormLocal" class="post-form" enctype="multipart/form-data">
-        <label>Заголовок<input name="title" required></label>
-        <label>Город<input name="city" required></label>
-        <label>Описание<textarea name="description" rows="3" required></textarea></label>
+        <label>Заголовок
+          <input name="title" required>
+        </label>
+        <label>Город
+          <input name="city" required>
+        </label>
+        <label>Описание
+          <textarea name="description" rows="3" required></textarea>
+        </label>
         <label>Категория
           <select name="category" required>
             <option value="">— Выберите —</option>
@@ -114,18 +123,21 @@
             <option value="Апартаменты с видом">Апартаменты с видом</option>
           </select>
         </label>
-        <label>Цена (₽/ночь)<input name="price" type="number" min="0" required></label>
-        <label>Загрузите фото</label>
-        <input name="photo" type="file" accept="image/*">
+        <label>Цена (₽/ночь)
+          <input name="price" type="number" min="1" required>
+        </label>
+        <label>Загрузите фото
+          <input name="photo" type="file" accept="image/*">
+        </label>
         <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
           <button type="button" id="cancelPostLocal" class="btn">Отмена</button>
           <button type="submit" class="btn primary">Опубликовать</button>
         </div>
-        <!-- СТРОКУ ПРО ДЕМО УДАЛИЛИ -->
       </form>
     </div>
   </div>
 
+  <script src="/static/js/common.js"></script>
   <script src="/static/js/list.js"></script>
   <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
 </body>
