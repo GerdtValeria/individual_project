@@ -61,46 +61,6 @@ function setupSearch() {
   });
 }
 
-// ---------- Модалка объявления ----------
-function setupPostModal() {
-  const openBtn = document.getElementById('openPostBtn');
-  const cancelBtn = document.getElementById('cancelPostLocal');
-  const modal = document.getElementById('postModalLocal');
-  const form = document.getElementById('postFormLocal');
-
-  if (!modal || !form) return;
-
-  if (openBtn) {
-    openBtn.addEventListener('click', () => {
-      const user = getUserFromStorage();
-      if (!user) {
-        alert('Для добавления объявления нужно войти в аккаунт');
-        window.location.href = '/web/auth';
-        return;
-      }
-      modal.style.display = 'grid';
-      modal.setAttribute('aria-hidden', 'false');
-    });
-  }
-
-  if (cancelBtn) {
-    cancelBtn.addEventListener('click', () => closePostModal());
-  }
-
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) closePostModal();
-  });
-
-  form.addEventListener('submit', handleAddRent);
-}
-
-function closePostModal() {
-  const modal = document.getElementById('postModalLocal');
-  if (!modal) return;
-  modal.style.display = 'none';
-  modal.setAttribute('aria-hidden', 'true');
-}
-
 // ---------- Отправка объявления ----------
 async function handleAddRent(e) {
   e.preventDefault();
@@ -199,6 +159,47 @@ async function handleAddRent(e) {
     submitBtn.disabled = false;
     submitBtn.textContent = originalText;
   }
+}
+
+
+// ---------- Модалка объявления ----------
+function setupPostModal() {
+  const openBtn = document.getElementById('openPostBtn');
+  const cancelBtn = document.getElementById('cancelPostLocal');
+  const modal = document.getElementById('postModalLocal');
+  const form = document.getElementById('postFormLocal');
+
+  if (!modal || !form) return;
+
+  if (openBtn) {
+    openBtn.addEventListener('click', () => {
+      const user = getUserFromStorage();
+      if (!user) {
+        alert('Для добавления объявления нужно войти в аккаунт');
+        window.location.href = '/web/auth';
+        return;
+      }
+      modal.style.display = 'grid';
+      modal.setAttribute('aria-hidden', 'false');
+    });
+  }
+
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => closePostModal());
+  }
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closePostModal();
+  });
+
+  form.addEventListener('submit', handleAddRent);
+}
+
+function closePostModal() {
+  const modal = document.getElementById('postModalLocal');
+  if (!modal) return;
+  modal.style.display = 'none';
+  modal.setAttribute('aria-hidden', 'true');
 }
 
 
