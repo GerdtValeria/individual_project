@@ -14,3 +14,14 @@ class Base(DeclarativeBase):
     updated_at: Mapped[datetime] = mapped_column(
     server_default=func.now(), onupdate=func.now()
 )
+    
+async def create_tables():
+    """Создает все таблицы в базе данных"""
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+
+async def drop_tables():
+    """Удаляет все таблицы из базы данных (для тестов)"""
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
