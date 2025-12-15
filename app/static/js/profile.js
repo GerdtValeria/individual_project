@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (logoLink) {
         logoLink.addEventListener('click', function(e) {
             e.preventDefault();
+            // Используем тот же формат, что и в других файлах
             window.location.href = '/web/index';
         });
     }
@@ -632,7 +633,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             // Предполагаем, что есть эндпоинт для удаления бронирования
-            // Если его нет, нужно будет создать в bookings.py
             const response = await fetch(`${API_BASE_URL}/booking/${bookingId}`, {
                 method: 'DELETE',
                 headers: getAuthHeaders()
