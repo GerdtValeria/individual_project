@@ -37,8 +37,8 @@ class DataSeeder:
                 await self.create_roles(session)
                 await self.create_categories(session)
                 await self.create_users(session)
-                await self.create_rents(session)
                 await self.create_images(session)
+                await self.create_rents(session)
                 await self.create_comments(session)
                 await self.create_bookings(session)
                 await self.create_help_requests(session)
@@ -197,11 +197,22 @@ class DataSeeder:
                 'Просторная терраса с видом на город, идеальное место для вечерних посиделок.'
             ]
             
+            # Получаем все ID изображений
+            image_ids_result = await session.execute(text("SELECT id, image_url FROM images"))
+            image_data = image_ids_result.fetchall()
+            
             for i in range(1, 101):
                 city = random.choice(self.cities)
-                street = random.choice(['Тверская', 'Невский проспект', 'Баумана', 'Ленина', 
-                                      'Красный проспект', 'Большая Покровская', 'Курортный проспект', 
+                street = random.choice(['Тверская', 'Невский проспект', 'Баумана', 'Ленина',
+                                      'Красный проспект', 'Большая Покровская', 'Курортный проспект',
                                       'Красная', 'Проспект Революции', 'Московская'])
+                
+                # Выбираем случайное изображение для аренды
+                if image_data:
+                    selected_image = random.choice(image_data)
+                    image_url = selected_image.image_url
+                else:
+                    image_url = f"/static/rent_{i}_image_1.jpg"  # fallback
                 
                 rent = RentsModel(
                     title=f"{random.choice(titles)} {random.randint(1, 100)}",
@@ -210,6 +221,7 @@ class DataSeeder:
                     price=random.randint(1000, 10000),
                     id_category=random.randint(1, 10),
                     id_user=random.randint(1, 49),
+                    image_url=image_url,
                     active=random.random() > 0.1
                 )
                 session.add(rent)

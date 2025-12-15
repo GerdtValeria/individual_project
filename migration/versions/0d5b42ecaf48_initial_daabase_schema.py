@@ -1,8 +1,8 @@
-"""Initial database schema
+"""Initial daabase schema
 
-Revision ID: 6793daac3267
+Revision ID: 0d5b42ecaf48
 Revises: 
-Create Date: 2025-12-12 18:41:15.767077
+Create Date: 2025-12-15 16:24:16.103212
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '6793daac3267'
+revision: str = '0d5b42ecaf48'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -66,7 +66,7 @@ def upgrade() -> None:
     op.create_table('rents',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('id_category', sa.Integer(), nullable=True),
-    sa.Column('id_image', sa.Integer(), nullable=True),
+    sa.Column('image_url', sa.Integer(), nullable=True),
     sa.Column('id_user', sa.Integer(), nullable=True),
     sa.Column('title', sa.String(length=50), nullable=True),
     sa.Column('address', sa.String(length=50), nullable=True),
@@ -76,8 +76,8 @@ def upgrade() -> None:
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.ForeignKeyConstraint(['id_category'], ['categories.id'], ),
-    sa.ForeignKeyConstraint(['id_image'], ['images.id'], ),
     sa.ForeignKeyConstraint(['id_user'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['image_url'], ['images.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('bookings',

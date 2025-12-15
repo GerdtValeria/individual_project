@@ -16,7 +16,7 @@ class RentsModel(Base):
     __tablename__ = 'rents'
     id = Column(Integer, primary_key=True)
     id_category = Column(Integer, ForeignKey('categories.id'))
-    id_image = Column(Integer, ForeignKey('images.id'))
+    image_url = Column(Integer, ForeignKey('images.id'))
     id_user = Column(Integer, ForeignKey('users.id'))
     title = Column(String(50))
     address = Column(String(50))
