@@ -211,13 +211,6 @@ class DataSeeder:
                                       'Красный проспект', 'Большая Покровская', 'Курортный проспект',
                                       'Красная', 'Проспект Революции', 'Московская'])
                 
-                # Выбираем случайное изображение для аренды
-                if image_data:
-                    selected_image = random.choice(image_data)
-                    image_url = selected_image.image_url
-                else:
-                    image_url = f"/static/img/rent_{i}_image_1.jpg"
-                
                 rent = RentsModel(
                     title=f"{random.choice(titles)} {random.randint(1, 100)}",
                     address=f"{city}, ул. {street}, д. {random.randint(1, 100)}",
@@ -225,7 +218,6 @@ class DataSeeder:
                     price=random.randint(1000, 10000),
                     id_category=random.randint(1, 10),
                     id_user=random.randint(1, 49),
-                    image_url=image_url,
                     active=random.random() > 0.1
                 )
                 session.add(rent)
