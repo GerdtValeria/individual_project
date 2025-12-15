@@ -68,6 +68,8 @@ async function loadCategories() {
 }
 async function handleAddRent(e) {
   e.preventDefault();
+  console.log('submit start');
+  console.log([...new FormData(e.target).entries()]);
 
   const form = e.target;
   const formData = new FormData(form);
