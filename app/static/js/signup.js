@@ -1,144 +1,103 @@
 // signup-handler.js
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
   // ==================== Навигация по логотипу и кнопкам ====================
 
-  // Логотип -> главная
   const logoLink = document.querySelector('.logo-link');
   if (logoLink) {
-    logoLink.addEventListener('click', function (e) {
+    logoLink.addEventListener('click', (e) => {
       e.preventDefault();
-      try {
-        window.location.href = '/web/';
-      } catch (error) {
-        console.error('Ошибка сети:', error);
-        window.location.href = '/web/';
-      }
+      window.location.href = '/web/';
     });
   }
-
-  // ==================== Кнопка "Отмена" в форме регистрации ====================
 
   const cancelBtn = document.querySelector('a.btn[href="/web/"], a.btn[href="/"]');
   if (cancelBtn && cancelBtn.textContent.includes('Отмена')) {
-    cancelBtn.addEventListener('click', function (e) {
+    cancelBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      console.log('Кнопка "Отмена" нажата - переход на главную страницу');
-      try {
-        window.location.href = '/web/';
-      } catch (error) {
-        console.error('Ошибка сети:', error);
-        window.location.href = '/web/';
-      }
+      window.location.href = '/web/';
     });
   }
-
-  // ==================== Навигационные кнопки в шапке ====================
 
   const navButtons = {
     rent: '/web/rent',
     list: '/web/list',
     help: null,
     favorites: '/web/favorites',
-    signup: '/web/auth' // страница регистрации
+    signup: '/web/auth'
   };
 
   document.querySelectorAll('.top-tabs .tab[data-tab]').forEach((button) => {
-    button.addEventListener('click', function (e) {
+    button.addEventListener('click', (e) => {
       e.preventDefault();
-      const tab = this.dataset.tab;
-
+      const tab = button.dataset.tab;
       if (tab === 'help') {
         openHelpBlock();
         return;
       }
-
       if (navButtons[tab]) {
-        try {
-          window.location.href = navButtons[tab];
-        } catch (error) {
-          console.error('Ошибка сети:', error);
-          fallbackNavigation(tab);
-        }
+        window.location.href = navButtons[tab];
       }
     });
   });
 
-  // Кнопка "Избранное" как ссылка
   const favoritesLink = document.querySelector('a[href="/web/favorites"]');
   if (favoritesLink) {
-    favoritesLink.addEventListener('click', function (e) {
+    favoritesLink.addEventListener('click', (e) => {
       e.preventDefault();
-      console.log('Кнопка "Избранное" нажата - переход на страницу избранного');
-      try {
-        window.location.href = '/web/favorites';
-      } catch (error) {
-        console.error('Ошибка сети:', error);
-        window.location.href = '/web/favorites';
-      }
+      window.location.href = '/web/favorites';
     });
   }
 
-  // ==================== Форма регистрации ====================
+  // ==================== Регистрация ====================
 
   const signupForm = document.getElementById('signupForm');
 
   if (signupForm) {
-    signupForm.addEventListener('submit', async function (e) {
+    signupForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const formData = new FormData(this);
+      const formData = new FormData(signupForm);
+      const email = formData.get('email');
+      const password = formData.get('password');
+
       const userData = {
         name: formData.get('name'),
-        email: formData.get('email'),
-        password: formData.get('password'),
-        role_id: 1   // или другой id роли, которая у тебя считается дефолтной
-    };
+        email,
+        password,
+        role_id: 1 // дефолтная роль пользователя
+      };
 
-      // Валидация
       if (!userData.name || !userData.email || !userData.password) {
         alert('Пожалуйста, заполните все поля');
         return;
       }
-
       if (!isValidEmail(userData.email)) {
         alert('Пожалуйста, введите корректный email');
         return;
       }
-
       if (userData.password.length < 6) {
         alert('Пароль должен содержать не менее 6 символов');
         return;
       }
 
       try {
-        // Регистрация пользователя
         const response = await fetch('/auth/register', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(userData)
         });
 
         if (response.ok) {
-          const result = await response.json();
-          console.log('Регистрация успешна:', result);
-          // Автоматический вход после регистрации
-          await loginAfterRegistration(userData.email, userData.password);
+          // сразу пробуем залогиниться теми же email/паролем
+          await loginAfterRegistration(email, password);
         } else if (response.status === 409) {
           alert('Пользователь с таким email уже существует');
         } else {
-          let errorText = 'Неизвестная ошибка';
-          try {
-            const error = await response.json();
-            if (error && error.detail) {
-              errorText = error.detail;
-            }
-          } catch (_) {}
+          const errorText = await extractErrorText(response);
           alert('Ошибка регистрации: ' + errorText);
         }
-      } catch (error) {
-        console.error('Ошибка при регистрации:', error);
+      } catch (err) {
+        console.error('Ошибка при регистрации:', err);
         alert('Ошибка сети. Попробуйте позже.');
       }
     });
@@ -151,43 +110,37 @@ document.addEventListener('DOMContentLoaded', function () {
   const cancelLoginBtn = document.getElementById('cancelLogin');
   const loginForm = document.getElementById('loginForm');
 
-  // Открыть модал входа
   if (openLoginBtn) {
-    openLoginBtn.addEventListener('click', function (e) {
+    openLoginBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      if (loginModal) {
-        loginModal.setAttribute('aria-hidden', 'false');
-        setTimeout(() => {
-          const emailInput = loginModal.querySelector('input[name="email"]');
-          if (emailInput) emailInput.focus();
-        }, 100);
-      }
+      if (!loginModal) return;
+      loginModal.setAttribute('aria-hidden', 'false');
+      setTimeout(() => {
+        const emailInput = loginModal.querySelector('input[name="email"]');
+        if (emailInput) emailInput.focus();
+      }, 100);
     });
   }
 
-  // Закрыть модал по кнопке "Отмена"
   if (cancelLoginBtn) {
-    cancelLoginBtn.addEventListener('click', function () {
-      console.log('Кнопка "Отмена" в блоке входа нажата - закрытие модального окна');
+    cancelLoginBtn.addEventListener('click', () => {
       if (loginModal) loginModal.setAttribute('aria-hidden', 'true');
     });
   }
 
-  // Закрыть модал по клику на фон
   if (loginModal) {
-    loginModal.addEventListener('click', function (e) {
+    loginModal.addEventListener('click', (e) => {
       if (e.target === loginModal) {
         loginModal.setAttribute('aria-hidden', 'true');
       }
     });
   }
 
-  // Отправка формы входа
   if (loginForm) {
-    loginForm.addEventListener('submit', async function (e) {
+    loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const formData = new FormData(this);
+      const formData = new FormData(loginForm);
       const authData = {
         email: formData.get('email'),
         password: formData.get('password')
@@ -197,7 +150,6 @@ document.addEventListener('DOMContentLoaded', function () {
         alert('Пожалуйста, заполните все поля');
         return;
       }
-
       if (!isValidEmail(authData.email)) {
         alert('Пожалуйста, введите корректный email');
         return;
@@ -206,15 +158,12 @@ document.addEventListener('DOMContentLoaded', function () {
       try {
         const response = await fetch('/auth/login', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(authData)
         });
 
         if (response.ok) {
-          const result = await response.json();
-          console.log('Вход успешен:', result);
+          await response.json(); // токен кладётся в cookie
           if (loginModal) loginModal.setAttribute('aria-hidden', 'true');
           window.location.href = '/web/profile';
         } else if (response.status === 404) {
@@ -222,17 +171,11 @@ document.addEventListener('DOMContentLoaded', function () {
         } else if (response.status === 401) {
           alert('Неверный пароль');
         } else {
-          let errorText = 'Неизвестная ошибка';
-          try {
-            const error = await response.json();
-            if (error && error.detail) {
-              errorText = error.detail;
-            }
-          } catch (_) {}
+          const errorText = await extractErrorText(response);
           alert('Ошибка входа: ' + errorText);
         }
-      } catch (error) {
-        console.error('Ошибка при входе:', error);
+      } catch (err) {
+        console.error('Ошибка при входе:', err);
         alert('Ошибка сети. Попробуйте позже.');
       }
     });
@@ -278,17 +221,16 @@ document.addEventListener('DOMContentLoaded', function () {
     try {
       const response = await fetch('/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
 
       if (response.ok) {
-        const result = await response.json();
-        console.log('Автоматический вход после регистрации:', result);
+        await response.json();
         window.location.href = '/web/profile';
       } else {
+        const errorText = await extractErrorText(response);
+        console.warn('Автовход не удался:', errorText);
         alert('Регистрация прошла успешно! Теперь войдите в систему.');
         if (loginModal) {
           loginModal.setAttribute('aria-hidden', 'false');
@@ -299,8 +241,8 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         }
       }
-    } catch (error) {
-      console.error('Ошибка автоматического входа:', error);
+    } catch (err) {
+      console.error('Ошибка автоматического входа:', err);
       alert('Регистрация прошла успешно! Теперь войдите в систему.');
       if (loginModal) {
         loginModal.setAttribute('aria-hidden', 'false');
@@ -318,17 +260,28 @@ document.addEventListener('DOMContentLoaded', function () {
     return emailRegex.test(email);
   }
 
+  async function extractErrorText(response) {
+    try {
+      const data = await response.json();
+      if (!data || !data.detail) return 'Неизвестная ошибка';
+      const d = data.detail;
+      if (typeof d === 'string') return d;
+      if (Array.isArray(d)) {
+        return d.map((item) => item.msg || JSON.stringify(item)).join(', ');
+      }
+      return JSON.stringify(d);
+    } catch {
+      return 'Неизвестная ошибка';
+    }
+  }
+
   function fallbackNavigation(tab) {
     const routes = {
       rent: '/web/rent',
       list: '/web/list',
       favorites: '/web/favorites'
     };
-    if (routes[tab]) {
-      window.location.href = routes[tab];
-    } else {
-      window.location.href = '/web/';
-    }
+    window.location.href = routes[tab] || '/web/';
   }
 
   console.log('Signup handler initialized');
