@@ -16,10 +16,13 @@
         </a>
       </div>
     </div>
+    <form id="searchForm" class="search-form" aria-label="Поиск аренды" style="margin-left:12px;">
+      <input id="q" name="q" type="search" placeholder="Поиск по городу, району или опции" />
+    </form>
     <nav class="top-tabs" aria-label="Главная навигация">
       <button class="tab" data-tab="rent">Арендовать</button>
-      <button class="tab" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
-      <a class="tab" href="/web/favorites">Избранное</a>
+      <button class="tab" data-tab="list">Сдать в аренду</button>
+      <button class="tab" data-tab="favorites">Избранное</button>
       <button class="tab" data-tab="help">Помощь</button>
       <div class="auth">
         <button class="tab primary" data-tab="signup">Зарегистрироваться</button>
@@ -28,76 +31,48 @@
   </header>
 
   <main class="container" style="padding:18px;">
-    <section style="max-width:720px;margin:0 auto">
-      <h1 style="margin:0 0 12px;font-size:24px;color:#042018">Профиль</h1>
-      <div id="profileCard" class="card" style="padding:18px">
-        <div id="profileContent" class="post-form" style="display:flex;flex-direction:column;gap:10px">
-          <div style="display:flex;align-items:center;gap:12px">
-            <img id="profileAvatar" src="/static/logo.png" alt="Аватар" style="width:64px;height:64px;border-radius:10px;object-fit:cover">
-            <div>
-              <div id="profileName" style="font-weight:800;font-size:18px;color:#042018">Гость</div>
-              <div id="profileEmail" style="color:var(--muted);font-size:13px">—</div>
-            </div>
-          </div>
+    <section style="max-width:900px;margin:0 auto">
+      <h1 style="margin:0 0 12px;font-size:28px;color:#042018">
+        Ваш профиль
+      </h1>
+      <p style="color:var(--muted);margin:0 0 18px">
+        Здесь отображаются ваши данные, объявления и бронирования.
+      </p>
 
-          <div style="margin-top:8px;color:var(--muted);">
-            Здесь вы можете просмотреть и обновить данные профиля (в демонстрационной версии данные сохраняются локально).
-          </div>
-
-          <form id="profileForm" style="display:flex;flex-direction:column;gap:8px;max-width:520px">
-            <label>Имя<input name="name" type="text" style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)"></label>
-            <label>Электронная почта<input name="email" type="email" style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)"></label>
-            <div style="display:flex;gap:8px;justify-content:flex-end">
-              <button type="button" id="logoutBtn" class="btn">Выйти</button>
-              <button type="submit" class="btn primary">Сохранить</button>
-            </div>
-          </form>
-
-          <div style="margin-top:12px">
-            <a class="btn" href="/web/rent">К списку объявлений</a>
-          </div>
+      <!-- Информация о пользователе -->
+      <div id="profileInfo" class="card" style="padding:18px;margin-bottom:24px;">
+        <h2 style="margin:0 0 12px;font-size:20px">Личные данные</h2>
+        <div style="display:grid;gap:8px">
+          <div><strong id="profileName">Гость</strong></div>
+          <div style="color:var(--muted)"><span id="profileEmail">—</span></div>
+        </div>
+        <div style="margin-top:16px">
+          <button id="logoutBtn" class="btn" style="background:var(--danger);color:white">
+            Выйти из аккаунта
+          </button>
         </div>
       </div>
 
-      <!-- My listings -->
-      <section id="myListingsWrap" style="margin-top:18px">
-        <h2 style="margin:0 0 8px;color:#042018">Мои объявления</h2>
-        <p id="myListingsEmpty" style="color:var(--muted);margin:0 0 12px">У вас пока нет опубликованных объявлений. Нажмите "Добавить" на странице "Сдать в аренду".</p>
-        <div id="myListings" class="listings" style="margin-top:8px"></div>
-      </section>
+      <!-- Мои объявления -->
+      <div id="myListingsWrap">
+        <h2 style="margin:0 0 12px;font-size:20px">Мои объявления</h2>
+        <div id="myListings" style="display:grid;gap:16px"></div>
+        <div id="myListingsEmpty" class="card" style="padding:18px;text-align:center;color:var(--muted)">
+          У вас пока нет опубликованных объявлений. 
+          <a href="/web/list" style="color:var(--primary)">Перейти к размещению</a>
+        </div>
+      </div>
+
+      <!-- Мои бронирования -->
+      <div id="myBookingsWrap" style="margin-top:32px">
+        <h2 style="margin:0 0 12px;font-size:20px">Мои бронирования</h2>
+        <div id="myBookings" style="display:grid;gap:16px"></div>
+        <div id="myBookingsEmpty" class="card" style="padding:18px;text-align:center;color:var(--muted)">
+          У вас пока нет активных бронирований.
+        </div>
+      </div>
     </section>
   </main>
-
-  <!-- Edit listing modal -->
-  <div id="editListingModal" class="modal" aria-hidden="true">
-    <div class="modal-dialog" role="dialog" aria-label="Редактировать объявление">
-      <header class="modal-header">
-        <h3>Редактировать объявление</h3>
-        <button id="closeEditListing" aria-label="Закрыть"><i data-feather="x"></i></button>
-      </header>
-      <form id="editListingForm" class="post-form">
-        <input type="hidden" name="id">
-        <label>Заголовок<input name="title" required></label>
-        <label>Город<input name="city" required></label>
-        <label>Категория
-          <select name="category" required>
-            <option value="">— Выберите —</option>
-            <option>Студия</option>
-            <option>1‑комнатная</option>
-            <option>2‑комнатная</option>
-            <option>Дом</option>
-            <option>С видом</option>
-          </select>
-        </label>
-        <label>Описание<textarea name="description" rows="3" required></textarea></label>
-        <label>Цена (₽/ночь)<input name="price" type="number" min="0" required></label>
-        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
-          <button type="button" id="cancelEditListing" class="btn">Отмена</button>
-          <button type="submit" class="btn primary">Сохранить</button>
-        </div>
-      </form>
-    </div>
-  </div>
 
   <footer class="site-footer" aria-label="Сайт футер" style="margin-top:28px">
     <div class="footer-inner">
@@ -112,13 +87,11 @@
         <ul>
           <li><a href="/web/rent" data-nav="rent">Арендовать</a></li>
           <li><a href="/web/list" data-nav="list">Сдать в аренду</a></li>
-          <li><a href="/" data-nav="help">Помощь</a></li>
-          <li><a href="/" data-nav="home">Главная</a></li>
-          <li><a href="/web/auth" data-nav="signup">Зарегистрироваться</a></li>
-          <li><a href="/web/favorites" data-nav="favorites">Избранное</a></li>
+          <li><a href="#" data-nav="help" id="footerHelpLink">Помощь</a></li>
+          <li><a href="/web/index" data-nav="home">Главная</a></li>
+          <li><a href="/web/auth" data-nav="signup">Авторизация</a></li>
         </ul>
       </div>
-
       <div class="footer-col">
         <h4 class="footer-heading">О проекте</h4>
         <ul>
@@ -127,7 +100,6 @@
           <li><a href="/#mission">Миссия проекта</a></li>
         </ul>
       </div>
-
       <div class="footer-col">
         <h4 class="footer-heading">Мы в соцсетях</h4>
         <ul class="social-list">
@@ -139,335 +111,8 @@
     </div>
   </footer>
 
-  <script>
-    (function(){
-      // Profile load/save
-      function qs(sel){ return document.querySelector(sel); }
-      const nameEl = qs('#profileName');
-      const emailEl = qs('#profileEmail');
-      const form = qs('#profileForm');
-      const logoutBtn = qs('#logoutBtn');
-
-      function loadProfile() {
-        try {
-          const raw = localStorage.getItem('ugol_user');
-          const user = raw ? JSON.parse(raw) : null;
-          if (user) {
-            nameEl.textContent = user.name || user.email || 'Пользователь';
-            emailEl.textContent = user.email || '—';
-            form.name.value = user.name || '';
-            form.email.value = user.email || '';
-          } else {
-            nameEl.textContent = 'Гость';
-            emailEl.textContent = '—';
-            form.name.value = '';
-            form.email.value = '';
-          }
-        } catch (e) {
-          nameEl.textContent = 'Гость';
-          emailEl.textContent = '—';
-        }
-      }
-      loadProfile();
-
-      if (form) {
-        form.addEventListener('submit', (e)=> {
-          e.preventDefault();
-          try {
-            const fm = new FormData(form);
-            const user = { name: (fm.get('name')||'').toString().trim() || 'user', email: (fm.get('email')||'').toString().trim() || '' };
-            localStorage.setItem('ugol_user', JSON.stringify(user));
-            loadProfile();
-            window.dispatchEvent(new CustomEvent('ugol:login', { detail: { user } }));
-            alert('Данные профиля сохранены (локально, демо).');
-          } catch (err) {
-            alert('Не удалось сохранить профиль (демо).');
-          }
-        });
-      }
-
-      if (logoutBtn) {
-        logoutBtn.addEventListener('click', ()=> {
-          if (!confirm('Выйти из аккаунта?')) return;
-          try {
-            localStorage.removeItem('ugol_user');
-            // optional: clear transient UI state related to session
-            // localStorage.removeItem('ugol_session'); // kept commented as optional
-          } catch(e){}
-          // notify other modules/pages
-          try { window.dispatchEvent(new CustomEvent('ugol:logout')); } catch(e){}
-          // redirect to home after logout
-          window.location.href = '/';
-        });
-      }
-
-      // My listings: stored under 'ugol_my_listings' as array of objects
-      const myListEl = document.getElementById('myListings');
-      const emptyMsg = document.getElementById('myListingsEmpty');
-      const editModal = document.getElementById('editListingModal');
-      const editForm = document.getElementById('editListingForm');
-
-      function loadMyListings() {
-        try {
-          const raw = localStorage.getItem('ugol_my_listings') || '[]';
-          return JSON.parse(raw);
-        } catch (e) { return []; }
-      }
-      function persistMyListings(arr) {
-        try { localStorage.setItem('ugol_my_listings', JSON.stringify(arr)); } catch(e){}
-      }
-      function renderMyListings() {
-        const arr = loadMyListings();
-        myListEl.innerHTML = '';
-        if (!arr.length) {
-          emptyMsg.style.display = '';
-          return;
-        }
-        emptyMsg.style.display = 'none';
-        for (const it of arr) {
-          const art = document.createElement('article');
-          art.className = 'card';
-          art.innerHTML = `
-            <img class="thumb" src="${(it.photo||'/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg')}" alt="${escapeHtml(it.title)}">
-            <div class="card-body">
-              <div class="card-top"><h3 class="title">${escapeHtml(it.title)}</h3></div>
-              <p class="meta">${escapeHtml(it.city)}${it.category ? ' · ' + escapeHtml(it.category) : ''}</p>
-              <p class="desc-snippet">${escapeHtml(it.description||'')}</p>
-              <p class="price">₽${escapeHtml(it.price||0)}/ночь</p>
-              <div style="display:flex;gap:8px;margin-top:auto">
-                <button class="btn viewMy" data-id="${escapeHtml(it.id)}">Подробнее</button>
-                <button class="btn" data-action="edit" data-id="${escapeHtml(it.id)}">Редактировать</button>
-                <button class="btn" data-action="delete" data-id="${escapeHtml(it.id)}">Удалить</button>
-              </div>
-            </div>
-          `;
-          myListEl.appendChild(art);
-        }
-        // wire actions
-        myListEl.querySelectorAll('[data-action="delete"]').forEach(b=>{
-          b.addEventListener('click', ()=>{
-            const id = b.dataset.id;
-            if (!confirm('Удалить объявление?')) return;
-            let arr = loadMyListings();
-            arr = arr.filter(x => x.id !== id);
-            persistMyListings(arr);
-            renderMyListings();
-          });
-        });
-        myListEl.querySelectorAll('[data-action="edit"]').forEach(b=>{
-          b.addEventListener('click', ()=>{
-            const id = b.dataset.id;
-            const arr = loadMyListings();
-            const item = arr.find(x => x.id === id);
-            if (!item) return;
-            // open modal and fill
-            editForm.id.value = item.id;
-            editForm.title.value = item.title || '';
-            editForm.city.value = item.city || '';
-            editForm.category.value = item.category || '';
-            editForm.description.value = item.description || '';
-            editForm.price.value = item.price || '';
-            editModal.setAttribute('aria-hidden','false');
-            setTimeout(()=> editForm.title.focus(), 120);
-          });
-        });
-        myListEl.querySelectorAll('.viewMy').forEach(b=>{
-          b.addEventListener('click', ()=>{
-            const id = b.dataset.id;
-            if (!id) return;
-            window.location.href = `/web/detail?id=${encodeURIComponent(id)}`;
-          });
-        });
-      }
-
-      // Edit modal handlers
-      document.getElementById('closeEditListing')?.addEventListener('click', ()=> editModal.setAttribute('aria-hidden','true'));
-      document.getElementById('cancelEditListing')?.addEventListener('click', ()=> editModal.setAttribute('aria-hidden','true'));
-      editModal.addEventListener('click', (e)=> { if (e.target === editModal) editModal.setAttribute('aria-hidden','true'); });
-
-      editForm.addEventListener('submit', (e)=> {
-        e.preventDefault();
-        const fm = new FormData(editForm);
-        const id = fm.get('id');
-        const data = {
-          id,
-          title: (fm.get('title')||'').toString().trim(),
-          city: (fm.get('city')||'').toString().trim(),
-          category: (fm.get('category')||'').toString().trim(),
-          description: (fm.get('description')||'').toString().trim(),
-          price: Number(fm.get('price')||0),
-          photo: (fm.get('photo')||'') || undefined
-        };
-        const arr = loadMyListings();
-        const idx = arr.findIndex(x => x.id === id);
-        if (idx >= 0) arr[idx] = Object.assign({}, arr[idx], data);
-        else arr.unshift(Object.assign({ id: id || 'm' + Date.now() }, data));
-        persistMyListings(arr);
-        editModal.setAttribute('aria-hidden','true');
-        renderMyListings();
-      });
-
-      // -------------------------
-      // NEW: My Bookings management
-      // Bookings are stored in localStorage under 'ugol_bookings' as array of booking objects.
-      // Each booking: { id, listingId, listingTitle, userEmail, from, to, nights, total, created }
-      // Render bookings for current logged-in user, allow cancel (mark removed) and remove entries.
-      // -------------------------
-      const bookingsWrap = document.createElement('section');
-      bookingsWrap.id = 'myBookingsWrap';
-      bookingsWrap.style.marginTop = '18px';
-      bookingsWrap.innerHTML = `
-        <h2 style="margin:0 0 8px;color:#042018">Мои бронирования</h2>
-        <p id="bookingsEmpty" style="color:var(--muted);margin:0 0 12px">У вас пока нет бронирований.</p>
-        <div id="myBookings" class="listings" style="margin-top:8px"></div>
-      `;
-      // insert bookings section after profile card section
-      const profileSection = document.querySelector('main section');
-      if (profileSection) profileSection.appendChild(bookingsWrap);
-
-      function loadAllBookings() {
-        try {
-          const raw = localStorage.getItem('ugol_bookings') || '[]';
-          return JSON.parse(raw);
-        } catch (e) { return []; }
-      }
-      function persistBookings(arr) {
-        try { localStorage.setItem('ugol_bookings', JSON.stringify(arr)); } catch(e){}
-      }
-      function renderBookings() {
-        const container = document.getElementById('myBookings');
-        const empty = document.getElementById('bookingsEmpty');
-        if (!container) return;
-        container.innerHTML = '';
-        const userRaw = localStorage.getItem('ugol_user');
-        const user = userRaw ? JSON.parse(userRaw) : null;
-        const all = loadAllBookings();
-        const mine = user && user.email ? all.filter(b => b.userEmail === user.email) : [];
-        if (!mine.length) {
-          if (empty) empty.style.display = '';
-          return;
-        }
-        if (empty) empty.style.display = 'none';
-        // render each booking card
-        mine.forEach(b => {
-          const art = document.createElement('article');
-          art.className = 'card';
-          art.innerHTML = `
-            <div class="card-body">
-              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
-                <div style="flex:1">
-                  <h3 style="margin:0 0 6px">${escapeHtml(b.listingTitle || '—')}</h3>
-                  <div style="color:var(--muted);font-size:13px">Заезд: ${escapeHtml(b.from || '—')} — Выезд: ${escapeHtml(b.to || '—')}</div>
-                  <div style="color:var(--muted);font-size:13px;margin-top:6px">Ночей: ${escapeHtml(String(b.nights || 0))} · Итого: ${b.total ? '₽' + escapeHtml(String(b.total)) : '—'}</div>
-                  <div style="color:var(--muted);font-size:12px;margin-top:6px">Создано: ${escapeHtml(new Date(b.created).toLocaleString())}</div>
-                </div>
-                <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
-                  <button class="btn viewBooking" data-id="${escapeHtml(b.id)}">Открыть</button>
-                  <button class="btn" data-action="cancelBooking" data-id="${escapeHtml(b.id)}">${b.cancelled ? 'Удалить' : 'Отменить'}</button>
-                </div>
-              </div>
-            </div>
-          `;
-          container.appendChild(art);
-        });
-        // wire actions
-        container.querySelectorAll('.viewBooking').forEach(btn=>{
-          btn.addEventListener('click', ()=>{
-            const id = btn.dataset.id;
-            if (!id) return;
-            const allBookings = loadAllBookings();
-            const one = allBookings.find(x => x.id === id);
-            if (!one) return;
-            // navigate to listing detail if listingId present
-            if (one.listingId) window.location.href = `/web/detail?id=${encodeURIComponent(one.listingId)}`;
-            else alert('Информация о бронировании:\n' + JSON.stringify(one, null, 2));
-          });
-        });
-        container.querySelectorAll('[data-action="cancelBooking"]').forEach(btn=>{
-          btn.addEventListener('click', ()=>{
-            const id = btn.dataset.id;
-            if (!id) return;
-            let allBookings = loadAllBookings();
-            const idx = allBookings.findIndex(x => x.id === id);
-            if (idx === -1) return;
-            const target = allBookings[idx];
-            if (target.cancelled) {
-              // allow deletion of cancelled booking
-              if (!confirm('Удалить запись бронирования окончательно?')) return;
-              allBookings.splice(idx,1);
-              persistBookings(allBookings);
-              renderBookings();
-              return;
-            }
-            // cancel booking: mark cancelled with timestamp
-            if (!confirm('Вы действительно хотите отменить бронирование?')) return;
-            target.cancelled = true;
-            target.cancelledAt = new Date().toISOString();
-            // optionally record reason etc.
-            allBookings[idx] = target;
-            persistBookings(allBookings);
-            renderBookings();
-          });
-        });
-      }
-
-      // render bookings on load
-      renderBookings();
-
-      // respond to storage changes (e.g., booking created on booking.html)
-      window.addEventListener('storage', (e) => {
-        if (e.key === 'ugol_bookings' || e.key === 'ugol_last_booking' || e.key === 'ugol_user') renderBookings();
-      });
-
-      // Convenience: if booking page saves the last booking under 'ugol_last_booking', convert it into ugol_bookings for current user
-      (function autoIngestLastBooking(){
-        try {
-          const raw = localStorage.getItem('ugol_last_booking');
-          if (!raw) return;
-          const last = JSON.parse(raw);
-          if (!last) return;
-          // check if already ingested (id present in ugol_bookings)
-          const all = loadAllBookings();
-          // create id if not present
-          const id = last.id || ('b' + Date.now());
-          const userRaw = localStorage.getItem('ugol_user');
-          const user = userRaw ? JSON.parse(userRaw) : null;
-          const booking = {
-            id,
-            listingId: last.listingId || last.listingId || null,
-            listingTitle: last.listing || last.listingTitle || 'Бронирование',
-            userEmail: (user && user.email) ? user.email : (last.email || 'guest'),
-            from: last.from || last.arrive || null,
-            to: last.to || last.depart || null,
-            nights: last.nights || 0,
-            total: (last.price && last.price.total) ? last.price.total : (last.total || 0),
-            created: last.created || new Date().toISOString(),
-            cancelled: last.cancelled || false
-          };
-          const exists = all.some(x => x.id === booking.id);
-          if (!exists) {
-            all.unshift(booking);
-            persistBookings(all);
-            // remove ugol_last_booking to avoid duplicate ingestion
-            try { localStorage.removeItem('ugol_last_booking'); } catch(e){}
-            renderBookings();
-          }
-        } catch(e){}
-      })();
-
-      // utility
-      function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-      // initial render
-      renderMyListings();
-
-      // listen for events where user might have added listing elsewhere (demo pages save to ugol_my_listings)
-      window.addEventListener('storage', (e) => {
-        if (e.key === 'ugol_my_listings' || e.key === 'ugol_user') renderMyListings();
-      });
-    })();
-  </script>
-
+  <script src="/static/js/common.js"></script>
+  <script src="/static/js/profile.js"></script>
   <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
 </body>
 </html>
