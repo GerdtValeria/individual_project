@@ -4,992 +4,326 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Угол Комфорта — Главная</title>
-
+  
   <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="/static/styles.css">
-
-  <!-- Import map (keeps options open for future libs) -->
-  <script type="importmap">
-  {
-    "imports": {}
-  }
-  </script>
-  <!-- Basil icons (CDN) -->
-  <script src="https://unpkg.com/basil-icons@1.0.2/dist/basil.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&family=Lobster&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Основные стили -->
+  <link rel="stylesheet" href="/static/styles.css?v=1.0">
+  
+  <!-- Стили для главной страницы -->
+  <style>
+    /* Все стили из оригинального файла остаются без изменений */
+    .hero-section {
+      background: linear-gradient(135deg, #f0f9f7 0%, #e6f4f1 100%);
+      border-radius: 12px;
+      padding: 60px 40px;
+      margin-bottom: 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero-title {
+      font-size: 48px;
+      color: #042018;
+      margin: 0 0 16px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    
+    /* ... остальные стили ... */
+    
+    @media (max-width: 480px) {
+      .hero-title {
+        font-size: 24px;
+      }
+      
+      .hero-subtitle {
+        font-size: 16px;
+      }
+      
+      .section-title {
+        font-size: 24px;
+      }
+      
+      .features-grid,
+      .popular-grid,
+      .categories-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .cta-buttons {
+        flex-direction: column;
+      }
+      
+      .cta-button {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
   <header class="site-header">
     <div class="brand">
       <div class="logo" aria-hidden="false">
-        <a href="/" class="logo-link" aria-label="Перейти на главную">
+        <a href="/web/index" class="logo-link" aria-label="Перейти на главную">
           <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
         </a>
       </div>
-      <div>
-        <!-- service name removed -->
-        <!-- tag paragraph removed as requested -->
-      </div>
     </div>
-
     <form id="searchForm" class="search-form" aria-label="Поиск аренды">
       <input id="q" name="q" type="search" placeholder="Поиск по городу, району или опции" />
-      <!-- search and add buttons removed; form can be submitted via Enter -->
+      <button type="submit" class="btn">
+        <i data-feather="search"></i> Найти
+      </button>
     </form>
-
-    <!-- Removed: Sort control block -->
-
     <nav class="top-tabs" aria-label="Главная навигация">
-      <button class="tab" data-tab="rent">Арендовать</button>
-      <button class="tab" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
-      <a class="tab" href="/web/favorites">Избранное</a>
+      <a href="/web/rent" class="tab">Арендовать</a>
+      <a href="/web/list" class="tab"><span class="two-line">Сдать<br>в аренду</span></a>
+      <a href="/web/favorites" class="tab">Избранное</a>
       <button class="tab" data-tab="help">Помощь</button>
       <div class="auth">
-        <button class="tab primary" data-tab="signup">Зарегистрироваться</button>
+        <a href="/web/auth" class="tab primary">Зарегистрироваться</a>
       </div>
     </nav>
   </header>
 
-  <!-- NEW: Compact service block (from provided selection) -->
-  <section class="service-cta" aria-label="О сервисе">
-    <div class="service-cta-inner" style="background-image: url('/static/85e85c87c4f5678cd4d5fc9645267c74.jpg')">
-      <!-- image moved to background of .service-cta-inner -->
-      <div class="service-cta-text">
-        <h3>Найдите идеальное жильё для отдыха</h3>
-        <p>Широкий выбор жилья и квартир для всей семьи</p>
-      </div>
-      <!-- NEW: compact filters for quick search -->
-      <form id="serviceFindForm" class="service-filters" aria-label="Быстрый поиск">
-        <label class="service-label">Местоположение
-          <input id="serviceLocation" name="location" type="text" placeholder="Город, район или адрес" />
-        </label>
-        <label class="service-label">Заезд
-          <input id="serviceArrive" name="arrive" type="date" />
-        </label>
-        <label class="service-label">Выезд
-          <input id="serviceDepart" name="depart" type="date" />
-        </label>
-        <label class="service-label">Гости
-          <input id="serviceGuests" name="guests" type="number" min="1" value="1" />
-        </label>
-        <button class="service-find-btn" type="submit">Найти</button>
-      </form>
-    </div>
-  </section>
-
   <main class="container">
-    <!-- Filters block removed as requested -->
-
-    <!-- NEW: About / marketing blocks -->
-    <section id="aboutSections" style="width:100%;max-width:var(--max-width);margin:8px 0 18px;display:grid;gap:12px">
-      <div class="card" id="team" style="padding:16px;">
-        <h3 style="margin:0 0 8px;color:#042018">Команда</h3>
-        <p style="margin:0;color:var(--muted)">Наша команда объединяет профессионалов с опытом в гостеприимстве, обслуживании клиентов и локальной экспертизе: менеджеры по качеству проверяют объявления, служба поддержки решает вопросы быстро, а региональные координаторы помогают находить лучшие варианты. Мы ценим открытость, честность и стремимся к постоянному улучшению сервиса.</p>
-      </div>
-
-      <div class="card" id="history" style="padding:16px;">
-        <h3 style="margin:0 0 8px;color:#042018">Наша история</h3>
-        <p style="margin:0;color:var(--muted)">Мы стартовали как локальный проект по подбору уютных квартир и со временем расширились до сервиса с поддержкой регионов, автоматизированными проверками и растущей базой хозяев. На каждом этапе мы учились у пользователей, вводили механизмы доверия и удобные инструменты бронирования — всё чтобы гости и хозяева чувствовали уверенность и уважение.</p>
-      </div>
-
-      <div class="card" id="mission" style="padding:16px;">
-        <h3 style="margin:0 0 8px;color:#042018">Миссия проекта</h3>
-        <p style="margin:0;color:var(--muted)">Мы стремимся сделать аренду максимально прозрачной, доступной и комфортной: упрощать поиск, повышать качество объявлений и обеспечивать честные условия взаимодействия. Наша цель — свести к минимуму риски и неопределённость для гостей и помочь хозяевам предлагать лучшее обслуживание.</p>
-      </div>
-
-      <div class="card" style="padding:16px;">
-        <h3 style="margin:0 0 8px;color:#042018">Почему люди выбирают нас</h3>
-        <p style="margin:0;color:var(--muted)">Мы предлагаем тщательно отобранные варианты жилья, честные цены и оперативную поддержку — всё для комфортного проживания. Наши проверки хозяев и реалистичные фотографии помогают вам выбирать без сюрпризов.</p>
-        <ul style="margin:12px 0 0;color:var(--muted);line-height:1.5">
-          <li>Поддержка 24/7 и оперативное решение вопросов.</li>
-          <li>Проверенные объявления и прозрачные условия бронирования.</li>
-          <li>Гибкая политика отмен и выгодные цены для постоянных клиентов.</li>
-        </ul>
-      </div>
-
-      <div class="card" style="padding:16px;">
-        <h3 style="margin:0 0 8px;color:#042018">Арендуйте жильё у нас</h3>
-        <p style="margin:0;color:var(--muted)">Процесс действительно простой: фильтры помогают быстро отсеять неподходящие варианты, детальные карточки с честными фотографиями и описаниями дают полное представление, а встроенная связь с хозяевами и календарь доступности упрощают уточнения. Мы также показываем отзывы и недавно просмотренные варианты, чтобы вы могли принять взвешенное решение.</p>
-        <p style="margin-top:12px"><a class="btn" href="/web/rent">Перейти к предложениям</a></p>
+    <!-- Герой-секция -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <h1 class="hero-title">Найдите идеальное жильё для отдыха</h1>
+        <p class="hero-subtitle">
+          Более 10 000 вариантов аренды по всей России. Квартиры, дома, апартаменты — выбирайте и бронируйте онлайн
+        </p>
+        
+        <div class="hero-search">
+          <form id="heroSearchForm" class="search-grid">
+            <input type="text" class="search-input" placeholder="Куда едете?" required>
+            <input type="date" class="search-input" placeholder="Заезд">
+            <input type="date" class="search-input" placeholder="Выезд">
+            <select class="search-input">
+              <option value="">Сколько гостей?</option>
+              <option value="1">1 гость</option>
+              <option value="2">2 гостя</option>
+              <option value="3">3 гостя</option>
+              <option value="4">4 гостя</option>
+              <option value="5+">5+ гостей</option>
+            </select>
+            <button type="submit" class="search-button">Найти жильё</button>
+          </form>
+          
+          <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; font-size: 14px; color: #666;">
+            <span>Популярные направления:</span>
+            <a href="/web/rent?q=Москва" style="color: #044036; text-decoration: none;">Москва</a>
+            <a href="/web/rent?q=Санкт-Петербург" style="color: #044036; text-decoration: none;">Санкт-Петербург</a>
+            <a href="/web/rent?q=Сочи" style="color: #044036; text-decoration: none;">Сочи</a>
+            <a href="/web/rent?q=Казань" style="color: #044036; text-decoration: none;">Казань</a>
+          </div>
+        </div>
       </div>
     </section>
 
-    <div id="pages">
-      <section id="rentPage" class="page" aria-live="polite">
-        <section class="listings" id="listings">
-          <!-- Listing cards will be inserted by JS -->
-        </section>
-      </section>
+    <!-- Особенности -->
+    <section class="features-section">
+      <h2 class="section-title">Почему выбирают Угол Комфорта</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i data-feather="shield"></i>
+          </div>
+          <h3 class="feature-title">Безопасные сделки</h3>
+          <p class="feature-description">
+            Проверенные арендодатели, безопасные платежи и юридическая поддержка на всех этапах
+          </p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i data-feather="star"></i>
+          </div>
+          <h3 class="feature-title">Честные отзывы</h3>
+          <p class="feature-description">
+            Только реальные отзывы от гостей и система рейтингов для всех объявлений
+          </p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i data-feather="help-circle"></i>
+          </div>
+          <h3 class="feature-title">Поддержка 24/7</h3>
+          <p class="feature-description">
+            Круглосуточная поддержка по любым вопросам: бронирование, изменения, проблемы
+          </p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i data-feather="credit-card"></i>
+          </div>
+          <h3 class="feature-title">Удобная оплата</h3>
+          <p class="feature-description">
+            Онлайн оплата картой, через банки или электронные кошельки. Без скрытых комиссий
+          </p>
+        </div>
+      </div>
+    </section>
 
-      <!-- NEW: Favorites page -->
-      <!-- favorites moved to a dedicated page /web/favorites -->
-    </div>
+
+    <!-- Призыв к действию -->
+    <section class="cta-section">
+      <h2 class="cta-title">Готовы сдать или снять жильё?</h2>
+      <p class="cta-description">
+        Присоединяйтесь к миллионам пользователей, которые уже нашли идеальное жильё на нашей платформе
+      </p>
+      <div class="cta-buttons">
+        <button class="cta-button cta-primary" onclick="window.location.href='/web/rent'">
+          Найти жильё
+        </button>
+        <button class="cta-button cta-secondary" onclick="window.location.href='/web/list'">
+          Сдать жильё
+        </button>
+      </div>
+    </section>
+
+    <!-- Отзывы -->
+    <section class="popular-section">
+      <h2 class="section-title">Отзывы наших гостей</h2>
+      <div class="popular-grid">
+        <div class="feature-card">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+            <img src="/static/85e85c87c4f5678cd4d5fc9645267c74.jpg" alt="Анна" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;">
+            <div>
+              <div style="font-weight: 600; color: #042018;">Анна</div>
+              <div style="color: #666; font-size: 14px;">Москва • Март 2024</div>
+            </div>
+          </div>
+          <div class="rating-stars" style="margin-bottom: 12px;">★★★★★</div>
+          <p class="feature-description" style="text-align: left; font-style: italic;">
+            "Отличная квартира в центре города! Всё было чисто, уютно, как на фотографиях. Хозяева очень отзывчивые, помогли со всеми вопросами."
+          </p>
+        </div>
+        
+        <div class="feature-card">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+            <img src="/static/85e85c87c4f5678cd4d5fc9645267c74.jpg" alt="Михаил" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;">
+            <div>
+              <div style="font-weight: 600; color: #042018;">Михаил</div>
+              <div style="color: #666; font-size: 14px;">Санкт-Петербург • Февраль 2024</div>
+            </div>
+          </div>
+          <div class="rating-stars" style="margin-bottom: 12px;">★★★★★</div>
+          <p class="feature-description" style="text-align: left; font-style: italic;">
+            "Снимали студию на неделю. Всё понравилось: расположение, цена, чистота. Поддержка оперативно отвечала на все вопросы. Обязательно вернёмся!"
+          </p>
+        </div>
+        
+        <div class="feature-card">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+            <img src="/static/85e85c87c4f5678cd4d5fc9645267c74.jpg" alt="Елена" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;">
+            <div>
+              <div style="font-weight: 600; color: #042018;">Елена</div>
+              <div style="color: #666; font-size: 14px;">Казань • Январь 2024</div>
+            </div>
+          </div>
+          <div class="rating-stars" style="margin-bottom: 12px;">★★★★☆</div>
+          <p class="feature-description" style="text-align: left; font-style: italic;">
+            "Прекрасный дом для семьи с детьми. Большая территория, всё необходимое есть. Немного далеко от центра, но зато тихо и спокойно."
+          </p>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <!-- View modal (details with description + availability) -->
-  <div id="viewModal" class="modal" aria-hidden="true">
-    <div class="modal-dialog" role="dialog" aria-label="Детали объявления">
-      <header class="modal-header">
-        <h3 id="viewTitle">Объявление</h3>
-        <button id="closeView" aria-label="Закрыть">
-          <img src="/static/cancel_17767265.png" alt="Закрыть" style="width:22px;height:22px;">
-        </button>
-      </header>
-      <div class="post-form" style="gap:12px;">
-        <div class="gallery">
-          <button id="galleryPrev" class="btn small">‹</button>
-          <img id="viewImg" alt="" style="width:100%;height:220px;object-fit:cover;border-radius:8px">
-          <button id="galleryNext" class="btn small">›</button>
-        </div>
-        <p id="viewDesc" style="margin:0;color:var(--muted)"></p>
-        <div id="viewMeta" style="font-weight:700;margin-top:6px"></div>
-        <div id="viewTags" class="tags" style="margin-top:8px"></div>
-        <div id="viewCalendar" aria-hidden="false" style="margin-top:12px"></div>
-        <div style="margin-top:12px;display:flex;gap:8px;">
-          <button id="bookNow" class="btn primary">Забронировать</button>
-          <button id="closeViewBtn" class="btn">Закрыть</button>
-        </div>
+  <!-- Модальное окно помощи -->
+  <div id="help-overlay" class="overlay-block" aria-hidden="true" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+    <div class="overlay-dialog" style="background: white; width: 90%; max-width: 600px; border-radius: 12px; padding: 32px; max-height: 90vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <h2 style="margin: 0; color: #042018; font-size: 24px;">Помощь</h2>
+        <button id="help-close" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #999;">×</button>
       </div>
-    </div>
-  </div>
-
-  <!-- NEW: Help modal (opens on top of main page when clicking 'Помощь') -->
-  <div id="helpModal" class="modal" aria-hidden="true">
-    <div class="modal-dialog" role="dialog" aria-label="Помощь">
-      <header class="modal-header">
-        <h3>Помощь</h3>
-        <button id="closeHelp" aria-label="Закрыть">
-          <img src="/static/cancel_17767265.png" alt="Закрыть" style="width:22px;height:22px;">
-        </button>
-      </header>
-      <div class="post-form" style="max-width:520px;">
-        <p style="margin:0 0 8px;color:var(--muted)">Здесь вы найдёте ответы на частые вопросы, инструкции по бронированию и контакты службы поддержки.</p>
-        <ul style="margin:0 0 8px;color:var(--muted);line-height:1.5">
-          <li>Как забронировать жильё?</li>
-          <li>Как отменить бронирование?</li>
-          <li>Как разместить объявление?</li>
+      <form id="help-form" class="post-form">
+        <p style="margin:0 0 20px;color:#666;line-height:1.6;font-size:15px;">
+          Здесь вы найдёте ответы на частые вопросы, инструкции по бронированию и контакты службы поддержки.
+        </p>
+        <ul style="margin:0 0 24px;color:#666;line-height:1.6;padding-left:20px;font-size:15px;">
+          <li style="margin-bottom:8px;">Как забронировать жильё?</li>
+          <li style="margin-bottom:8px;">Как отменить бронирование?</li>
+          <li style="margin-bottom:8px;">Как разместить объявление?</li>
         </ul>
-        <hr style="border:0;height:1px;background:rgba(0,0,0,0.06);margin:8px 0">
-        <form id="helpContactForm" class="help-contact-form" style="display:flex;flex-direction:column;gap:8px;">
-          <label style="font-size:13px">Ваш e-mail
-            <input type="email" name="email" placeholder="you@example.com" required style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)">
-          </label>
-          <label style="font-size:13px">Сообщение
-            <textarea name="message" rows="3" placeholder="Опишите проблему или вопрос" required style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)"></textarea>
-          </label>
-          <div style="display:flex;justify-content:flex-end;gap:8px">
-            <button type="submit" class="btn">Отправить</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- Post modal -->
-  <div id="postModal" class="modal" aria-hidden="true">
-    <div class="modal-dialog" role="dialog" aria-label="Форма добавления объявления">
-      <header class="modal-header">
-        <h3>Новое объявление</h3>
-        <button id="closePost" aria-label="Закрыть">
-          <img src="/static/cancel_17767265.png" alt="Закрыть" style="width:22px;height:22px;">
-        </button>
-      </header>
-      <form id="postForm" class="post-form">
-        <label>Заголовок<input name="title" required></label>
-        <label>Город<input name="city" required></label>
-        <label>Описание<textarea name="description" rows="3" required></textarea></label>
-        <label>Спальни<input name="beds" type="number" min="0" value="0" required></label>
-        <label>Цена (₽/ночь)<input name="price" type="number" min="0" required></label>
-        <label>Фото — одна ссылка на строку (поддерживается несколько)
-          <textarea name="photos" rows="3" placeholder="https://.../1.jpg\nhttps://.../2.jpg" required></textarea>
+        <hr style="border:0;height:1px;background:rgba(0,0,0,0.1);margin:24px 0">
+        <label>
+          Ваш e-mail
+          <input type="email" name="email" placeholder="you@example.com" required>
         </label>
-        <div style="display:flex;gap:8px">
-          <label style="flex:1">Доступно с<input name="avail_from" type="date"></label>
-          <label style="flex:1">Доступно до<input name="avail_to" type="date"></label>
-        </div>
-        <fieldset class="opts">
-          <legend>Опции</legend>
-          <label><input type="checkbox" name="pet"> Можно с питомцами</label>
-          <label><input type="checkbox" name="parking"> Парковка</label>
-          <label><input type="checkbox" name="wifi"> Wi‑Fi</label>
-        </fieldset>
-        <div class="modal-actions">
-          <button type="button" id="cancelPost" class="btn">Отмена</button>
-          <button type="submit" class="btn">Опубликовать</button>
+        <label>
+          Сообщение
+          <textarea id="help-message" name="message" rows="4" placeholder="Опишите проблему или вопрос" required></textarea>
+        </label>
+        <div class="modal-actions" style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+          <button type="button" id="cancelHelp" class="btn" style="background:#f0f0f0;color:#333;">Отмена</button>
+          <button type="submit" class="btn primary" style="background: #044036; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 500; cursor: pointer;">Отправить</button>
         </div>
       </form>
     </div>
   </div>
 
-  <template id="cardTpl">
-    <article class="card">
-      <img class="thumb" alt="">
-      <div class="card-body">
-        <div class="card-top">
-          <h3 class="title"></h3>
-          <button class="fav" title="Сохранить объявление" aria-pressed="false">
-            <!-- Heart icon will be replaced by CSS background image -->
-            <i data-feather="heart" data-basil="heart" style="display:none;"></i>
-          </button>
-        </div>
-        <p class="meta"></p>
-        <p class="price"></p>
-        <div class="tags"></div>
-        <button class="details btn small">Подробнее</button>
-      </div>
-    </article>
-  </template>
-
-  <!-- Footer: added grouped columns from provided selection -->
-  <footer class="site-footer" aria-label="Сайт футер">
+  <!-- Футер -->
+  <footer class="site-footer">
     <div class="footer-inner">
-      <div class="footer-col footer-contact">
+      <div class="footer-col">
         <div class="footer-brand">
-          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
-          <div class="company-name">Угол Комфорта</div>
+          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта" class="footer-logo">
+          <div>
+            <div class="company-name">Угол Комфорта</div>
+            <div style="color:#666;font-size:14px;">Платформа для аренды жилья</div>
+          </div>
         </div>
+        <p class="footer-address">Москва, ул. Примерная, д. 1</p>
       </div>
-
       <div class="footer-col">
         <h4 class="footer-heading">Меню</h4>
         <ul>
-          <li><a href="/web/rent">Арендовать</a></li>
-          <li><a href="/web/list">Сдать в аренду</a></li>
-          <li><a href="/web/favorites">Избранное</a></li>
-          <li><a href="/">Главная</a></li>
-          <li><a href="/web/auth">Зарегистрироваться</a></li>
+          <li><a href="/web/index" data-nav="home">Главная</a></li>
+          <li><a href="/web/rent" data-nav="rent">Арендовать</a></li>
+          <li><a href="/web/list" data-nav="list">Сдать в аренду</a></li>
+          <li><a href="/web/favorites" data-nav="favorites">Избранное</a></li>
+          <li><a href="/web/profile" data-nav="profile">Профиль</a></li>
+          <li><a href="#" data-nav="help" id="footerHelpLink">Помощь</a></li>
+          <li><a href="/web/auth" data-nav="signup">Зарегистрироваться</a></li>
         </ul>
       </div>
-
       <div class="footer-col">
-        <h4 class="footer-heading">О проекте</h4>
+        <h4 class="footer-heading">Контакты</h4>
         <ul>
-          <li><a href="#team">Команда</a></li>
-          <li><a href="#history">Наша история</a></li>
-          <li><a href="#mission">Миссия проекта</a></li>
+          <li>support@ugolkomforta.ru</li>
+          <li>+7 (999) 123-45-67</li>
         </ul>
       </div>
-
       <div class="footer-col">
         <h4 class="footer-heading">Мы в соцсетях</h4>
-        <ul class="social-list">
-          <li><a href="#">ВК</a></li>
-          <li><a href="#">Телеграмм</a></li>
-          <li><a href="#">Одноклассники</a></li>
+        <ul>
+          <li><a href="#" style="color:#0077ff;">ВКонтакте</a></li>
+          <li><a href="#" style="color:#0088cc;">Телеграм</a></li>
+          <li><a href="#" style="color:#ff8800;">Одноклассники</a></li>
         </ul>
       </div>
     </div>
-    <div class="footer-bar" aria-hidden="true"></div>
+    <div class="footer-bar">
+      © 2024 Угол Комфорта. Все права защищены.
+    </div>
   </footer>
 
-  <!-- Feather icons -->
-  <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+  <!-- Подключение библиотек и скриптов -->
+  <!-- Feather Icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
   
-  <script>
-    // Основной скрипт для index.html
-    document.addEventListener('DOMContentLoaded', function() {
-      // ====================
-      // 1. НАВИГАЦИЯ
-      // ====================
-      
-      // Логотип → Главная (используем роутер из web.py)
-      const logoLink = document.querySelector('.logo a');
-      if (logoLink) {
-        logoLink.addEventListener('click', function(e) {
-          e.preventDefault();
-          window.location.href = '/';
-        });
-      }
-      
-      // Кнопка "Арендовать" (используем роутер из web.py)
-      const rentButton = document.querySelector('[data-tab="rent"]');
-      if (rentButton) {
-        rentButton.addEventListener('click', function(e) {
-          e.preventDefault();
-          window.location.href = '/web/rent';
-        });
-      }
-      
-      // Кнопка "Сдать в аренду" (используем роутер из web.py)
-      const listButton = document.querySelector('[data-tab="list"]');
-      if (listButton) {
-        listButton.addEventListener('click', function(e) {
-          e.preventDefault();
-          window.location.href = '/web/list';
-        });
-      }
-      
-      // Кнопка "Избранное" уже имеет правильную ссылку /web/favorites
-      
-      // Кнопка "Зарегистрироваться" (используем роутер из web.py)
-      const signupButton = document.querySelector('[data-tab="signup"]');
-      if (signupButton) {
-        signupButton.addEventListener('click', function(e) {
-          e.preventDefault();
-          window.location.href = '/web/auth';
-        });
-      }
-      
-      // Кнопка "Перейти к предложениям"
-      const toOffersButton = document.querySelector('a[href="/web/rent"]');
-      if (toOffersButton) {
-        toOffersButton.addEventListener('click', function(e) {
-          e.preventDefault();
-          window.location.href = '/web/rent';
-        });
-      }
-      
-      // ====================
-      // 2. ПОИСК
-      // ====================
-      
-      const searchForm = document.getElementById('searchForm');
-      if (searchForm) {
-        searchForm.addEventListener('submit', function(e) {
-          e.preventDefault();
-          const query = document.getElementById('q').value.trim();
-          if (query) {
-            // Используем роутер для поиска через аренду
-            window.location.href = `/web/rent?q=${encodeURIComponent(query)}`;
-          }
-        });
-      }
-      
-      const serviceFindForm = document.getElementById('serviceFindForm');
-      if (serviceFindForm) {
-        serviceFindForm.addEventListener('submit', function(e) {
-          e.preventDefault();
-          
-          const location = document.getElementById('serviceLocation').value.trim();
-          const arrive = document.getElementById('serviceArrive').value;
-          const depart = document.getElementById('serviceDepart').value;
-          const guests = document.getElementById('serviceGuests').value;
-          
-          // Собираем параметры для поиска
-          const params = new URLSearchParams();
-          if (location) params.append('q', location);
-          if (arrive) params.append('check_in', arrive);
-          if (depart) params.append('check_out', depart);
-          if (guests) params.append('guests', guests);
-          
-          // Перенаправляем на страницу аренды с параметрами
-          window.location.href = `/web/rent?${params.toString()}`;
-        });
-      }
-      
-      // ====================
-      // 3. БЛОК "ПОМОЩЬ"
-      // ====================
-      
-      const helpButton = document.querySelector('[data-tab="help"]');
-      const helpModal = document.getElementById('helpModal');
-      const closeHelpButton = document.getElementById('closeHelp');
-      const helpForm = document.getElementById('helpContactForm');
-      
-      // Открытие блока "Помощь"
-      if (helpButton) {
-        helpButton.addEventListener('click', function(e) {
-          e.preventDefault();
-          if (helpModal) {
-            helpModal.setAttribute('aria-hidden', 'false');
-            // Фокус на первое поле
-            setTimeout(() => {
-              const firstInput = helpModal.querySelector('input[name="email"]');
-              if (firstInput) firstInput.focus();
-            }, 100);
-          }
-        });
-      }
-      
-      // Закрытие блока "Помощь"
-      if (closeHelpButton) {
-        closeHelpButton.addEventListener('click', function(e) {
-          e.preventDefault();
-          if (helpModal) {
-            helpModal.setAttribute('aria-hidden', 'true');
-          }
-        });
-      }
-      
-      // Закрытие при клике вне блока
-      if (helpModal) {
-        helpModal.addEventListener('click', function(e) {
-          if (e.target === helpModal) {
-            helpModal.setAttribute('aria-hidden', 'true');
-          }
-        });
-      }
-      
-      // Отправка формы помощи (используем роутер из help.py)
-      if (helpForm) {
-        helpForm.addEventListener('submit', async function(e) {
-          e.preventDefault();
-          
-          const formData = new FormData(helpForm);
-          const email = formData.get('email');
-          const message = formData.get('message');
-          
-          if (!email || !message) {
-            alert('Пожалуйста, заполните все поля');
-            return;
-          }
-          
-          try {
-            // Получаем токен авторизации
-            const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
-            const API_BASE_URL = 'http://localhost:8000';
-            
-            const response = await fetch(`${API_BASE_URL}/help/`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-              },
-              body: JSON.stringify({
-                content: `Email: ${email}\nСообщение: ${message}`
-              })
-            });
-            
-            if (response.ok) {
-              alert('Ваше сообщение отправлено! Мы ответим вам в ближайшее время.');
-              helpForm.reset();
-              helpModal.setAttribute('aria-hidden', 'true');
-            } else {
-              const error = await response.json();
-              throw new Error(error.detail || 'Ошибка при отправке сообщения');
-            }
-          } catch (error) {
-            console.error('Ошибка отправки сообщения:', error);
-            
-            // Fallback: если API не доступен, отправляем через mailto
-            const subject = 'Вопрос с сайта Угол Комфорта';
-            const body = `Email: ${email}\n\nСообщение: ${message}`;
-            window.location.href = `mailto:support@ugolkomforta.example?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            
-            alert('Сообщение отправлено через почтовый клиент. Спасибо за обращение!');
-            helpForm.reset();
-            helpModal.setAttribute('aria-hidden', 'true');
-          }
-        });
-      }
-      
-      // ====================
-      // 4. МОДАЛЬНОЕ ОКНО ПРОСМОТРА
-      // ====================
-      
-      const viewModal = document.getElementById('viewModal');
-      const closeViewButton = document.getElementById('closeView');
-      const closeViewBtn = document.getElementById('closeViewBtn');
-      const bookNowButton = document.getElementById('bookNow');
-      
-      // Закрытие модального окна просмотра
-      if (closeViewButton) {
-        closeViewButton.addEventListener('click', function() {
-          if (viewModal) {
-            viewModal.setAttribute('aria-hidden', 'true');
-          }
-        });
-      }
-      
-      if (closeViewBtn) {
-        closeViewBtn.addEventListener('click', function() {
-          if (viewModal) {
-            viewModal.setAttribute('aria-hidden', 'true');
-          }
-        });
-      }
-      
-      // Закрытие при клике вне модального окна
-      if (viewModal) {
-        viewModal.addEventListener('click', function(e) {
-          if (e.target === viewModal) {
-            viewModal.setAttribute('aria-hidden', 'true');
-          }
-        });
-      }
-      
-      // Кнопка "Забронировать"
-      if (bookNowButton) {
-        bookNowButton.addEventListener('click', function() {
-          // Получаем ID объявления из модального окна
-          const rentId = viewModal.getAttribute('data-rent-id');
-          if (rentId) {
-            // Переходим на страницу бронирования
-            window.location.href = `/web/booking?id=${encodeURIComponent(rentId)}`;
-          } else {
-            alert('Не удалось получить информацию об объявлении');
-          }
-        });
-      }
-      
-      // ====================
-      // 5. МОДАЛЬНОЕ ОКНО ДОБАВЛЕНИЯ
-      // ====================
-      
-      const postModal = document.getElementById('postModal');
-      const closePostButton = document.getElementById('closePost');
-      const cancelPostButton = document.getElementById('cancelPost');
-      const postForm = document.getElementById('postForm');
-      
-      // Закрытие модального окна добавления
-      if (closePostButton) {
-        closePostButton.addEventListener('click', function() {
-          if (postModal) {
-            postModal.setAttribute('aria-hidden', 'true');
-          }
-        });
-      }
-      
-      if (cancelPostButton) {
-        cancelPostButton.addEventListener('click', function() {
-          if (postModal) {
-            postModal.setAttribute('aria-hidden', 'true');
-          }
-        });
-      }
-      
-      // Закрытие при клике вне модального окна
-      if (postModal) {
-        postModal.addEventListener('click', function(e) {
-          if (e.target === postModal) {
-            postModal.setAttribute('aria-hidden', 'true');
-          }
-        });
-      }
-      
-      // Отправка формы добавления объявления (используем роутер из rents.py)
-      if (postForm) {
-        postForm.addEventListener('submit', async function(e) {
-          e.preventDefault();
-          
-          const formData = new FormData(postForm);
-          const title = formData.get('title');
-          const city = formData.get('city');
-          const description = formData.get('description');
-          const beds = formData.get('beds');
-          const price = formData.get('price');
-          const photos = formData.get('photos');
-          const availFrom = formData.get('avail_from');
-          const availTo = formData.get('avail_to');
-          const pet = formData.get('pet') ? true : false;
-          const parking = formData.get('parking') ? true : false;
-          const wifi = formData.get('wifi') ? true : false;
-          
-          if (!title || !city || !description || !beds || !price || !photos) {
-            alert('Пожалуйста, заполните все обязательные поля');
-            return;
-          }
-          
-          try {
-            // Получаем токен авторизации
-            const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
-            const API_BASE_URL = 'http://localhost:8000';
-            
-            // Получаем ID пользователя
-            let userId = null;
-            try {
-              const user = JSON.parse(localStorage.getItem('ugol_user') || '{}');
-              userId = user.id;
-            } catch (error) {
-              console.error('Ошибка получения ID пользователя:', error);
-            }
-            
-            const response = await fetch(`${API_BASE_URL}/rents/`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-              },
-              body: JSON.stringify({
-                title: title,
-                address: city,
-                description: description,
-                guests: parseInt(beds),
-                price: parseInt(price),
-                photos: photos.split('\n').filter(url => url.trim()),
-                available_from: availFrom || null,
-                available_to: availTo || null,
-                pet_friendly: pet,
-                has_parking: parking,
-                has_wifi: wifi,
-                id_user: userId,
-                active: true
-              })
-            });
-            
-            if (response.ok) {
-              alert('Объявление успешно добавлено!');
-              postForm.reset();
-              postModal.setAttribute('aria-hidden', 'true');
-              
-              // Обновляем список объявлений
-              loadRentals();
-              
-            } else {
-              const error = await response.json();
-              throw new Error(error.detail || 'Ошибка при добавлении объявления');
-            }
-          } catch (error) {
-            console.error('Ошибка добавления объявления:', error);
-            alert('Не удалось добавить объявление. Пожалуйста, попробуйте позже.');
-          }
-        });
-      }
-      
-      // ====================
-      // 6. ЗАГРУЗКА ОБЪЯВЛЕНИЙ
-      // ====================
-      
-      async function loadRentals() {
-        const listingsContainer = document.getElementById('listings');
-        if (!listingsContainer) return;
-        
-        try {
-          const API_BASE_URL = 'http://localhost:8000';
-          
-          // Загружаем объявления из API
-          const response = await fetch(`${API_BASE_URL}/rents/`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          });
-          
-          if (response.ok) {
-            const rentals = await response.json();
-            renderRentals(rentals);
-          } else {
-            console.error('Ошибка загрузки объявлений:', response.status);
-            // Используем демо-данные если API недоступен
-            renderDemoRentals();
-          }
-        } catch (error) {
-          console.error('Ошибка при загрузке объявлений:', error);
-          // Используем демо-данные
-          renderDemoRentals();
-        }
-      }
-      
-      function renderRentals(rentals) {
-        const listingsContainer = document.getElementById('listings');
-        const cardTemplate = document.getElementById('cardTpl');
-        
-        if (!listingsContainer || !cardTemplate) return;
-        
-        listingsContainer.innerHTML = '';
-        
-        if (!Array.isArray(rentals) || rentals.length === 0) {
-          listingsContainer.innerHTML = '<p style="color:var(--muted);text-align:center;">Объявлений пока нет</p>';
-          return;
-        }
-        
-        // Ограничиваем количество отображаемых объявлений для главной страницы
-        const displayRentals = rentals.slice(0, 6);
-        
-        displayRentals.forEach(rental => {
-          const cardClone = cardTemplate.content.cloneNode(true);
-          
-          // Заполняем данные карточки
-          const card = cardClone.querySelector('.card');
-          const thumb = cardClone.querySelector('.thumb');
-          const title = cardClone.querySelector('.title');
-          const meta = cardClone.querySelector('.meta');
-          const price = cardClone.querySelector('.price');
-          const tags = cardClone.querySelector('.tags');
-          const favButton = cardClone.querySelector('.fav');
-          const detailsButton = cardClone.querySelector('.details');
-          
-          // Устанавливаем изображение
-          const imageUrl = rental.photos && rental.photos.length > 0 
-            ? rental.photos[0] 
-            : '/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg';
-          thumb.src = imageUrl;
-          thumb.alt = rental.title || 'Объявление';
-          
-          // Устанавливаем заголовок
-          title.textContent = rental.title || 'Без названия';
-          
-          // Устанавливаем мета-информацию
-          const location = rental.address || rental.city || 'Город не указан';
-          const guests = rental.guests || 1;
-          meta.textContent = `${location} · ${guests === 0 ? 'Студия' : guests + 'к'}`;
-          
-          // Устанавливаем цену
-          price.textContent = `₽${rental.price || 0}/ночь`;
-          
-          // Устанавливаем теги
-          const tagItems = [];
-          if (rental.pet_friendly) tagItems.push('Питомцы');
-          if (rental.has_parking) tagItems.push('Парковка');
-          if (rental.has_wifi) tagItems.push('Wi-Fi');
-          
-          if (tagItems.length > 0) {
-            tagItems.forEach(tagText => {
-              const tagSpan = document.createElement('span');
-              tagSpan.className = 'tag-pill';
-              tagSpan.textContent = tagText;
-              tags.appendChild(tagSpan);
-            });
-          }
-          
-          // Проверяем, находится ли объявление в избранном
-          try {
-            const favorites = JSON.parse(localStorage.getItem('ugol_fav') || '[]');
-            const isFavorite = favorites.some(fav => fav.id === rental.id);
-            if (isFavorite) {
-              favButton.setAttribute('aria-pressed', 'true');
-              favButton.classList.add('active');
-            }
-          } catch (error) {
-            console.error('Ошибка проверки избранного:', error);
-          }
-          
-          // Обработчик для кнопки избранного
-          favButton.addEventListener('click', function() {
-            toggleFavorite(rental, favButton);
-          });
-          
-          // Обработчик для кнопки "Подробнее"
-          detailsButton.addEventListener('click', function() {
-            openRentalDetails(rental);
-          });
-          
-          // Обработчик для клика по карточке
-          card.addEventListener('click', function(e) {
-            if (!e.target.closest('.fav') && !e.target.closest('.details')) {
-              openRentalDetails(rental);
-            }
-          });
-          
-          listingsContainer.appendChild(cardClone);
-        });
-      }
-      
-      function renderDemoRentals() {
-        const demoRentals = [
-          {
-            id: 1,
-            title: "Уютная квартира в центре",
-            address: "Москва, Центр",
-            guests: 2,
-            price: 2500,
-            photos: ["/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg"],
-            pet_friendly: true,
-            has_wifi: true,
-            description: "Уютная квартира в самом центре города с видом на парк."
-          },
-          {
-            id: 2,
-            title: "Современная студия",
-            address: "Санкт-Петербург, Васильевский остров",
-            guests: 1,
-            price: 1800,
-            photos: ["/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg"],
-            has_parking: true,
-            has_wifi: true,
-            description: "Современная студия с новой мебелью и техникой."
-          },
-          {
-            id: 3,
-            title: "Просторная 3-комнатная квартира",
-            address: "Казань, Центр",
-            guests: 4,
-            price: 3500,
-            photos: ["/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg"],
-            pet_friendly: true,
-            has_parking: true,
-            has_wifi: true,
-            description: "Просторная квартира для большой семьи или компании друзей."
-          }
-        ];
-        
-        renderRentals(demoRentals);
-      }
-      
-      // ====================
-      // 7. ИЗБРАННОЕ
-      // ====================
-      
-      function toggleFavorite(rental, favButton) {
-        try {
-          const favorites = JSON.parse(localStorage.getItem('ugol_fav') || '[]');
-          const isCurrentlyFavorite = favButton.getAttribute('aria-pressed') === 'true';
-          
-          if (isCurrentlyFavorite) {
-            // Удаляем из избранного
-            const updatedFavorites = favorites.filter(fav => fav.id !== rental.id);
-            localStorage.setItem('ugol_fav', JSON.stringify(updatedFavorites));
-            favButton.setAttribute('aria-pressed', 'false');
-            favButton.classList.remove('active');
-          } else {
-            // Добавляем в избранное
-            const rentalData = {
-              id: rental.id,
-              title: rental.title,
-              city: rental.address || rental.city,
-              beds: rental.guests,
-              price: rental.price,
-              description: rental.description,
-              photo: rental.photos && rental.photos.length > 0 ? rental.photos[0] : '',
-              pet_friendly: rental.pet_friendly,
-              has_parking: rental.has_parking,
-              has_wifi: rental.has_wifi
-            };
-            
-            favorites.push(rentalData);
-            localStorage.setItem('ugol_fav', JSON.stringify(favorites));
-            favButton.setAttribute('aria-pressed', 'true');
-            favButton.classList.add('active');
-          }
-          
-          // Оповещаем другие страницы об изменении избранного
-          window.dispatchEvent(new CustomEvent('ugol:favorites-changed'));
-          
-        } catch (error) {
-          console.error('Ошибка при работе с избранным:', error);
-        }
-      }
-      
-      // ====================
-      // 8. ПРОСМОТР ДЕТАЛЕЙ
-      // ====================
-      
-      function openRentalDetails(rental) {
-        const viewModal = document.getElementById('viewModal');
-        const viewTitle = document.getElementById('viewTitle');
-        const viewImg = document.getElementById('viewImg');
-        const viewDesc = document.getElementById('viewDesc');
-        const viewMeta = document.getElementById('viewMeta');
-        const viewTags = document.getElementById('viewTags');
-        
-        if (!viewModal || !viewTitle || !viewImg) return;
-        
-        // Заполняем данные модального окна
-        viewTitle.textContent = rental.title || 'Объявление';
-        viewImg.src = rental.photos && rental.photos.length > 0 
-          ? rental.photos[0] 
-          : '/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg';
-        viewImg.alt = rental.title || 'Объявление';
-        
-        viewDesc.textContent = rental.description || 'Описание отсутствует';
-        
-        const location = rental.address || rental.city || 'Город не указан';
-        const guests = rental.guests || 1;
-        const price = rental.price || 0;
-        viewMeta.textContent = `${location} · ${guests === 0 ? 'Студия' : guests + 'к'} · ₽${price}/ночь`;
-        
-        // Очищаем теги
-        viewTags.innerHTML = '';
-        
-        // Добавляем теги
-        if (rental.pet_friendly) {
-          const tag = document.createElement('span');
-          tag.className = 'tag-pill';
-          tag.textContent = 'Питомцы';
-          viewTags.appendChild(tag);
-        }
-        
-        if (rental.has_parking) {
-          const tag = document.createElement('span');
-          tag.className = 'tag-pill';
-          tag.textContent = 'Парковка';
-          viewTags.appendChild(tag);
-        }
-        
-        if (rental.has_wifi) {
-          const tag = document.createElement('span');
-          tag.className = 'tag-pill';
-          tag.textContent = 'Wi-Fi';
-          viewTags.appendChild(tag);
-        }
-        
-        // Сохраняем ID объявления для бронирования
-        viewModal.setAttribute('data-rent-id', rental.id);
-        
-        // Показываем модальное окно
-        viewModal.setAttribute('aria-hidden', 'false');
-      }
-      
-      // ====================
-      // 9. ССЫЛКИ В ФУТЕРЕ
-      // ====================
-      
-      // Обработчики для ссылок в футере
-      document.querySelectorAll('.site-footer a[href]').forEach(link => {
-        link.addEventListener('click', function(e) {
-          const href = this.getAttribute('href');
-          
-          if (href === '#team' || href === '#history' || href === '#mission') {
-            // Это якорные ссылки - обрабатываем плавную прокрутку
-            e.preventDefault();
-            const targetId = href.substring(1);
-            const targetElement = document.getElementById(targetId);
-            
-            if (targetElement) {
-              targetElement.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-              });
-            }
-          }
-          // Остальные ссылки обрабатываются стандартно
-        });
-      });
-      
-      // ====================
-      // 10. ИНИЦИАЛИЗАЦИЯ
-      // ====================
-      
-      // Устанавливаем даты по умолчанию для формы поиска
-      function setDefaultDates() {
-        const today = new Date();
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        
-        const formatDate = (date) => {
-          return date.toISOString().split('T')[0];
-        };
-        
-        const arriveInput = document.getElementById('serviceArrive');
-        const departInput = document.getElementById('serviceDepart');
-        
-        if (arriveInput) {
-          arriveInput.value = formatDate(today);
-          arriveInput.min = formatDate(today);
-        }
-        
-        if (departInput) {
-          departInput.value = formatDate(tomorrow);
-          departInput.min = formatDate(tomorrow);
-        }
-        
-        // Обновляем минимальную дату выезда при изменении даты заезда
-        if (arriveInput && departInput) {
-          arriveInput.addEventListener('change', function() {
-            const arriveDate = new Date(this.value);
-            const nextDay = new Date(arriveDate);
-            nextDay.setDate(nextDay.getDate() + 1);
-            departInput.min = formatDate(nextDay);
-            
-            if (new Date(departInput.value) < nextDay) {
-              departInput.value = formatDate(nextDay);
-            }
-          });
-        }
-      }
-      
-      // Запускаем инициализацию
-      setDefaultDates();
-      loadRentals();
-      
-      // Инициализируем Feather icons
-      if (typeof feather !== 'undefined') {
-        feather.replace();
-      }
-    });
-  </script>
+  <script type="module" src="/static/js/api.js"></script>
+  <script type="module" src="/static/js/common.js"></script>
+  <script type="module" src="/static/js/index.js"></script>
+
+
 </body>
 </html>

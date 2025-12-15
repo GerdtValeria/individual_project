@@ -4,363 +4,483 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Угол Комфорта — Бронирование</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&family=Lobster&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Основные стили -->
   <link rel="stylesheet" href="/static/styles.css">
+  
+  <style>
+    /* Стили для страницы бронирования */
+    .booking-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .page-title {
+      font-size: 32px;
+      color: #042018;
+      margin: 0 0 8px;
+      font-weight: 700;
+    }
+    
+    .page-subtitle {
+      color: #666;
+      font-size: 16px;
+      margin: 0;
+    }
+    
+    .booking-content {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    
+    @media (min-width: 768px) {
+      .booking-content {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    .booking-summary {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    
+    .summary-title {
+      font-size: 20px;
+      color: #042018;
+      margin: 0 0 20px;
+      font-weight: 600;
+    }
+    
+    .listing-preview {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .listing-image {
+      width: 120px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    
+    .listing-info {
+      flex: 1;
+    }
+    
+    .listing-name {
+      font-size: 18px;
+      color: #042018;
+      margin: 0 0 8px;
+      font-weight: 600;
+    }
+    
+    .listing-location {
+      color: #666;
+      font-size: 14px;
+      margin: 0 0 8px;
+    }
+    
+    .listing-price {
+      font-size: 20px;
+      color: #044036;
+      font-weight: 700;
+    }
+    
+    .booking-details {
+      margin-bottom: 24px;
+    }
+    
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+    
+    .detail-label {
+      color: #666;
+    }
+    
+    .detail-value {
+      color: #042018;
+      font-weight: 500;
+    }
+    
+    .total-price {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 2px solid #eee;
+      font-size: 20px;
+      font-weight: 700;
+      color: #042018;
+    }
+    
+    .total-amount {
+      color: #044036;
+      font-size: 24px;
+    }
+    
+    .booking-form-section {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    
+    .form-title {
+      font-size: 20px;
+      color: #042018;
+      margin: 0 0 20px;
+      font-weight: 600;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      color: #042018;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: #044036;
+    }
+    
+    .dates-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    
+    .payment-section {
+      margin-top: 32px;
+    }
+    
+    .payment-options {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    
+    .payment-option {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    
+    .payment-option.selected {
+      border-color: #044036;
+      background: #f0f9f7;
+    }
+    
+    .payment-icon {
+      width: 24px;
+      height: 24px;
+      margin-right: 12px;
+    }
+    
+    .payment-name {
+      font-weight: 500;
+    }
+    
+    .terms-checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+    
+    .terms-checkbox input {
+      margin-top: 3px;
+    }
+    
+    .booking-actions {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .btn-back {
+      padding: 14px 24px;
+      background: #f5f5f5;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      flex: 1;
+    }
+    
+    .btn-confirm {
+      padding: 14px 24px;
+      background: #044036;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      flex: 1;
+    }
+    
+    /* Адаптация */
+    @media (max-width: 768px) {
+      .booking-content {
+        grid-template-columns: 1fr;
+      }
+      
+      .dates-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .booking-actions {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 <body>
   <header class="site-header">
     <div class="brand">
       <div class="logo" aria-hidden="false">
-        <a href="/" class="logo-link" aria-label="Перейти на главную">
+        <a href="/web/index" class="logo-link" aria-label="Перейти на главную">
           <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
         </a>
       </div>
     </div>
+    <form id="searchForm" class="search-form" aria-label="Поиск аренды">
+      <input id="q" name="q" type="search" placeholder="Поиск по городу, району или опции" />
+      <button type="submit" class="btn">
+        <i data-feather="search"></i> Найти
+      </button>
+    </form>
     <nav class="top-tabs" aria-label="Главная навигация">
-      <button class="tab" data-tab="rent">Арендовать</button>
-      <button class="tab" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
-      <a class="tab" href="/web/favorites">Избранное</a>
+      <a href="/web/rent" class="tab">Арендовать</a>
+      <a href="/web/list" class="tab"><span class="two-line">Сдать<br>в аренду</span></a>
+      <a href="/web/favorites" class="tab">Избранное</a>
       <button class="tab" data-tab="help">Помощь</button>
       <div class="auth">
-        <button class="tab primary" data-tab="signup">Зарегистрироваться</button>
+        <a href="/web/auth" class="tab primary">Зарегистрироваться</a>
       </div>
     </nav>
   </header>
 
-  <!-- NEW: In-page Help overlay block (opens on top of booking page when clicking 'Помощь') -->
-  <div id="helpBlock" class="overlay-block" aria-hidden="true">
-    <div class="overlay-dialog" role="dialog" aria-label="Помощь">
-      <header class="modal-header">
-        <h3>Помощь</h3>
-        <button id="closeHelpBlock" aria-label="Закрыть"><i data-feather="x"></i></button>
-      </header>
-      <div class="post-form" style="max-width:520px;">
-        <p style="margin:0 0 8px;color:var(--muted)">Здесь вы найдёте ответы на частые вопросы, инструкции по бронированию и контакты службы поддержки.</p>
-        <ul style="margin:0 0 8px;color:var(--muted);line-height:1.5">
-          <li>Как забронировать жильё?</li>
-          <li>Как отменить бронирование?</li>
-          <li>Как связаться со службой поддержки?</li>
-        </ul>
-        <hr style="border:0;height:1px;background:rgba(0,0,0,0.06);margin:8px 0">
-        <form id="helpContactFormBooking" class="help-contact-form" style="display:flex;flex-direction:column;gap:8px;">
-          <label style="font-size:13px">Ваш e-mail
-            <input type="email" name="email" placeholder="you@example.com" required style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)">
-          </label>
-          <label style="font-size:13px">Сообщение
-            <textarea name="message" rows="3" placeholder="Опишите проблему или вопрос" required style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)"></textarea>
-          </label>
-          <div style="display:flex;justify-content:flex-end;gap:8px">
-            <button type="submit" class="btn">Отправить</button>
-            <button type="button" id="closeHelpBtn" class="btn">Закрыть</button>
-          </div>
-        </form>
+  <main class="container">
+    <div class="booking-container">
+      <!-- Заголовок страницы -->
+      <div class="page-header">
+        <h1 class="page-title">Бронирование жилья</h1>
+        <p class="page-subtitle">Завершите бронирование, указав даты и количество гостей</p>
       </div>
-    </div>
-  </div>
 
-  <main class="container" style="padding:18px;">
-    <section style="max-width:900px;margin:0 auto">
-      <h1 style="margin:0 0 12px;font-size:24px;color:#042018">Бронирование</h1>
-      <p style="color:var(--muted);margin:0 0 18px">Заполните данные для бронирования. В демонстрационной версии данные не отправляются.</p>
-
-      <div id="bookingCard" class="card" style="padding:18px;max-width:720px;margin:12px auto">
-        <form id="bookingForm" class="booking-form">
-          <!-- Removed explicit "Объявление" line; arrival and departure now stacked -->
-          <label>Заезд<input id="bookingFrom" name="from" type="date" required></label>
-          <label>Выезд<input id="bookingTo" name="to" type="date" required></label>
-
-          <!-- ADDED: live price summary (per-night and total) -->
-          <div id="priceSummary" style="display:flex;gap:12px;align-items:center;margin-top:6px;font-weight:700;color:#042018">
-            <div id="pricePerNight" style="color:var(--muted);font-weight:600">Цена: — ₽/ночь</div>
-            <div id="nightsCount" style="color:var(--muted);font-weight:600">Ночей: —</div>
-            <div id="totalPrice" style="color:#044036">Итого: — ₽</div>
-          </div>
-
-          <label>Количество гостей<input id="bookingGuests" name="guests" type="number" min="1" value="1" required></label>
-
-          <!-- NEW: Online payment block -->
-          <fieldset style="border:1px solid rgba(0,0,0,0.06);padding:12px;border-radius:8px;">
-            <legend style="font-weight:700;color:#042018">Онлайн оплата (демо)</legend>
-            <label style="font-size:13px">Способ оплаты
-              <select name="payment_method" id="paymentMethod" style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)">
-                <option value="none">Оплатить при заезде</option>
-                <option value="card" selected>Банковская карта</option>
-                <option value="yoomoney">ЮMoney</option>
-              </select>
-            </label>
-
-            <div id="cardFields" style="display:block;gap:8px;margin-top:8px">
-              <label style="font-size:13px">Номер карты
-                <input name="card_number" type="text" inputmode="numeric" placeholder="4111 1111 1111 1111" style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)">
-              </label>
-              <div style="display:flex;gap:8px">
-                <label style="flex:1;font-size:13px">Срок (MM/YY)
-                  <input name="card_exp" type="text" placeholder="12/26" style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)">
-                </label>
-                <label style="flex:0 0 120px;font-size:13px">CVC
-                  <input name="card_cvc" type="text" inputmode="numeric" placeholder="123" style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)"></input>
-                </label>
+      <div class="booking-content">
+        <!-- Форма бронирования -->
+        <div class="booking-form-section">
+          <h2 class="form-title">Детали бронирования</h2>
+          
+          <form id="bookingForm">
+            <div class="form-group">
+              <label class="form-label">Даты проживания</label>
+              <div class="dates-grid">
+                <div>
+                  <div class="form-label">Заезд</div>
+                  <input type="date" class="form-input" id="checkIn" required>
+                </div>
+                <div>
+                  <div class="form-label">Выезд</div>
+                  <input type="date" class="form-input" id="checkOut" required>
+                </div>
               </div>
             </div>
-
-            <div id="paymentNotice" style="color:var(--muted);font-size:13px;margin-top:8px">
-              В демонстрационной версии происходит имитация платёжной операции — реальные списания не выполняются.
+            
+            <div class="form-group">
+              <label class="form-label">Количество гостей</label>
+              <select class="form-input" id="guests" required>
+                <option value="">Выберите количество</option>
+                <option value="1">1 гость</option>
+                <option value="2">2 гостя</option>
+                <option value="3">3 гостя</option>
+                <option value="4">4 гостя</option>
+                <option value="5">5+ гостей</option>
+              </select>
             </div>
-          </fieldset>
+            
+            <div class="form-group">
+              <label class="form-label">Особые пожелания (необязательно)</label>
+              <textarea class="form-input" id="specialRequests" rows="4" placeholder="Например: поздний заезд, нужна детская кроватка и т.д."></textarea>
+            </div>
+            
+            <div class="payment-section">
+              <h3 class="form-title" style="font-size: 18px;">Способ оплаты</h3>
+              
+              <div class="payment-options">
+                <div class="payment-option selected" data-method="card">
+                  <div class="payment-icon">
+                    <i data-feather="credit-card"></i>
+                  </div>
+                  <div class="payment-name">Банковская карта</div>
+                </div>
+                
+                <div class="payment-option" data-method="sbp">
+                  <div class="payment-icon">
+                    <i data-feather="smartphone"></i>
+                  </div>
+                  <div class="payment-name">СБП (Система быстрых платежей)</div>
+                </div>
+                
+                <div class="payment-option" data-method="yoomoney">
+                  <div class="payment-icon">
+                    <i data-feather="dollar-sign"></i>
+                  </div>
+                  <div class="payment-name">ЮMoney</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="terms-checkbox">
+              <input type="checkbox" id="terms" required>
+              <label for="terms">
+                Я соглашаюсь с <a href="#" style="color: #044036;">Условиями бронирования</a> и 
+                <a href="#" style="color: #044036;">Политикой конфиденциальности</a>
+              </label>
+            </div>
+            
+            <div class="booking-actions">
+              <button type="button" class="btn-back" onclick="window.history.back()">Назад</button>
+              <button type="submit" class="btn-confirm">Подтвердить бронирование</button>
+            </div>
+          </form>
+        </div>
 
-          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
-            <a class="btn" href="/web/rent">Отмена</a>
-            <button class="btn primary" type="submit">Подтвердить бронирование</button>
+        <!-- Сводка бронирования -->
+        <div class="booking-summary">
+          <h2 class="summary-title">Сводка бронирования</h2>
+          
+          <div class="listing-preview">
+            <img id="rentImage" src="/static/85e85c87c4f5678cd4d5fc9645267c74.jpg" alt="Квартира" class="listing-image">
+            <div class="listing-info">
+              <h3 class="listing-name" id="rentTitle">Загрузка...</h3>
+              <p class="listing-location" id="rentLocation">Загрузка...</p>
+              <div class="listing-price" id="rentPrice">Загрузка...</div>
+            </div>
           </div>
-        </form>
-        <p style="color:var(--muted);font-size:13px;margin-top:12px">Демонстрация: при подтверждении откроется страница подтверждения без отправки данных на сервер.</p>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer" aria-label="Сайт футер" style="margin-top:28px">
-    <div class="footer-inner">
-      <div class="footer-col footer-contact">
-        <div class="footer-brand">
-          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
-          <div class="company-name">Угол Комфорта</div>
+          
+          <div class="booking-details">
+            <div class="detail-item">
+              <span class="detail-label">Период:</span>
+              <span class="detail-value" id="bookingPeriod">Выберите даты</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Гостей:</span>
+              <span class="detail-value" id="bookingGuests">Выберите количество</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Цена за ночь:</span>
+              <span class="detail-value" id="pricePerNight">0 ₽</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Количество ночей:</span>
+              <span class="detail-value" id="nightsCount">0</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Сервисный сбор (10%):</span>
+              <span class="detail-value" id="serviceFee">0 ₽</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Уборка:</span>
+              <span class="detail-value">500 ₽</span>
+            </div>
+          </div>
+          
+          <div class="total-price">
+            <span>Итого к оплате:</span>
+            <span class="total-amount" id="totalAmount">0 ₽</span>
+          </div>
         </div>
       </div>
+    </div>
+  </main>
+
+  <!-- Футер -->
+  <footer class="site-footer">
+    <div class="footer-inner">
       <div class="footer-col">
-        <h4 class="footer-heading">О проекте</h4>
+        <div class="footer-brand">
+          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта" class="footer-logo">
+          <div>
+            <div class="company-name">Угол Комфорта</div>
+            <div style="color:#666;font-size:14px;">Платформа для аренды жилья</div>
+          </div>
+        </div>
+        <p class="footer-address">Москва, ул. Примерная, д. 1</p>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-heading">Меню</h4>
         <ul>
-          <li><a href="/web/rent">Арендовать</a></li>
-          <li><a href="/web/list">Сдать в аренду</a></li>
-          <li><a href="/#team">Команда</a></li>
-          <li><a href="/#history">Наша история</a></li>
-          <li><a href="/#mission">Миссия проекта</a></li>
+          <li><a href="/web/rent" data-nav="rent">Арендовать</a></li>
+          <li><a href="/web/list" data-nav="list">Сдать в аренду</a></li>
+          <li><a href="#" data-nav="help" id="footerHelpLink">Помощь</a></li>
+          <li><a href="/web/index" data-nav="home">Главная</a></li>
+          <li><a href="/web/auth" data-nav="signup">Зарегистрироваться</a></li>
         </ul>
       </div>
+      <div class="footer-col">
+        <h4 class="footer-heading">Контакты</h4>
+        <ul>
+          <li>support@ugolkomforta.ru</li>
+          <li>+7 (999) 123-45-67</li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-heading">Мы в соцсетях</h4>
+        <ul>
+          <li><a href="#" style="color:#0077ff;">ВКонтакте</a></li>
+          <li><a href="#" style="color:#0088cc;">Телеграм</a></li>
+          <li><a href="#" style="color:#ff8800;">Одноклассники</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bar">
+      © 2024 Угол Комфорта. Все права защищены.
     </div>
   </footer>
 
-  <script type="module">
-    // В демо-версии используем локальные данные
-    const rentListings = [
-      {
-        id: '1',
-        title: 'Уютная квартира в центре',
-        city: 'Москва',
-        price: 2500,
-        beds: 2,
-        description: 'Уютная квартира в самом центре города',
-        photos: ['/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg'],
-        rating: 4.8
-      },
-      {
-        id: '2',
-        title: 'Современная студия',
-        city: 'Санкт-Петербург',
-        price: 1800,
-        beds: 1,
-        description: 'Современная студия с новой мебелью',
-        photos: ['/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg'],
-        rating: 4.5
-      }
-    ];
+  <!-- Подключение библиотек и скриптов -->
+  <!-- Feather Icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+  
+  <script type="module" src="/static/js/api.js"></script>
+  <script type="module" src="/static/js/common.js"></script>
+  <script type="module" src="/static/js/booking.js"></script>
 
-    function qs(name) { return new URLSearchParams(location.search).get(name); }
-    function escapeHtml(s){ return String(s||'').replace(/[&<>\"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c])); }
-
-    const id = qs('id');
-    const item = id ? rentListings.find(r=>r.id===id) : null;
-    // derive a display title for the selected listing (form no longer contains an explicit readonly field)
-    const listingDisplayTitle = item ? `${item.title} — ${item.city} · ₽${item.price}/ночь` : 'Выбранное объявление не найдено';
-
-    const form = document.getElementById('bookingForm');
-    const paymentSelect = document.getElementById('paymentMethod');
-    const cardFields = document.getElementById('cardFields');
-    // Hide/show card fields depending on payment method; if 'none' selected, hide online payment inputs
-    function toggleCardFields() {
-      if (!paymentSelect || !cardFields) return;
-      cardFields.style.display = paymentSelect.value === 'none' ? 'none' : 'block';
-    }
-    if (paymentSelect) {
-      paymentSelect.addEventListener('change', toggleCardFields);
-      // initialize on load
-      toggleCardFields();
-    }
-    if (form) {
-      form.addEventListener('submit', (e)=>{
-        e.preventDefault();
-        // build a lightweight confirmation summary and show to user
-        const fm = new FormData(form);
-        const summary = {
-          listing: listingDisplayTitle,
-          from: fm.get('from'),
-          to: fm.get('to'),
-          guests: fm.get('guests'),
-          payment: { method: fm.get('payment_method') || 'none' }
-        };
-
-        // collect simulated card details only if card payment selected (do not store full card in prod — this is demo)
-        if (summary.payment.method === 'card') {
-          summary.payment.card = {
-            last4: (fm.get('card_number') || '').toString().replace(/\s+/g,'').slice(-4) || null,
-            exp: fm.get('card_exp') || null
-          };
-        } else if (summary.payment.method === 'yoomoney') {
-          summary.payment.provider = 'ЮMoney (демо)';
-        }
-
-        // calculate nights and total price (use selected listing price if available)
-        function parseDate(d){ if(!d) return null; const t = new Date(d + 'T00:00:00'); return isNaN(t) ? null : t; }
-        const fromDate = parseDate(summary.from);
-        const toDate = parseDate(summary.to);
-        let nights = 0;
-        if (fromDate && toDate) {
-          const ms = toDate.getTime() - fromDate.getTime();
-          nights = Math.max(0, Math.round(ms / (1000*60*60*24)));
-        }
-        const perNight = item && item.price ? Number(item.price) : 0;
-        const total = nights > 0 ? perNight * nights : 0;
-        summary.nights = nights;
-        summary.price = { per_night: perNight, total: total };
-
-        // store locally for demo purposes
-        try {
-          localStorage.setItem('ugol_last_booking', JSON.stringify(summary));
-        } catch (err){}
-        
-        // update the visible price summary right before redirect (keeps confirmation page consistent if user sees it)
-        const summaryNode = document.getElementById('priceSummary');
-        const ppNode = document.getElementById('pricePerNight');
-        const nightsNode = document.getElementById('nightsCount');
-        const totNode = document.getElementById('totalPrice');
-        if (ppNode) ppNode.textContent = `Цена: ${perNight ? '₽' + perNight + '/ночь' : '— ₽/ночь'}`;
-        if (nightsNode) nightsNode.textContent = `Ночей: ${nights}`;
-        if (totNode) totNode.textContent = `Итого: ${total ? '₽' + total : '— ₽'}`;
-
-        // simulate payment flow: if online payment selected, show a brief simulated processing toast then confirm
-        const doRedirect = ()=> {
-          const params = new URLSearchParams();
-          params.set('ok', '1');
-          window.location.href = '/web/booking?ok=1';
-        };
-
-        if (summary.payment.method === 'none') {
-          doRedirect();
-        } else {
-          // show small simulated "processing" overlay
-          const proc = document.createElement('div');
-          proc.style.cssText = 'position:fixed;inset:0;display:grid;place-items:center;background:rgba(0,0,0,0.28);z-index:200';
-          proc.innerHTML = `<div style="background:white;padding:18px;border-radius:10px;box-shadow:var(--card-shadow);text-align:center;font-weight:700">Обработка платежа…</div>`;
-          document.body.appendChild(proc);
-          setTimeout(()=> {
-            // remove overlay and proceed to confirmation
-            document.body.removeChild(proc);
-            // in demo always succeed
-            try {
-              // record that payment was "processed" (demo flag)
-              const rec = JSON.parse(localStorage.getItem('ugol_last_booking') || 'null');
-              if (rec) { rec.payment.processed = true; localStorage.setItem('ugol_last_booking', JSON.stringify(rec)); }
-            } catch(e){}
-            doRedirect();
-          }, 900);
-        }
-      });
-    }
-
-    // If ?ok=1 present, show confirmation message instead of form
-    if (qs('ok') === '1') {
-      const card = document.getElementById('bookingCard');
-      let summary = null;
-      try { summary = JSON.parse(localStorage.getItem('ugol_last_booking') || 'null'); } catch(e){ summary = null; }
-      const html = summary ? `
-        <div style="padding:12px">
-          <h3 style="margin:0 0 8px">Бронирование подтверждено (демо)</h3>
-          <p style="color:var(--muted)">Данные сохранены локально и доступны только в этой сессии.</p>
-          <ul style="color:var(--muted);margin-top:8px">
-            <li><strong>Объявление:</strong> ${escapeHtml(summary.listing)}</li>
-            <li><strong>Заезд:</strong> ${escapeHtml(summary.from)}</li>
-            <li><strong>Выезд:</strong> ${escapeHtml(summary.to)}</li>
-            <li><strong>Ночей:</strong> ${escapeHtml(summary.nights || 0)}</li>
-            <li><strong>Цена за ночь:</strong> ${summary.price && summary.price.per_night ? '₽' + escapeHtml(summary.price.per_night) : '—'}</li>
-            <li><strong>Гости:</strong> ${escapeHtml(summary.guests)}</li>
-            <li><strong>Итого:</strong> ${summary.price && summary.price.total ? '₽' + escapeHtml(summary.price.total) : '—'}</li>
-            <li><strong>Оплата:</strong> ${escapeHtml(summary.payment.method === 'card' ? 'Карта • ****' + (summary.payment.card && summary.payment.card.last4 ? escapeHtml(summary.payment.card.last4) : '****') : (summary.payment.method === 'yoomoney' ? 'ЮMoney (демо)' : 'При заезде'))}</li>
-            ${ summary.payment.processed ? `<li style="color:var(--muted)"><strong>Платёж:</strong> Успешно обработан (демо)</li>` : '' }
-          </ul>
-          <p style="margin-top:12px"><a class="btn" href="/web/rent">К списку</a></p>
-        </div>
-      ` : `<div style="padding:12px"><h3>Бронирование выполнено</h3><p style="color:var(--muted)">Демонстрационная страница.</p><p style="margin-top:12px"><a class="btn" href="/web/rent">К списку</a></p></div>`;
-      card.innerHTML = html;
-    }
-
-    // top-tabs simple routing (reuse small logic)
-    document.querySelectorAll('.top-tabs .tab').forEach(tb=>{
-      tb.addEventListener('click', ()=>{
-        if (tb.dataset.tab === 'rent') { window.location.href = '/web/rent'; return; }
-        if (tb.dataset.tab === 'favorites') { window.location.href = '/web/favorites'; return; }
-        if (tb.dataset.tab === 'list') { window.location.href = '/web/list'; return; }
-        if (tb.dataset.tab === 'help') {
-          // open in-page Help overlay on booking page
-          const helpBlock = document.getElementById('helpBlock');
-          if (helpBlock) {
-            helpBlock.setAttribute('aria-hidden','false');
-            setTimeout(()=> helpBlock.querySelector('input[name=\"email\"]')?.focus(), 120);
-            return;
-          }
-          window.location.href = '/';
-        }
-        if (tb.dataset.tab === 'signup') { window.location.href = '/web/auth'; return; }
-      });
-    });
-
-    // LIVE price calculation: update summary when dates change
-    (function(){
-      const fromInput = document.getElementById('bookingFrom');
-      const toInput = document.getElementById('bookingTo');
-      const ppNode = document.getElementById('pricePerNight');
-      const nightsNode = document.getElementById('nightsCount');
-      const totNode = document.getElementById('totalPrice');
-      function parseDate(d){ if(!d) return null; const t = new Date(d + 'T00:00:00'); return isNaN(t) ? null : t; }
-      function updatePricePreview(){
-        const from = parseDate(fromInput?.value);
-        const to = parseDate(toInput?.value);
-        let nights = 0;
-        if (from && to) {
-          nights = Math.max(0, Math.round((to.getTime() - from.getTime()) / (1000*60*60*24)));
-        }
-        const perNight = item && item.price ? Number(item.price) : 0;
-        const total = nights > 0 ? perNight * nights : 0;
-        if (ppNode) ppNode.textContent = `Цена: ${perNight ? '₽' + perNight + '/ночь' : '— ₽/ночь'}`;
-        if (nightsNode) nightsNode.textContent = `Ночей: ${nights || '—'}`;
-        if (totNode) totNode.textContent = `Итого: ${total ? '₽' + total : '— ₽'}`;
-      }
-      if (fromInput) fromInput.addEventListener('change', updatePricePreview);
-      if (toInput) toInput.addEventListener('change', updatePricePreview);
-      // initialize preview on load
-      updatePricePreview();
-    })();
-
-    // help overlay handlers
-    (function(){
-      const helpBlock = document.getElementById('helpBlock');
-      if (!helpBlock) return;
-      const closeHelp = document.getElementById('closeHelpBlock');
-      const closeBtn = document.getElementById('closeHelpBtn');
-      if (closeHelp) closeHelp.addEventListener('click', ()=> helpBlock.setAttribute('aria-hidden','true'));
-      if (closeBtn) closeBtn.addEventListener('click', ()=> helpBlock.setAttribute('aria-hidden','true'));
-      helpBlock.addEventListener('click', (e)=> { if (e.target === helpBlock) helpBlock.setAttribute('aria-hidden','true'); });
-      const form = document.getElementById('helpContactFormBooking');
-      if (form) form.addEventListener('submit', (e)=> {
-        e.preventDefault();
-        const fm = new FormData(form);
-        const email = (fm.get('email')||'').toString().trim();
-        const msg = (fm.get('message')||'').toString().trim();
-        const subject = encodeURIComponent('Поддержка — Угол Комфорта');
-        const body = encodeURIComponent(`От: ${email}\n\n${msg}`);
-        window.location.href = `mailto:support@ugolkomforta.example?subject=${subject}&body=${body}`;
-      });
-    })();
-  </script>
-
-  <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
 </body>
 </html>

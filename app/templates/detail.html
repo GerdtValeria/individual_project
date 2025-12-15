@@ -4,378 +4,414 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Угол Комфорта — Объявление</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&family=Lobster&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Основные стили -->
   <link rel="stylesheet" href="/static/styles.css">
+  
+  <style>
+    /* Дополнительные стили, специфичные для страницы объявления */
+    .detail-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .detail-title {
+      font-size: 32px;
+      color: #042018;
+      margin: 0 0 8px;
+      font-weight: 700;
+    }
+    
+    .detail-meta {
+      color: #666;
+      font-size: 16px;
+      margin: 0 0 20px;
+    }
+    
+    .detail-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-bottom: 40px;
+    }
+    
+    @media (max-width: 768px) {
+      .detail-content {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .detail-gallery {
+      width: 100%;
+    }
+    
+    .main-image {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+    
+    .thumbnail-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    
+    .thumbnail {
+      width: 100%;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    
+    .thumbnail:hover {
+      opacity: 0.8;
+    }
+    
+    .detail-info {
+      background: #fff;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+    
+    .price-section {
+      margin-bottom: 24px;
+    }
+    
+    .price {
+      font-size: 32px;
+      color: #044036;
+      font-weight: 800;
+      margin: 0 0 8px;
+    }
+    
+    .price-period {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .amenities {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 16px 0;
+    }
+    
+    .amenity-tag {
+      background: #f0f9f7;
+      color: #044036;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    
+    .booking-section {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid #eee;
+    }
+    
+    .similar-section {
+      margin: 40px 0;
+      padding-top: 40px;
+      border-top: 1px solid #eee;
+    }
+    
+    .section-title {
+      font-size: 24px;
+      color: #042018;
+      margin: 0 0 20px;
+      font-weight: 600;
+    }
+    
+    .similar-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    
+    .reviews-section {
+      margin: 40px 0;
+    }
+    
+    .review-card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 16px;
+    }
+    
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .review-author {
+      font-weight: 600;
+      color: #042018;
+    }
+    
+    .review-date {
+      color: #999;
+      font-size: 13px;
+    }
+    
+    .review-text {
+      color: #444;
+      line-height: 1.6;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    
+    /* Кнопка избранного */
+    .fav {
+      width: 42px;
+      height: 42px;
+      background-color: transparent;
+      background-image: url('/static/love_4900029.png');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 22px 22px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    
+    .fav[aria-pressed="true"] {
+      background-color: rgba(127,211,198,0.14);
+      border-color: #044036;
+    }
+    
+    .fav:focus {
+      outline: 2px solid #044036;
+      outline-offset: 2px;
+    }
+    
+    .fav:hover {
+      background-color: #f8f8f8 !important;
+    }
+    
+    @media (max-width: 880px) {
+      .thumbnail-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
-<body class="Ad">
+<body>
   <header class="site-header">
     <div class="brand">
       <div class="logo" aria-hidden="false">
-        <a href="/" class="logo-link" aria-label="Перейти на главную">
+        <a href="/web/index" class="logo-link" aria-label="Перейти на главную">
           <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
         </a>
       </div>
     </div>
-    <form id="searchForm" class="search-form" aria-label="Поиск аренды" style="margin-left:12px;">
+    <form id="searchForm" class="search-form" aria-label="Поиск аренды">
       <input id="q" name="q" type="search" placeholder="Поиск по городу, району или опции" />
+      <button type="submit" class="btn">
+        <i data-feather="search"></i> Найти
+      </button>
     </form>
     <nav class="top-tabs" aria-label="Главная навигация">
-      <button class="tab" data-tab="rent">Арендовать</button>
-      <button class="tab" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
-      <a class="tab" href="/web/favorites">Избранное</a>
+      <a href="/web/rent" class="tab">Арендовать</a>
+      <a href="/web/list" class="tab"><span class="two-line">Сдать<br>в аренду</span></a>
+      <a href="/web/favorites" class="tab">Избранное</a>
       <button class="tab" data-tab="help">Помощь</button>
       <div class="auth">
-        <button class="tab primary" data-tab="signup">Зарегистрироваться</button>
+        <a href="/web/auth" class="tab primary">Зарегистрироваться</a>
       </div>
     </nav>
   </header>
 
-  <main class="container" style="padding:18px;">
-    <section style="max-width:none;margin:0;padding:0;width:100%">
-      <div id="detailCard" class="card" style="padding:0;overflow:visible"></div>
-    </section>
+  <main class="detail-container">
+    <!-- Хлебные крошки -->
+    <div class="breadcrumbs" style="margin-bottom: 20px; color: #666; font-size: 14px;">
+      <a href="/web/index" style="color: #044036; text-decoration: none;">Главная</a> /
+      <a href="/web/rent" style="color: #044036; text-decoration: none;">Аренда</a> /
+      <span style="color: #999;">Детали объявления</span>
+    </div>
+
+    <!-- Заголовок -->
+    <div class="detail-header">
+      <h1 class="detail-title" id="listingTitle">Загрузка...</h1>
+      <div class="detail-meta">
+        <span id="listingLocation">Загрузка...</span> • 
+        <span id="listingRooms">Загрузка...</span>
+      </div>
+    </div>
+
+    <!-- Основной контент -->
+    <div class="detail-content">
+      <!-- Галерея -->
+      <div class="detail-gallery">
+        <img id="mainImage" src="/static/85e85c87c4f5678cd4d5fc9645267c74.jpg" alt="Основное фото" class="main-image">
+        <div class="thumbnail-grid" id="thumbnailGrid">
+          <!-- Миниатюры будут загружены динамически -->
+        </div>
+      </div>
+
+      <!-- Информация и бронирование -->
+      <div class="detail-info">
+        <div class="price-section">
+          <div class="price" id="listingPrice">Загрузка...</div>
+          <div class="price-period" id="pricePeriod">за ночь</div>
+        </div>
+
+        <div class="amenities" id="listingAmenities">
+          <!-- Удобства будут загружены динамически -->
+        </div>
+
+        <div class="description-section">
+          <h3 style="margin: 0 0 12px; color: #042018; font-size: 18px;">Описание</h3>
+          <p id="listingDescription" style="color: #444; line-height: 1.6; margin: 0 0 20px;">
+            Загрузка...
+          </p>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+            <div>
+              <div style="color: #666; font-size: 13px; margin-bottom: 4px;">Заезд</div>
+              <div style="font-weight: 500; color: #042018;" id="checkInTime">15:00 - 20:00</div>
+            </div>
+            <div>
+              <div style="color: #666; font-size: 13px; margin-bottom: 4px;">Выезд</div>
+              <div style="font-weight: 500; color: #042018;" id="checkOutTime">До 12:00</div>
+            </div>
+            <div>
+              <div style="color: #666; font-size: 13px; margin-bottom: 4px;">Макс. гостей</div>
+              <div style="font-weight: 500; color: #042018;" id="maxGuests">Загрузка...</div>
+            </div>
+            <div>
+              <div style="color: #666; font-size: 13px; margin-bottom: 4px;">Комнат</div>
+              <div style="font-weight: 500; color: #042018;" id="roomCount">Загрузка...</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="booking-section">
+          <h3 style="margin: 0 0 16px; color: #042018; font-size: 18px;">Забронировать</h3>
+          
+          <div class="action-buttons">
+            <button id="bookButton" class="btn primary" style="flex: 1; background: #044036; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+              Забронировать
+            </button>
+            <button type="button" class="btn fav" id="favoriteButton" aria-label="Добавить в избранное" aria-pressed="false"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Похожие объявления -->
+    <div class="similar-section">
+      <h2 class="section-title">Похожие варианты</h2>
+      <div class="similar-grid" id="similarListings">
+        <!-- Динамически загружаемые похожие объявления -->
+      </div>
+    </div>
+
+    <!-- Отзывы -->
+    <div class="reviews-section">
+      <h2 class="section-title">Отзывы</h2>
+      <div id="reviewsList">
+        <!-- Динамически загружаемые отзывы -->
+      </div>
+      
+      <div style="margin-top: 30px;">
+        <h3 style="margin: 0 0 16px; color: #042018; font-size: 18px;">Оставить отзыв</h3>
+        <form id="reviewForm" style="background: #f9f9f9; padding: 24px; border-radius: 10px;">
+          <div style="margin-bottom: 16px;">
+            <label style="display: block; margin-bottom: 6px; font-size: 13px; color: #666;">Ваше имя</label>
+            <input type="text" id="reviewName" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+          </div>
+          <div style="margin-bottom: 16px;">
+            <label style="display: block; margin-bottom: 6px; font-size: 13px; color: #666;">Ваш отзыв</label>
+            <textarea id="reviewContent" rows="4" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;" placeholder="Напишите ваш отзыв здесь..."></textarea>
+          </div>
+          <div style="display: flex; justify-content: flex-end;">
+            <button type="submit" class="btn primary" style="background: #044036; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; cursor: pointer;">
+              Отправить отзыв
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </main>
 
-  <footer class="site-footer" aria-label="Сайт футер" style="margin-top:28px">
+  <!-- Футер -->
+  <footer class="site-footer">
     <div class="footer-inner">
-      <div class="footer-col footer-contact">
+      <div class="footer-col">
         <div class="footer-brand">
-          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
-          <div class="company-name">Угол Комфорта</div>
+          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта" class="footer-logo">
+          <div>
+            <div class="company-name">Угол Комфорта</div>
+            <div style="color:#666;font-size:14px;">Платформа для аренды жилья</div>
+          </div>
         </div>
+        <p class="footer-address">Москва, ул. Примерная, д. 1</p>
       </div>
       <div class="footer-col">
         <h4 class="footer-heading">Меню</h4>
         <ul>
+          <li><a href="/web/index" data-nav="home">Главная</a></li>
           <li><a href="/web/rent" data-nav="rent">Арендовать</a></li>
           <li><a href="/web/list" data-nav="list">Сдать в аренду</a></li>
-          <li><a href="/" data-nav="help">Помощь</a></li>
-          <li><a href="/" data-nav="home">Главная</a></li>
+          <li><a href="/web/favorites" data-nav="favorites">Избранное</a></li>
+          <li><a href="/web/profile" data-nav="profile">Профиль</a></li>
+          <li><a href="#" data-nav="help" id="footerHelpLink">Помощь</a></li>
           <li><a href="/web/auth" data-nav="signup">Зарегистрироваться</a></li>
         </ul>
       </div>
-
       <div class="footer-col">
-        <h4 class="footer-heading">О проекте</h4>
+        <h4 class="footer-heading">Контакты</h4>
         <ul>
-          <li><a href="/#team">Команда</a></li>
-          <li><a href="/#history">Наша история</a></li>
-          <li><a href="/#mission">Миссия проекта</a></li>
+          <li>support@ugolkomforta.ru</li>
+          <li>+7 (999) 123-45-67</li>
         </ul>
       </div>
-
       <div class="footer-col">
         <h4 class="footer-heading">Мы в соцсетях</h4>
-        <ul class="social-list">
-          <li><a href="#">ВК</a></li>
-          <li><a href="#">Телеграмм</a></li>
-          <li><a href="#">Одноклассники</a></li>
+        <ul>
+          <li><a href="#" style="color:#0077ff;">ВКонтакте</a></li>
+          <li><a href="#" style="color:#0088cc;">Телеграм</a></li>
+          <li><a href="#" style="color:#ff8800;">Одноклассники</a></li>
         </ul>
       </div>
     </div>
+    <div class="footer-bar">
+      © 2024 Угол Комфорта. Все права защищены.
+    </div>
   </footer>
 
-  <script type="module">
-    // В демо-версии используем локальные данные вместо импорта из state.js
-    const rentListings = [
-      {
-        id: '1',
-        title: 'Уютная квартира в центре',
-        city: 'Москва',
-        price: 2500,
-        beds: 2,
-        description: 'Уютная квартира в самом центре города',
-        photos: ['/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg'],
-        rating: 4.8,
-        avail_from: '2024-12-15',
-        avail_to: '2025-01-15'
-      },
-      {
-        id: '2',
-        title: 'Современная студия',
-        city: 'Санкт-Петербург',
-        price: 1800,
-        beds: 1,
-        description: 'Современная студия с новой мебелью',
-        photos: ['/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg'],
-        rating: 4.5,
-        avail_from: '2024-12-20',
-        avail_to: '2025-02-20'
-      }
-    ];
-    
-    // wire local search form to redirect to main site search (same behavior as other pages)
-    (function(){
-      const searchForm = document.getElementById('searchForm');
-      if (searchForm) {
-        searchForm.addEventListener('submit', (e)=>{
-          e.preventDefault();
-          const q = (document.getElementById('q')?.value || '').trim();
-          const url = q ? `/?q=${encodeURIComponent(q)}` : '/';
-          window.location.href = url;
-        });
-        document.getElementById('q')?.addEventListener('keydown', (ev)=> { if (ev.key === 'Enter') searchForm.requestSubmit(); });
-      }
-    })();
-    
-    function qs(name) {
-      return new URLSearchParams(location.search).get(name);
-    }
+  <!-- Подключение библиотек и скриптов -->
+  <!-- Feather Icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+  
+  <script type="module" src="/static/js/api.js"></script>
+  <script type="module" src="/static/js/common.js"></script>
+  <script type="module" src="/static/js/detail.js"></script>
 
-    function escapeHtml(s){ return String(s||'').replace(/[&<>\"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c])); }
 
-    const id = qs('id');
-    const item = (id && rentListings.find(r=>r.id===id)) ? rentListings.find(r=>r.id===id) : (rentListings[0] || null);
-    const container = document.getElementById('detailCard');
-
-    if (!item) {
-      container.innerHTML = '<div class="card"><div class="card-body"><h3>Объявление не найдено</h3><p style="color:var(--muted)">Проверьте ссылку или вернитесь на главную.</p><p><a class="btn" href="/web/rent">К списку</a></p></div></div>';
-    } else {
-      // build detail layout following the provided mockup (image left, details right)
-      const photos = item.photos && item.photos.length ? item.photos : (item.img ? [item.img] : []);
-      const galleryHtml = photos.map((p, idx) => `<img src="${escapeHtml(p)}" alt="${escapeHtml(item.title)}" style="width:100%;height:280px;object-fit:cover;border-radius:8px;display:${idx===0?'block':'none'}" data-idx="${idx}">`).join('');
-      container.innerHTML = `
-        <div style="display:flex;gap:18px;flex-direction:row;align-items:flex-start;">
-          <div style="flex:0 0 48%;display:flex;flex-direction:column;gap:8px">
-            <div style="border-radius:12px;overflow:hidden;box-shadow:var(--card-shadow)">${galleryHtml}</div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
-              ${photos.map((p, i)=>`<button class="thumbNav" data-src="${escapeHtml(p)}" aria-label="Показать фото ${i+1}" style="min-width:60px;height:60px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);background-image:url('${escapeHtml(p)}');background-size:cover;background-position:center"></button>`).join('')}
-            </div>
-          </div>
-          <div style="flex:1;display:flex;flex-direction:column;gap:8px">
-            <h2 style="margin:0">${escapeHtml(item.title)}</h2>
-            <div style="color:var(--muted);font-weight:700">${escapeHtml(item.city)} · ${item.beds === 0 ? 'Студия' : item.beds + ' спальни'}</div>
-            <div style="display:flex;gap:12px;align-items:center;margin-top:6px">
-              <div style="font-size:20px;font-weight:800;color:#044036">₽${escapeHtml(item.price)}/ночь</div>
-            </div>
-            <div id="detailDescription" style="margin-top:8px;color:var(--muted)">${escapeHtml(item.description || '')}</div>
-            <div style="margin-top:10px">${item.category ? `<span class="tag-pill">${escapeHtml(item.category)}</span>` : ''}</div>
-
-            <!-- Prominent action row -->
-            <div style="display:flex;gap:8px;margin-top:auto;align-items:center">
-              <button id="bookBtn" class="btn cta">Арендовать</button>
-              <button id="saveBtn" class="fav" aria-pressed="false" title="Сохранить"><i data-feather="heart"></i></button>
-              <a href="/web/rent" class="btn" style="background:transparent">К списку</a>
-            </div>
-
-            <div id="availability" style="margin-top:12px;background:#fbfffe;padding:10px;border-radius:8px;border:1px solid #eef7f4">Доступность: с ${item.avail_from || '—'} до ${item.avail_to || '—'}</div>
-          </div>
-        </div>
-      `;
-      // wire gallery thumbnails
-      container.querySelectorAll('.thumbNav').forEach(btn=>{
-        btn.addEventListener('click', ()=>{
-          const src = btn.dataset.src;
-          const imgs = container.querySelectorAll('img[data-idx]');
-          imgs.forEach(img => {
-            img.style.display = (img.src === src) ? 'block' : 'none';
-          });
-        });
-      });
-      // save recently viewed when opening detail
-      (function saveOnce() {
-        try {
-          const raw = localStorage.getItem('ugol_recent') || '[]';
-          const arr = JSON.parse(raw);
-          const exists = arr.filter(x=>x.id !== item.id);
-          exists.unshift({ id: item.id, title: item.title, img: photos[0] || '', price: item.price, rating: item.rating || null });
-          localStorage.setItem('ugol_recent', JSON.stringify(exists.slice(0,8)));
-        } catch(e){}
-      })();
-
-      // booking button demo
-      const bookBtn = document.getElementById('bookBtn');
-      if (bookBtn) bookBtn.addEventListener('click', ()=> {
-        // перейти на страницу бронирования, передав id текущего объявления
-        if (id) {
-          window.location.href = `/web/booking?id=${encodeURIComponent(id)}`;
-        } else {
-          window.location.href = '/web/booking';
-        }
-      });
-
-      // save button toggles local favorites (icon heart)
-      const saveBtn = document.getElementById('saveBtn');
-      try {
-        const favRaw = localStorage.getItem('ugol_fav') || '[]';
-        const fav = new Set(JSON.parse(favRaw).map(x=>x.id));
-        function updateSave() {
-          const active = fav.has(item.id);
-          saveBtn.setAttribute('aria-pressed', active ? 'true' : 'false');
-          if (active) saveBtn.classList.add('active'); else saveBtn.classList.remove('active');
-          if (window.feather) feather.replace();
-        }
-        updateSave();
-        saveBtn.addEventListener('click', ()=>{
-          if (fav.has(item.id)) fav.delete(item.id); else fav.add(item.id);
-          localStorage.setItem('ugol_fav', JSON.stringify(Array.from(fav).map(id=>({id}))));
-          updateSave();
-        });
-      } catch(e){}
-    }
-
-    // -----------------------------
-    // Похожие варианты: ищем похожие объявления по городу и/или похожему количеству спален.
-    // Комментарии ниже объясняют логику и процесс рендера.
-    // -----------------------------
-    (function renderSimilar() {
-      // find container where to append the "Похожие варианты" block (below detailCard)
-      const parentSection = document.querySelector('main section');
-      if (!parentSection) return;
-
-      // Helper: compute similarity score and pick up to 4 best matches (excluding current item)
-      // Сначала фильтруем по тому же городу, затем по близкому числу спален, затем по цене.
-      const currentId = id;
-      const candidates = rentListings.filter(r => r.id !== currentId);
-      // compute simple score
-      const scored = candidates.map(r => {
-        let score = 0;
-        if (r.city && item.city && r.city.toLowerCase() === item.city.toLowerCase()) score += 30;
-        // beds match or both studios
-        if (r.beds === item.beds) score += 20;
-        else if (Math.abs((r.beds||0) - (item.beds||0)) === 1) score += 10;
-        // price proximity: smaller difference -> higher score
-        const priceDiff = Math.abs((r.price||0) - (item.price||0));
-        score += Math.max(0, 15 - Math.floor(priceDiff / 20));
-        // rating bonus
-        score += (r.rating || 0);
-        return { r, score };
-      });
-      scored.sort((a,b) => b.score - a.score);
-      const top = scored.slice(0,4).map(s => s.r);
-      // build block HTML (cards reuse ad-card styles for compactness)
-      const block = document.createElement('section');
-      block.className = 'card';
-      // make similar block full width
-      block.style.padding = '12px';
-      block.style.maxWidth = '100%';
-      block.style.margin = '12px 0 0';
-      block.innerHTML = `
-        <h3 style="margin:0 0 8px;color:#042018">Похожие варианты</h3>
-        <div id="similarList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px"></div>
-      `;
-      parentSection.appendChild(block);
-
-      const listEl = document.getElementById('similarList');
-      if (!listEl) return;
-
-      if (!top.length) {
-        listEl.innerHTML = `<div style="color:var(--muted)">Похожих вариантов не найдено.</div>`;
-        return;
-      }
-
-      // render each similar item as a compact card and wire "Подробнее" to navigate to its detail page
-      top.forEach(sim => {
-        const card = document.createElement('article');
-        card.className = 'ad-card';
-        card.style.minHeight = '120px';
-        card.innerHTML = `
-          <div class="ad-media" role="img" aria-hidden="true" style="background-image:url('${escapeHtml((sim.photos && sim.photos[0]) || sim.img || '/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg')}')"></div>
-          <div class="ad-body">
-            <h4 class="ad-title">${escapeHtml(sim.title)}</h4>
-            <p class="ad-desc">${escapeHtml(sim.city)} · ${sim.beds === 0 ? 'Студия' : sim.beds + 'к'}</p>
-            <div class="ad-actions">
-              <button class="btn ad-cta similar-open" data-id="${escapeHtml(sim.id)}">Подробнее</button>
-            </div>
-          </div>
-        `;
-        listEl.appendChild(card);
-      });
-
-      // clicking a similar card navigates to that listing's detail page
-      listEl.querySelectorAll('.similar-open').forEach(btn=>{
-        btn.addEventListener('click', (e)=> {
-          const nid = btn.dataset.id;
-          if (!nid) return;
-          // navigate to the other detail page (full page load) — keeps URL param in sync
-          window.location.href = `/web/detail?id=${encodeURIComponent(nid)}`;
-        });
-      });
-    })();
-
-    // NEW: Reviews block — render existing reviews and allow adding a new one (stored in localStorage)
-    (function renderReviews() {
-      const parentSection = document.querySelector('main section');
-      if (!parentSection) return;
-
-      function loadReviews(listingId) {
-        try {
-          const raw = localStorage.getItem('ugol_reviews') || '{}';
-          const all = JSON.parse(raw);
-          return Array.isArray(all[listingId]) ? all[listingId] : [];
-        } catch (e) { return []; }
-      }
-      function saveReview(listingId, review) {
-        try {
-          const raw = localStorage.getItem('ugol_reviews') || '{}';
-          const all = JSON.parse(raw);
-          all[listingId] = all[listingId] || [];
-          all[listingId].unshift(review);
-          // keep recent 50
-          all[listingId] = all[listingId].slice(0,50);
-          localStorage.setItem('ugol_reviews', JSON.stringify(all));
-        } catch (e) {}
-      }
-      // sample placeholder reviews to show when none exist
-      const sample = [
-        { author: 'Анна', text: 'Очень уютная квартира, были в восторге — отличное расположение.' },
-        { author: 'Михаил', text: 'Чисто и комфортно, небольшие замечания по посуде.' }
-      ];
-
-      const reviews = loadReviews(item.id);
-      const block = document.createElement('section');
-      block.className = 'card';
-      block.style.padding = '12px';
-      block.style.maxWidth = '100%';
-      block.style.margin = '12px 0 20px';
-      block.innerHTML = `
-        <h3 style="margin:0 0 8px;color:#042018">Отзывы</h3>
-        <div id="reviewsList" style="display:flex;flex-direction:column;gap:10px;margin-bottom:12px">
-          ${ (reviews.length ? reviews : sample).map(r => `
-            <div style="background:#fbfffe;padding:10px;border-radius:8px;border:1px solid #eef7f4">
-              <div style="display:flex;justify-content:space-between;align-items:center">
-                <strong style="font-size:14px">${escapeHtml(r.author || 'Гость')}</strong>
-              </div>
-              <div style="color:var(--muted);margin-top:6px">${escapeHtml(r.text||'')}</div>
-            </div>
-          `).join('') }
-        </div>
-
-        <form id="reviewForm" style="display:flex;flex-direction:column;gap:8px;max-width:560px">
-          <label style="font-size:13px">Ваше имя
-            <input name="author" type="text" placeholder="Имя" style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)">
-          </label>
-          <label style="font-size:13px">Отзыв
-            <textarea name="text" rows="3" placeholder="Расскажите о вашем опыте" style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)"></textarea>
-          </label>
-          <div style="display:flex;justify-content:flex-end;gap:8px">
-            <button type="submit" class="btn">Добавить отзыв</button>
-          </div>
-        </form>
-      `;
-      parentSection.appendChild(block);
-
-      const listEl = document.getElementById('reviewsList');
-      const form = block.querySelector('#reviewForm');
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const fm = new FormData(form);
-        const author = (fm.get('author') || 'Гость').toString().trim();
-        const text = (fm.get('text') || '').toString().trim();
-        const review = { author, text, created: new Date().toISOString() };
-        saveReview(item.id, review);
-        // prepend review to UI
-        const node = document.createElement('div');
-        node.style.cssText = 'background:#fbfffe;padding:10px;border-radius:8px;border:1px solid #eef7f4';
-        node.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center"><strong style="font-size:14px">${escapeHtml(author)}</strong></div><div style="color:var(--muted);margin-top:6px">${escapeHtml(text)}</div>`;
-        listEl.insertBefore(node, listEl.firstChild);
-        form.reset();
-        // optional small confirmation
-        alert('Спасибо — ваш отзыв добавлен (локально, демо).');
-      });
-    })();
-  </script>
-
-  <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
 </body>
 </html>

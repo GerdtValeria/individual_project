@@ -4,450 +4,412 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Угол Комфорта — Избранное</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&family=Lobster&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Основные стили -->
   <link rel="stylesheet" href="/static/styles.css">
+  
+  <style>
+    /* Дополнительные стили для страницы избранного */
+    .favorites-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .page-title {
+      font-size: 32px;
+      color: #042018;
+      margin: 0 0 8px;
+      font-weight: 700;
+    }
+    
+    .page-subtitle {
+      color: #666;
+      font-size: 16px;
+      margin: 0;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      background: #f9f9f9;
+      border-radius: 12px;
+      margin: 40px 0;
+    }
+    
+    .empty-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 24px;
+      background: #f0f9f7;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #044036;
+    }
+    
+    .empty-title {
+      font-size: 24px;
+      color: #042018;
+      margin: 0 0 12px;
+      font-weight: 600;
+    }
+    
+    .empty-description {
+      color: #666;
+      max-width: 400px;
+      margin: 0 auto 32px;
+      line-height: 1.5;
+    }
+    
+    .empty-action {
+      display: inline-block;
+      background: #044036;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    .favorites-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+    
+    .favorite-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+    
+    .favorite-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+    
+    .card-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    
+    .card-content {
+      padding: 20px;
+    }
+    
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    
+    .card-title {
+      font-size: 18px;
+      color: #042018;
+      margin: 0;
+      font-weight: 600;
+      flex: 1;
+    }
+    
+    .card-price {
+      font-size: 20px;
+      color: #044036;
+      font-weight: 700;
+      margin: 0 0 4px;
+    }
+    
+    .card-period {
+      color: #999;
+      font-size: 13px;
+    }
+    
+    .card-location {
+      color: #666;
+      font-size: 14px;
+      margin: 0 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    
+    .action-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    
+    .book-btn {
+      background: #044036;
+      color: white;
+      border: none;
+    }
+    
+    .remove-btn {
+      background: white;
+      color: #dc3545;
+      border: 1px solid #dc3545;
+    }
+    
+    .remove-btn:hover {
+      background: #dc3545;
+      color: white;
+    }
+    
+    .remove-favorite {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 36px;
+      height: 36px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      color: #dc3545;
+    }
+    
+    .stats-section {
+      background: #f0f9f7;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 40px;
+    }
+    
+    .stats-title {
+      font-size: 18px;
+      color: #042018;
+      margin: 0 0 16px;
+      font-weight: 600;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    
+    .stat-item {
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 32px;
+      color: #044036;
+      font-weight: 700;
+      margin: 0 0 4px;
+    }
+    
+    .stat-label {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    @media (max-width: 480px) {
+      .page-title {
+        font-size: 24px;
+      }
+      
+      .favorites-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
   <header class="site-header">
     <div class="brand">
       <div class="logo" aria-hidden="false">
-        <a href="/" class="logo-link" aria-label="Перейти на главную">
+        <a href="/web/index" class="logo-link" aria-label="Перейти на главную">
           <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
         </a>
       </div>
     </div>
-    <form id="searchForm" class="search-form" aria-label="Поиск аренды" style="margin-left:12px;">
+    <form id="searchForm" class="search-form" aria-label="Поиск аренды">
       <input id="q" name="q" type="search" placeholder="Поиск по городу, району или опции" />
+      <button type="submit" class="btn">
+        <i data-feather="search"></i> Найти
+      </button>
     </form>
     <nav class="top-tabs" aria-label="Главная навигация">
-      <button class="tab" data-tab="rent">Арендовать</button>
-      <button class="tab" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
-      <a class="tab" href="/web/favorites">Избранное</a>
+      <a href="/web/rent" class="tab">Арендовать</a>
+      <a href="/web/list" class="tab"><span class="two-line">Сдать<br>в аренду</span></a>
+      <a href="/web/favorites" class="tab active">Избранное</a>
       <button class="tab" data-tab="help">Помощь</button>
       <div class="auth">
-        <button class="tab primary" data-tab="signup">Зарегистрироваться</button>
+        <a href="/web/auth" class="tab primary">Зарегистрироваться</a>
       </div>
     </nav>
   </header>
 
-  <main class="container" style="padding:18px;">
-    <section style="max-width:1100px;margin:0 auto">
-      <h1 style="margin:0 0 12px;font-size:28px;color:#042018">Избранное</h1>
-      <p id="favoritesEmptyMsg" style="color:var(--muted);margin:0 0 12px">У вас пока нет сохранённых объявлений.</p>
-      <div id="favoritesList" class="listings" style="margin-top:8px"></div>
-      <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
-        <button class="btn highlight-on-hover" id="backToList">К списку</button>
+  <main class="container">
+    <div class="favorites-container">
+      <!-- Заголовок страницы -->
+      <div class="page-header">
+        <h1 class="page-title">Избранное</h1>
+        <p class="page-subtitle">Ваши сохранённые объявления для аренды жилья</p>
       </div>
-    </section>
-  </main>
 
-  <!-- In-page Help overlay -->
-  <div id="helpBlock" class="overlay-block" aria-hidden="true">
-    <div class="overlay-dialog" role="dialog" aria-label="Помощь">
-      <header class="modal-header">
-        <h3>Помощь</h3>
-        <button id="closeHelpBlock" aria-label="Закрыть">
-          <img src="/static/cancel_17767265.png" alt="Закрыть" style="width:22px;height:22px;">
-        </button>
-      </header>
-      <div class="post-form" style="max-width:520px;">
-        <p style="margin:0 0 8px;color:var(--muted)">Здесь вы найдёте ответы на частые вопросы, инструкции по бронированию и контакты службы поддержки.</p>
-        <ul style="margin:0 0 8px;color:var(--muted);line-height:1.5">
-          <li>Как забронировать жильё?</li>
-          <li>Как отменить бронирование?</li>
-          <li>Как разместить объявление?</li>
-        </ul>
-        <hr style="border:0;height:1px;background:rgba(0,0,0,0.06);margin:8px 0">
-        <form id="helpContactFormFavorites" class="help-contact-form" style="display:flex;flex-direction:column;gap:8px;">
-          <label style="font-size:13px">Ваш e-mail
-            <input type="email" name="email" placeholder="you@example.com" required style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)">
-          </label>
-          <label style="font-size:13px">Сообщение
-            <textarea name="message" rows="3" placeholder="Опишите проблему или вопрос" required style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)"></textarea>
-          </label>
-          <div style="display:flex;justify-content:flex-end;gap:8px">
-            <button type="submit" class="btn">Отправить</button>
+      <!-- Статистика -->
+      <section class="stats-section">
+        <h2 class="stats-title">Ваша коллекция</h2>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-value" id="totalFavorites">0</div>
+            <div class="stat-label">Всего в избранном</div>
           </div>
-        </form>
-      </div>
-    </div>
-  </div>
+          <div class="stat-item">
+            <div class="stat-value" id="averagePrice">0 ₽</div>
+            <div class="stat-label">Средняя цена за ночь</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="topLocation">—</div>
+            <div class="stat-label">Самый популярный город</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="lastAdded">—</div>
+            <div class="stat-label">Последнее добавление</div>
+          </div>
+        </div>
+      </section>
 
-  <footer class="site-footer" aria-label="Сайт футер" style="margin-top:28px">
-    <div class="footer-inner">
-      <div class="footer-col footer-contact">
-        <div class="footer-brand">
-          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
-          <div class="company-name">Угол Комфорта</div>
+      <!-- Контейнер для избранного -->
+      <div id="favoritesContent">
+        <div id="emptyState" class="empty-state">
+          <div class="empty-icon">
+            <i data-feather="heart" style="width: 40px; height: 40px;"></i>
+          </div>
+          <h3 class="empty-title">Избранное пусто</h3>
+          <p class="empty-description">
+            Сохраняйте понравившиеся объявления, нажав на сердечко. Они появятся здесь для быстрого доступа.
+          </p>
+          <a href="/web/rent" class="empty-action">Найти жильё</a>
+        </div>
+
+        <div id="favoritesGrid" class="favorites-grid">
+          <!-- Избранные объявления будут добавляться динамически -->
         </div>
       </div>
 
+      <!-- Информационный блок -->
+      <div style="background: #f9f9f9; border-radius: 12px; padding: 24px; margin-top: 40px;">
+        <h3 style="margin: 0 0 16px; color: #042018; font-size: 18px;">Как работает избранное</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+              <div style="width: 32px; height: 32px; background: #044036; color: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 700;">1</div>
+              <div style="font-weight: 600; color: #042018;">Сохраняйте</div>
+            </div>
+            <p style="color: #666; margin: 0; line-height: 1.5;">
+              Нажимайте на сердечко на карточках объявлений, чтобы сохранить их в избранное
+            </p>
+          </div>
+          
+          <div>
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+              <div style="width: 32px; height: 32px; background: #044036; color: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 700;">2</div>
+              <div style="font-weight: 600; color: #042018;">Сравнивайте</div>
+            </div>
+            <p style="color: #666; margin: 0; line-height: 1.5;">
+              Используйте избранное для сравнения вариантов и выбора лучшего
+            </p>
+          </div>
+          
+          <div>
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+              <div style="width: 32px; height: 32px; background: #044036; color: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 700;">3</div>
+              <div style="font-weight: 600; color: #042018;">Бронируйте</div>
+            </div>
+            <p style="color: #666; margin: 0; line-height: 1.5;">
+              Бронируйте прямо из избранного или поделитесь выбранными вариантами с друзьями
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Футер -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-col">
+        <div class="footer-brand">
+          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта" class="footer-logo">
+          <div>
+            <div class="company-name">Угол Комфорта</div>
+            <div style="color:#666;font-size:14px;">Платформа для аренды жилья</div>
+          </div>
+        </div>
+        <p class="footer-address">Москва, ул. Примерная, д. 1</p>
+      </div>
       <div class="footer-col">
         <h4 class="footer-heading">Меню</h4>
         <ul>
-          <li><a href="/web/rent">Арендовать</a></li>
-          <li><a href="/web/list">Сдать в аренду</a></li>
-          <li><a href="/web/favorites">Избранное</a></li>
-          <li><a href="/">Главная</a></li>
-          <li><a href="/web/auth">Зарегистрироваться</a></li>
+          <li><a href="/web/index" data-nav="home">Главная</a></li>
+          <li><a href="/web/rent" data-nav="rent">Арендовать</a></li>
+          <li><a href="/web/list" data-nav="list">Сдать в аренду</a></li>
+          <li><a href="/web/favorites" data-nav="favorites">Избранное</a></li>
+          <li><a href="/web/profile" data-nav="profile">Профиль</a></li>
+          <li><a href="#" data-nav="help" id="footerHelpLink">Помощь</a></li>
+          <li><a href="/web/auth" data-nav="signup">Зарегистрироваться</a></li>
         </ul>
       </div>
-
       <div class="footer-col">
-        <h4 class="footer-heading">О проекте</h4>
+        <h4 class="footer-heading">Контакты</h4>
         <ul>
-          <li><a href="/#team">Команда</a></li>
-          <li><a href="/#history">Наша история</a></li>
-          <li><a href="/#mission">Миссия проекта</a></li>
+          <li>support@ugolkomforta.ru</li>
+          <li>+7 (999) 123-45-67</li>
         </ul>
       </div>
-
       <div class="footer-col">
         <h4 class="footer-heading">Мы в соцсетях</h4>
-        <ul class="social-list">
-          <li><a href="#">ВК</a></li>
-          <li><a href="#">Телеграмм</a></li>
-          <li><a href="#">Одноклассники</a></li>
+        <ul>
+          <li><a href="#" style="color:#0077ff;">ВКонтакте</a></li>
+          <li><a href="#" style="color:#0088cc;">Телеграм</a></li>
+          <li><a href="#" style="color:#ff8800;">Одноклассники</a></li>
         </ul>
       </div>
     </div>
+    <div class="footer-bar">
+      © 2024 Угол Комфорта. Все права защищены.
+    </div>
   </footer>
 
-  <script src="/static/js/favorites.js"></script>
+  <!-- Подключение библиотек и скриптов -->
+  <!-- Feather Icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
   
-  <script>
-    // Основной скрипт для favorites.html
-    document.addEventListener('DOMContentLoaded', function() {
-      // ====================
-      // 1. НАВИГАЦИЯ
-      // ====================
-      
-      // Логотип → Главная (используем роутер из web.py)
-      const logoLink = document.querySelector('.logo a');
-      if (logoLink) {
-        logoLink.addEventListener('click', function(e) {
-          e.preventDefault();
-          window.location.href = '/';
-        });
-      }
-      
-      // Кнопка "Арендовать" (используем роутер из web.py)
-      const rentButton = document.querySelector('[data-tab="rent"]');
-      if (rentButton) {
-        rentButton.addEventListener('click', function(e) {
-          e.preventDefault();
-          window.location.href = '/web/rent';
-        });
-      }
-      
-      // Кнопка "Сдать в аренду" (используем роутер из web.py)
-      const listButton = document.querySelector('[data-tab="list"]');
-      if (listButton) {
-        listButton.addEventListener('click', function(e) {
-          e.preventDefault();
-          window.location.href = '/web/list';
-        });
-      }
-      
-      // Кнопка "К списку"
-      const backToListBtn = document.getElementById('backToList');
-      if (backToListBtn) {
-        backToListBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          window.location.href = '/web/rent';
-        });
-      }
-      
-      // ====================
-      // 2. ПОИСК
-      // ====================
-      
-      const searchForm = document.getElementById('searchForm');
-      if (searchForm) {
-        searchForm.addEventListener('submit', function(e) {
-          e.preventDefault();
-          const query = document.getElementById('q').value.trim();
-          // Используем роутер для поиска через аренду
-          window.location.href = `/web/rent?q=${encodeURIComponent(query)}`;
-        });
-      }
-      
-      // ====================
-      // 3. БЛОК "ПОМОЩЬ"
-      // ====================
-      
-      const helpButton = document.querySelector('[data-tab="help"]');
-      const helpBlock = document.getElementById('helpBlock');
-      const closeHelpButton = document.getElementById('closeHelpBlock');
-      const helpForm = document.getElementById('helpContactFormFavorites');
-      
-      // Открытие блока "Помощь"
-      if (helpButton) {
-        helpButton.addEventListener('click', function(e) {
-          e.preventDefault();
-          if (helpBlock) {
-            helpBlock.setAttribute('aria-hidden', 'false');
-            // Фокус на первое поле
-            setTimeout(() => {
-              const firstInput = helpBlock.querySelector('input[name="email"]');
-              if (firstInput) firstInput.focus();
-            }, 100);
-          }
-        });
-      }
-      
-      // Закрытие блока "Помощь"
-      if (closeHelpButton) {
-        closeHelpButton.addEventListener('click', function(e) {
-          e.preventDefault();
-          if (helpBlock) {
-            helpBlock.setAttribute('aria-hidden', 'true');
-          }
-        });
-      }
-      
-      // Закрытие при клике вне блока
-      if (helpBlock) {
-        helpBlock.addEventListener('click', function(e) {
-          if (e.target === helpBlock) {
-            helpBlock.setAttribute('aria-hidden', 'true');
-          }
-        });
-      }
-      
-      // Отправка формы помощи (используем роутер из help.py)
-      if (helpForm) {
-        helpForm.addEventListener('submit', async function(e) {
-          e.preventDefault();
-          
-          const formData = new FormData(helpForm);
-          const email = formData.get('email');
-          const message = formData.get('message');
-          
-          if (!email || !message) {
-            alert('Пожалуйста, заполните все поля');
-            return;
-          }
-          
-          try {
-            // Получаем токен авторизации
-            const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
-            const API_BASE_URL = 'http://localhost:8000';
-            
-            const response = await fetch(`${API_BASE_URL}/help/`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-              },
-              body: JSON.stringify({
-                content: `Email: ${email}\nСообщение: ${message}`
-              })
-            });
-            
-            if (response.ok) {
-              alert('Ваше сообщение отправлено! Мы ответим вам в ближайшее время.');
-              helpForm.reset();
-              helpBlock.setAttribute('aria-hidden', 'true');
-            } else {
-              const error = await response.json();
-              throw new Error(error.detail || 'Ошибка при отправке сообщения');
-            }
-          } catch (error) {
-            console.error('Ошибка отправки сообщения:', error);
-            
-            // Fallback: если API не доступен, отправляем через mailto
-            const subject = 'Вопрос с сайта Угол Комфорта';
-            const body = `Email: ${email}\n\nСообщение: ${message}`;
-            window.location.href = `mailto:support@ugolkomforta.example?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            
-            alert('Сообщение отправлено через почтовый клиент. Спасибо за обращение!');
-            helpForm.reset();
-            helpBlock.setAttribute('aria-hidden', 'true');
-          }
-        });
-      }
-      
-      // ====================
-      // 4. РЕГИСТРАЦИЯ И ВХОД
-      // ====================
-      
-      const signupButton = document.querySelector('[data-tab="signup"]');
-      
-      // Открытие блока регистрации/входа
-      if (signupButton) {
-        signupButton.addEventListener('click', function(e) {
-          e.preventDefault();
-          // Переходим на страницу регистрации (используем роутер из web.py)
-          window.location.href = '/web/auth';
-        });
-      }
-      
-      // ====================
-      // 5. ЗАГРУЗКА ИЗБРАННОГО
-      // ====================
-      
-      function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-      }
-      
-      // Функция для отображения избранного
-      function renderFavorites() {
-        const container = document.getElementById('favoritesList');
-        const emptyMsg = document.getElementById('favoritesEmptyMsg');
-        
-        if (!container) return;
-        
-        container.innerHTML = '';
-        
-        try {
-          // Получаем избранное из localStorage
-          const favoritesStr = localStorage.getItem('ugol_fav') || '[]';
-          const favorites = JSON.parse(favoritesStr);
-          
-          if (!Array.isArray(favorites) || favorites.length === 0) {
-            if (emptyMsg) emptyMsg.style.display = 'block';
-            return;
-          }
-          
-          if (emptyMsg) emptyMsg.style.display = 'none';
-          
-          // Отображаем каждый элемент избранного
-          favorites.forEach(item => {
-            const article = document.createElement('article');
-            article.className = 'card';
-            
-            const imageUrl = item.image || item.photo || item.img || '/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg';
-            const title = item.title || 'Без названия';
-            const location = item.city || item.address || 'Локация не указана';
-            const beds = item.beds || item.guests || 1;
-            const description = item.description || '';
-            const price = item.price || 0;
-            const id = item.id || item._id || Date.now();
-            
-            article.innerHTML = `
-              <img class="thumb" src="${imageUrl}" alt="${escapeHtml(title)}">
-              <div class="card-body">
-                <div class="card-top"><h3 class="title">${escapeHtml(title)}</h3></div>
-                <p class="meta">${escapeHtml(location)} · ${beds === 0 ? 'Студия' : beds + 'к'}</p>
-                <p class="desc-snippet">${escapeHtml(description.length > 120 ? description.substring(0, 117) + '...' : description)}</p>
-                <p class="price">₽${escapeHtml(price)}/ночь</p>
-                <div style="display:flex;gap:8px;margin-top:auto">
-                  <button class="btn viewFav" data-id="${escapeHtml(id)}">Подробнее</button>
-                  <button class="btn removeFav" data-id="${escapeHtml(id)}">Удалить</button>
-                </div>
-              </div>
-            `;
-            
-            container.appendChild(article);
-          });
-          
-          // Добавляем обработчики событий для кнопок
-          container.querySelectorAll('.viewFav').forEach(btn => {
-            btn.addEventListener('click', function() {
-              const id = this.getAttribute('data-id');
-              // Используем роутер для перехода на детальную страницу
-              window.location.href = `/web/detail?id=${encodeURIComponent(id)}`;
-            });
-          });
-          
-          container.querySelectorAll('.removeFav').forEach(btn => {
-            btn.addEventListener('click', function() {
-              const id = this.getAttribute('data-id');
-              removeFromFavorites(id);
-            });
-          });
-          
-        } catch (error) {
-          console.error('Ошибка при загрузке избранного:', error);
-          if (emptyMsg) {
-            emptyMsg.textContent = 'Произошла ошибка при загрузке избранного';
-            emptyMsg.style.display = 'block';
-          }
-        }
-      }
-      
-      // Функция для удаления из избранного
-      function removeFromFavorites(itemId) {
-        if (!confirm('Удалить из избранного?')) {
-          return;
-        }
-        
-        try {
-          // Получаем текущее избранное
-          const favoritesStr = localStorage.getItem('ugol_fav') || '[]';
-          const favorites = JSON.parse(favoritesStr);
-          
-          // Фильтруем, удаляя элемент с указанным ID
-          const updatedFavorites = favorites.filter(item => {
-            const itemIdToCompare = item.id || item._id;
-            return itemIdToCompare !== itemId;
-          });
-          
-          // Сохраняем обновленное избранное
-          localStorage.setItem('ugol_fav', JSON.stringify(updatedFavorites));
-          
-          // Обновляем отображение
-          renderFavorites();
-          
-          // Оповещаем другие страницы об изменении
-          window.dispatchEvent(new CustomEvent('ugol:favorites-changed', {
-            detail: { action: 'remove', itemId: itemId }
-          }));
-          
-        } catch (error) {
-          console.error('Ошибка при удалении из избранного:', error);
-          alert('Не удалось удалить из избранного');
-        }
-      }
-      
-      // ====================
-      // 6. ИНИЦИАЛИЗАЦИЯ
-      // ====================
-      
-      // Загружаем избранное при загрузке страницы
-      renderFavorites();
-      
-      // Слушаем события изменения избранного с других страниц
-      window.addEventListener('storage', function(e) {
-        if (e.key === 'ugol_fav') {
-          renderFavorites();
-        }
-      });
-      
-      // Слушаем кастомные события изменения избранного
-      window.addEventListener('ugol:favorites-changed', renderFavorites);
-      
-      // Проверяем авторизацию пользователя
-      function checkAuthStatus() {
-        try {
-          const user = JSON.parse(localStorage.getItem('ugol_user') || '{}');
-          const token = localStorage.getItem('auth_token');
-          
-          if (!user.id && !token) {
-            // Пользователь не авторизован, можно показать сообщение
-            console.log('Пользователь не авторизован');
-          }
-        } catch (error) {
-          console.error('Ошибка проверки авторизации:', error);
-        }
-      }
-      
-      checkAuthStatus();
-      
-      // Слушаем события авторизации/выхода
-      window.addEventListener('ugol:login', function() {
-        console.log('Пользователь вошел в систему');
-        // Можно обновить интерфейс при необходимости
-      });
-      
-      window.addEventListener('ugol:logout', function() {
-        console.log('Пользователь вышел из системы');
-        // Можно обновить интерфейс при необходимости
-      });
-    });
-  </script>
+  <script type="module" src="/static/js/api.js"></script>
+  <script type="module" src="/static/js/common.js"></script>
+  <script type="module" src="/static/js/favorites.js"></script>
+
 </body>
 </html>
