@@ -3,9 +3,6 @@ import asyncio
 import random
 from datetime import datetime, timedelta
 from sqlalchemy import text
-from pathlib import Path
-from PIL import Image, ImageDraw
-from generate_images import main as generate_images
 
 from app.database.database import async_session_maker
 from app.models.roles import RoleModel
@@ -364,23 +361,6 @@ class DataSeeder:
             print("Favorites created")
         else:
             print("Favorites already exist")
-
-    def make_placeholder(path: Path, text: str, size=(800, 600)):
-        img = Image.new("RGB", size, color=(230, 230, 230))
-        draw = ImageDraw.Draw(img)
-        w, h = draw.textsize(text)
-        draw.text(((size[0]-w)//2, (size[1]-h)//2), text, fill=(50, 50, 50))
-        img.save(path)
-
-    def generate_images():
-        base_dir = Path(__file__).resolve().parent
-        img_dir = base_dir / "app" / "static" / "img"
-        img_dir.mkdir(parents=True, exist_ok=True)
-        for rent_id in range(1, 101):
-            for i in range(1, 6):
-                path = img_dir / f"rent_{rent_id}_image_{i}.jpg"
-                if not path.exists():
-                    generate_images.make_placeholder(path, f"Rent {rent_id} #{i}")
 
 async def main():
     """Запуск заполнения данных"""

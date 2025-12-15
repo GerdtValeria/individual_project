@@ -139,13 +139,7 @@ async function handleAddRent(e) {
   const originalText = submitBtn.textContent;
   submitBtn.disabled = true;
   submitBtn.textContent = 'Публикация...';
-  
-  if (!rentRes.ok) {
-  const err = await rentRes.json().catch(() => ({}));
-  console.error('Ошибка создания объявления:', err);
-  alert('Ошибка: ' + JSON.stringify(err));
-  return;
-}
+
 
   try {
     // 1. Создаём объявление
@@ -156,10 +150,13 @@ async function handleAddRent(e) {
     });
 
     if (!rentRes.ok) {
-      const err = await rentRes.json().catch(() => ({}));
-      throw new Error(err.detail || 'Ошибка при создании объявления');
-    }
-
+        const err = await rentRes.json().catch(() => ({}));
+        console.error('Ошибка создания объявления:', err);
+        alert('Ошибка создания объявления: ' + JSON.stringify(err));
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+        return;
+}
     const rent = await rentRes.json();
     const rentId = rent.id;
 
