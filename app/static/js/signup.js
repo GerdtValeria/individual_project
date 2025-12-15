@@ -1,7 +1,7 @@
 // signup-handler.js
 document.addEventListener('DOMContentLoaded', function() {
     // ==================== Навигация по логотипу и кнопкам ====================
-    
+
     // Обработка клика на логотип (переход на главную)
     const logoLink = document.querySelector('.logo-link');
     if (logoLink) {
@@ -17,7 +17,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ==================== Кнопка "Отмена" в форме регистрации ====================
-    const cancelBtn = document.querySelector('a.btn[href="/"]');
+
+    // расширяем селектор, чтобы корректно обрабатывать /web/
+    const cancelBtn = document.querySelector('a.btn[href="/web/"], a.btn[href="/"]');
     if (cancelBtn && cancelBtn.textContent.includes('Отмена')) {
         cancelBtn.addEventListener('click', async function(e) {
             e.preventDefault();
@@ -37,7 +39,8 @@ document.addEventListener('DOMContentLoaded', function() {
         'list': '/web/list',
         'help': null,
         'favorites': '/web/favorites',
-        'signup': null
+        // ДОБАВЛЕНО: путь к странице регистрации
+        'signup': '/web/auth'
     };
 
     // Обработка кликов по кнопкам в top-tabs
@@ -45,12 +48,12 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', async function(e) {
             e.preventDefault();
             const tab = this.dataset.tab;
-            
+
             if (tab === 'help') {
                 openHelpBlock();
                 return;
             }
-            
+
             if (navButtons[tab]) {
                 try {
                     window.location.href = navButtons[tab];
@@ -78,34 +81,36 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ==================== Форма регистрации ====================
+
     const signupForm = document.getElementById('signupForm');
+
     if (signupForm) {
         signupForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            
+
             const formData = new FormData(this);
             const userData = {
                 name: formData.get('name'),
                 email: formData.get('email'),
                 password: formData.get('password')
             };
-            
+
             // Валидация
             if (!userData.name || !userData.email || !userData.password) {
                 alert('Пожалуйста, заполните все поля');
                 return;
             }
-            
+
             if (!isValidEmail(userData.email)) {
                 alert('Пожалуйста, введите корректный email');
                 return;
             }
-            
+
             if (userData.password.length < 6) {
                 alert('Пароль должен содержать не менее 6 символов');
                 return;
             }
-            
+
             try {
                 // Используем роутер /auth/register из auth.py
                 const response = await fetch('/auth/register', {
@@ -115,19 +120,23 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     body: JSON.stringify(userData)
                 });
-                
+
                 if (response.ok) {
                     const result = await response.json();
                     console.log('Регистрация успешна:', result);
-                    
                     // Автоматический вход после регистрации
                     await loginAfterRegistration(userData.email, userData.password);
-                    
                 } else if (response.status === 409) {
                     alert('Пользователь с таким email уже существует');
                 } else {
-                    const error = await response.json();
-                    alert('Ошибка регистрации: ' + (error.detail || 'Неизвестная ошибка'));
+                    let errorText = 'Неизвестная ошибка';
+                    try {
+                        const error = await response.json();
+                        if (error && error.detail) {
+                            errorText = error.detail;
+                        }
+                    } catch (_) {}
+                    alert('Ошибка регистрации: ' + errorText);
                 }
             } catch (error) {
                 console.error('Ошибка при регистрации:', error);
@@ -137,6 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ==================== Модальное окно входа ====================
+
     const openLoginBtn = document.getElementById('openLogin');
     const loginModal = document.getElementById('loginModal');
     const cancelLoginBtn = document.getElementById('cancelLogin');
@@ -177,24 +187,24 @@ document.addEventListener('DOMContentLoaded', function() {
     if (loginForm) {
         loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            
+
             const formData = new FormData(this);
             const authData = {
                 email: formData.get('email'),
                 password: formData.get('password')
             };
-            
+
             // Валидация
             if (!authData.email || !authData.password) {
                 alert('Пожалуйста, заполните все поля');
                 return;
             }
-            
+
             if (!isValidEmail(authData.email)) {
                 alert('Пожалуйста, введите корректный email');
                 return;
             }
-            
+
             try {
                 // Используем роутер /auth/login из auth.py
                 const response = await fetch('/auth/login', {
@@ -204,24 +214,27 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     body: JSON.stringify(authData)
                 });
-                
+
                 if (response.ok) {
                     const result = await response.json();
                     console.log('Вход успешен:', result);
-                    
                     // Закрытие модального окна
                     if (loginModal) loginModal.setAttribute('aria-hidden', 'true');
-                    
                     // Перенаправление на страницу профиля через роутер get_profile_html
                     window.location.href = '/web/profile';
-                    
                 } else if (response.status === 404) {
                     alert('Пользователь не найден');
                 } else if (response.status === 401) {
                     alert('Неверный пароль');
                 } else {
-                    const error = await response.json();
-                    alert('Ошибка входа: ' + (error.detail || 'Неизвестная ошибка'));
+                    let errorText = 'Неизвестная ошибка';
+                    try {
+                        const error = await response.json();
+                        if (error && error.detail) {
+                            errorText = error.detail;
+                        }
+                    } catch (_) {}
+                    alert('Ошибка входа: ' + errorText);
                 }
             } catch (error) {
                 console.error('Ошибка при входе:', error);
@@ -231,47 +244,36 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ==================== Вспомогательные функции ====================
-    
+
     // Функция открытия блока "Помощь"
     function openHelpBlock() {
         let helpBlock = document.getElementById('helpBlock');
+
         if (!helpBlock) {
             helpBlock = document.createElement('div');
             helpBlock.id = 'helpBlock';
             helpBlock.className = 'overlay-block';
             helpBlock.setAttribute('aria-hidden', 'true');
-            helpBlock.innerHTML = `
-                <div class="overlay-dialog" role="dialog" aria-label="Помощь">
-                    <button class="help-close" id="closeHelpBlock" aria-label="Закрыть">
-                        <i></i>
-                    </button>
-                    <header class="modal-header">
-                        <h3>Помощь</h3>
-                    </header>
-                    <div class="post-form" style="padding:20px; max-width:500px;">
-                        <p>Здесь будет информация о помощи пользователям.</p>
-                        <p>В демонстрационной версии этот блок показывает макет окна помощи.</p>
-                    </div>
-                </div>
-            `;
+            helpBlock.innerHTML = ``;
+
             document.body.appendChild(helpBlock);
-            
+
             const closeBtn = document.getElementById('closeHelpBlock');
             if (closeBtn) {
                 closeBtn.addEventListener('click', () => {
                     helpBlock.setAttribute('aria-hidden', 'true');
                 });
             }
-            
+
             helpBlock.addEventListener('click', (e) => {
                 if (e.target === helpBlock) {
                     helpBlock.setAttribute('aria-hidden', 'true');
                 }
             });
         }
-        
+
         helpBlock.setAttribute('aria-hidden', 'false');
-        
+
         setTimeout(() => {
             const closeBtn = document.getElementById('closeHelpBlock');
             if (closeBtn) closeBtn.focus();
@@ -289,11 +291,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 body: JSON.stringify({ email, password })
             });
-            
+
             if (response.ok) {
                 const result = await response.json();
                 console.log('Автоматический вход после регистрации:', result);
-                
                 // Перенаправление на страницу профиля через роутер get_profile_html
                 window.location.href = '/web/profile';
             } else {
@@ -334,7 +335,6 @@ document.addEventListener('DOMContentLoaded', function() {
             'list': '/web/list',
             'favorites': '/web/favorites'
         };
-        
         if (routes[tab]) {
             window.location.href = routes[tab];
         } else {

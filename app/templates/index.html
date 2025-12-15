@@ -25,7 +25,7 @@
   <header class="site-header">
     <div class="brand">
       <div class="logo" aria-hidden="false">
-        <a href="/" class="logo-link" aria-label="Перейти на главную">
+        <a href="/web" class="logo-link" aria-label="Перейти на главную">
           <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
         </a>
       </div>
@@ -52,10 +52,10 @@
       </div>
     </nav>
   </header>
-  
-  <!-- NEW: Enhanced service block with improved design -->
+
+  <!-- NEW: Compact service block (from provided selection) -->
   <section class="service-cta" aria-label="О сервисе">
-    <div class="service-cta-inner" style="background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/static/85e85c87c4f5678cd4d5fc9645267c74.jpg'); background-size: cover; background-position: center;">
+    <div class="service-cta-inner" style="background-image: url('/static/85e85c87c4f5678cd4d5fc9645267c74.jpg')">
       <!-- image moved to background of .service-cta-inner -->
       <div class="service-cta-text">
         <h3>Найдите идеальное жильё для отдыха</h3>
@@ -256,7 +256,7 @@
       <div class="footer-col">
         <h4 class="footer-heading">Меню</h4>
         <ul>
-          <li><a href="/web/rents">Арендовать</a></li>
+          <li><a href="/web/rent">Арендовать</a></li>
           <li><a href="/web/list">Сдать в аренду</a></li>
           <li><a href="/web/favorites">Избранное</a></li>
           <li><a href="/">Главная</a></li>
@@ -309,7 +309,7 @@
       if (rentButton) {
         rentButton.addEventListener('click', function(e) {
           e.preventDefault();
-          window.location.href = '/web/rents';
+          window.location.href = '/web/rent';
         });
       }
       
@@ -334,11 +334,11 @@
       }
       
       // Кнопка "Перейти к предложениям"
-      const toOffersButton = document.querySelector('a[href="/web/rents"]');
+      const toOffersButton = document.querySelector('a[href="/web/rent"]');
       if (toOffersButton) {
         toOffersButton.addEventListener('click', function(e) {
           e.preventDefault();
-          window.location.href = '/web/rents';
+          window.location.href = '/web/rent';
         });
       }
       
@@ -353,7 +353,7 @@
           const query = document.getElementById('q').value.trim();
           if (query) {
             // Используем роутер для поиска через аренду
-            window.location.href = `/web/rents?q=${encodeURIComponent(query)}`;
+            window.location.href = `/web/rent?q=${encodeURIComponent(query)}`;
           }
         });
       }
@@ -376,7 +376,7 @@
           if (guests) params.append('guests', guests);
           
           // Перенаправляем на страницу аренды с параметрами
-          window.location.href = `/web/rents?${params.toString()}`;
+          window.location.href = `/web/rent?${params.toString()}`;
         });
       }
       
