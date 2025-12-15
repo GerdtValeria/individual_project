@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from app.api.categories import router as router_categories
 from app.api.categories import router as router_comments
 from app.api.images import router as router_images
@@ -13,10 +14,7 @@ from app.api.web import router as router_web
 app = FastAPI()
 
 
-@app.get("/")
-def home_page():
-    return {"message": "Привет, Хабр!"}
-
+app.mount("/static", StaticFiles(directory="app/static"), "static")
 
 app.include_router(router_bookings)
 app.include_router(router_categories)
