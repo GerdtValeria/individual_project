@@ -134,39 +134,7 @@
     </div>
   </footer>
 
-  <script>
-    // top-tab navigation: redirect where appropriate
-    document.querySelectorAll('.top-tabs .tab').forEach(tb=>{
-      tb.addEventListener('click', ()=>{
-        if (tb.dataset.tab === 'signup') return; // already on signup page
-        if (tb.dataset.tab === 'rent') { window.location.href = '/web/rent'; return; }
-        if (tb.dataset.tab === 'favorites') { window.location.href = '/web/favorites'; return; }
-        if (tb.dataset.tab === 'list') { window.location.href = '/web/list'; return; }
-        const map = { travel: '/travel.html', help: '/index.html' };
-        const target = map[tb.dataset.tab] || '/index.html';
-        window.location.href = target;
-      });
-    });
+<script src="/static/js/signup.js"></script>
 
-    // prevent actual form submission in demo
-    document.getElementById('signupForm').addEventListener('submit', e=>{
-      e.preventDefault();
-      alert('Регистрация (демо): данные не отправляются.');
-    });
-
-    // Login modal handlers
-    (function(){
-      const openLogin = document.getElementById('openLogin');
-      const loginModal = document.getElementById('loginModal');
-      const closeLogin = document.getElementById('closeLogin');
-      const cancelLogin = document.getElementById('cancelLogin');
-      const loginForm = document.getElementById('loginForm');
-      if (openLogin) openLogin.addEventListener('click', (e)=>{ e.preventDefault(); if (loginModal) loginModal.setAttribute('aria-hidden','false'); setTimeout(()=>loginModal.querySelector('input[name="email"]')?.focus(),120); });
-      if (closeLogin) closeLogin.addEventListener('click', ()=> loginModal.setAttribute('aria-hidden','true'));
-      if (cancelLogin) cancelLogin.addEventListener('click', ()=> loginModal.setAttribute('aria-hidden','true'));
-      if (loginModal) loginModal.addEventListener('click', (e)=> { if (e.target === loginModal) loginModal.setAttribute('aria-hidden','true'); });
-      if (loginForm) loginForm.addEventListener('submit', (e)=>{ e.preventDefault(); alert('Вход (демо): данные не отправляются.'); loginModal.setAttribute('aria-hidden','true'); });
-    })();
-  </script>
 </body>
 </html>
