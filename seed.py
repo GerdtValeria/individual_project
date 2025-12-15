@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from sqlalchemy import text
 from pathlib import Path
 from PIL import Image, ImageDraw
+from generate_images import main as generate_images
 
 from app.database.database import async_session_maker
 from app.models.roles import RoleModel
@@ -16,7 +17,7 @@ from app.models.comments import CommentsModel
 from app.models.bookings import BookingsModel
 from app.models.help import HelpModel
 from app.models.favorites import FavoritesModel
-import generate_images
+
 
 
 class DataSeeder:
