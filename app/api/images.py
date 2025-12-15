@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from typing import Optional
 from app.api.dependencies import DBDep, get_db
-from app.models import Image  # Ваша модель Image
+from app.models import images  # Ваша модель Image
 from app.schemas.images import SImagesAdd
 from app.services.images import ImageService  # Если используете сервисный слой
 
