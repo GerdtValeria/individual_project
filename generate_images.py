@@ -8,9 +8,6 @@ IMG_DIR.mkdir(parents=True, exist_ok=True)
 def make_placeholder(path: Path, text: str, size=(800, 600)):
     img = Image.new("RGB", size, color=(230, 230, 230))
     draw = ImageDraw.Draw(img)
-    w, h = draw.textsize(text)
-    draw.text(((size[0]-w)//2, (size[1]-h)//2), text, fill=(50, 50, 50))
-    img.save(path)
 
 def main():
     for rent_id in range(1, 101):
