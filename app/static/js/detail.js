@@ -213,7 +213,7 @@ function getRentIdFromUrl() {
         const updated_at = rentData.updated_at;
         
         // Формируем путь к изображению (предполагаем, что у нас есть эндпоинт для получения изображений)
-        const imageSrc = rentData.image_url || (id_image ? `/images/${id_image}` : '/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg');
+        const imageSrc = id_image ? `/images/${id_image}` : '/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg';
         
         container.innerHTML = `
             <div style="display:flex;gap:18px;flex-direction:row;align-items:flex-start;">

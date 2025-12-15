@@ -8,8 +8,12 @@ class ImagesRepository(BaseRepository):
     model = ImagesModel
     schema = SImagesGet
 
+
     async def add_image(self, data: SImagesAdd) -> SImagesGet:
         return await super().add(data)
+
+    async def get_image(self, image_id: int) -> SImagesGet | None:
+        return await super().get_one_or_none(id=image_id)
 
     async def edit_image(self, image_id: int, data: SImagesAdd) -> None:
         await super().edit(data, id=image_id)

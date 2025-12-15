@@ -6,6 +6,11 @@ from app.services.images import ImageService
 router = APIRouter(prefix="/image",tags=["Image"])
 
 
+@router.get("/{id}", response_model=SImagesGet)
+async def get_шьфпу(db: DBDep,id:int,):
+    rent = await ImageService(db).get_image(id=id)   
+    return rent
+
 @router.post("/", response_model=SImagesGet)
 async def add_image(image_data: SImagesAdd, db: DBDep,) -> dict[str, str]:
      image = await ImageService(db).add_image(image_data)
