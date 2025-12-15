@@ -27,34 +27,49 @@
     </nav>
   </header>
 
-  <main class="container" style="padding:18px;">
-    <section style="max-width:700px;margin:0 auto">
-      <h1 style="margin:0 0 12px;font-size:28px;color:#042018">Регистрация</h1>
-      <p style="color:var(--muted);margin:0 0 18px">Создайте аккаунт, чтобы сохранять объявления и управлять бронированиями.</p>
+<main class="container" style="padding:18px;">
+  <section style="max-width:700px;margin:0 auto">
+    <h1 style="margin:0 0 12px;font-size:28px;color:#042018">Регистрация</h1>
+    <p style="color:var(--muted);margin:0 0 18px">
+      Создайте аккаунт, чтобы сохранять объявления и управлять бронированиями.
+    </p>
 
-      <div class="card" style="padding:18px;max-width:540px;margin:12px auto">
-        <form id="signupForm" style="display:grid;grid-template-columns:1fr;gap:10px;max-width:540px">
-          <label style="display:grid;grid-template-columns:140px 1fr;align-items:center;gap:8px">Имя
-            <input name="name" required>
-          </label>
-          <label style="display:grid;grid-template-columns:140px 1fr;align-items:center;gap:8px">Электронная почта
-            <input name="email" type="email" required>
-          </label>
-          <label style="display:grid;grid-template-columns:140px 1fr;align-items:center;gap:8px">Пароль
-            <input name="password" type="password" required>
-          </label>
-          <div style="grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
-            <a class="btn" href="/" data-nav="home">Отмена</a>
-            <button class="btn primary" type="submit">Зарегистрироваться</button>
-          </div>
-        </form>
-        <p style="color:var(--muted);font-size:13px;margin-top:12px">В демонстрационной версии форма не отправляет данные — она показывает макет страницы регистрации.</p>
-        <p style="margin-top:12px;font-size:14px;color:var(--muted);">
-          Уже есть аккаунт? <a href="#" id="openLogin" style="color:#044036;text-decoration:none;font-weight:700">Войти</a>
-        </p>
-      </div>
-    </section>
-  </main>
+    <div class="card" style="padding:18px;max-width:540px;margin:12px auto">
+      <!-- id="signupForm" уже правильный -->
+      <form id="signupForm" style="display:grid;grid-template-columns:1fr;gap:10px;max-width:540px">
+        <label style="display:grid;grid-template-columns:140px 1fr;align-items:center;gap:8px">
+          Имя
+          <input name="name" required>
+        </label>
+        <label style="display:grid;grid-template-columns:140px 1fr;align-items:center;gap:8px">
+          Электронная почта
+          <input name="email" type="email" required>
+        </label>
+        <label style="display:grid;grid-template-columns:140px 1fr;align-items:center;gap:8px">
+          Пароль
+          <input name="password" type="password" required>
+        </label>
+        <div style="grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+          <!-- ВАЖНО: отмена ведёт на /web/, а не на / -->
+          <a class="btn" href="/web/" data-nav="home">Отмена</a>
+          <button class="btn primary" type="submit">Зарегистрироваться</button>
+        </div>
+      </form>
+
+      <!-- УБИРАЕМ демо‑сообщение, чтобы форма считалась рабочей -->
+      <p style="color:var(--muted);font-size:13px;margin-top:12px">
+        После регистрации вы сможете сохранять объявления и управлять бронированиями.
+      </p>
+
+      <p style="margin-top:12px;font-size:14px;color:var(--muted);">
+        Уже есть аккаунт?
+        <a href="#" id="openLogin" style="color:#044036;text-decoration:none;font-weight:700">
+          Войти
+        </a>
+      </p>
+    </div>
+  </section>
+</main>
 
   <!-- Login modal -->
 <div id="loginModal" class="modal" aria-hidden="true">
