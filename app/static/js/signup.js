@@ -90,8 +90,9 @@ document.addEventListener('DOMContentLoaded', function () {
       const userData = {
         name: formData.get('name'),
         email: formData.get('email'),
-        password: formData.get('password')
-      };
+        password: formData.get('password'),
+        role_id: 1   // или другой id роли, которая у тебя считается дефолтной
+    };
 
       // Валидация
       if (!userData.name || !userData.email || !userData.password) {
