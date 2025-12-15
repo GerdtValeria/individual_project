@@ -3,15 +3,16 @@ document.addEventListener('DOMContentLoaded', () => {
   setupPostModal();
 });
 
-// 1. ФУНКЦИЯ ЗАГРУЗКИ КАТЕГОРИЙ
+// Загрузка категорий из БД
 async function loadCategories() {
-  const select = document.getElementById('categorySelect'); // id у <select>
+  const select = document.getElementById('categorySelect');
   if (!select) return;
 
   try {
     const res = await fetch('/categories/', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
     });
 
     if (!res.ok) {
@@ -21,55 +22,22 @@ async function loadCategories() {
 
     const categories = await res.json();
 
-    select.innerHTML = '<option value=\"\">Выберите категорию</option>';
+    select.innerHTML = '<option value="">Выберите категорию</option>';
 
     categories.forEach(cat => {
       const opt = document.createElement('option');
-      opt.value = cat.id;          // В value кладём id
-      opt.textContent = cat.name;  // В текст — название
-      select.appendChild(opt);
-    });
-  } catch (err) {
-    console.error('Ошибка загрузки категорий:', err);
-  }
-}document.addEventListener('DOMContentLoaded', () => {
-  setupPostModal();
-});
-
-// 1. ФУНКЦИЯ ЗАГРУЗКИ КАТЕГОРИЙ
-async function loadCategories() {
-  const select = document.getElementById('categorySelect'); // id у <select>
-  if (!select) return;
-
-  try {
-    const res = await fetch('/categories/', {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    });
-
-    if (!res.ok) {
-      console.error('Не удалось загрузить категории');
-      return;
-    }
-
-    const categories = await res.json();
-
-    select.innerHTML = '<option value=\"\">Выберите категорию</option>';
-
-    categories.forEach(cat => {
-      const opt = document.createElement('option');
-      opt.value = cat.id;          // В value кладём id
-      opt.textContent = cat.name;  // В текст — название
+      opt.value = cat.id;        // id категории из БД
+      opt.textContent = cat.name;
       select.appendChild(opt);
     });
   } catch (err) {
     console.error('Ошибка загрузки категорий:', err);
   }
 }
+
+// Отправка объявления
 async function handleAddRent(e) {
   e.preventDefault();
-  console.log('submit start');
-  console.log([...new FormData(e.target).entries()]);
 
   const form = e.target;
   const formData = new FormData(form);
@@ -77,7 +45,7 @@ async function handleAddRent(e) {
   const title = (formData.get('title') || '').toString().trim();
   const city = (formData.get('city') || '').toString().trim();
   const description = (formData.get('description') || '').toString().trim();
-  const categoryRaw = formData.get('category'); // здесь будет строка id
+  const categoryRaw = (formData.get('category') || '').toString().trim();
   const price = Number(formData.get('price')) || 0;
   const photo = formData.get('photo');
 
@@ -94,8 +62,8 @@ async function handleAddRent(e) {
   }
 
   const idCategory = Number(categoryRaw);
-  if (!Number.isInteger(idCategory)) {
-    alert('Ошибка: категория должна быть числом (id категории)');
+  if (!Number.isInteger(idCategory) || idCategory <= 0) {
+    alert('Ошибка: выберите корректную категорию');
     return;
   }
 
@@ -117,9 +85,11 @@ async function handleAddRent(e) {
   }
 
   try {
+    // 1. создаём объявление в БД
     const rentRes = await fetch('/rents/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify(rentPayload),
     });
 
@@ -132,6 +102,7 @@ async function handleAddRent(e) {
     const rent = await rentRes.json();
     const rentId = rent.id;
 
+    // 2. загружаем фото, если выбрано
     if (photo && photo.size > 0) {
       const imgForm = new FormData();
       imgForm.append('rent_id', rentId);
@@ -139,6 +110,7 @@ async function handleAddRent(e) {
 
       const imgRes = await fetch('/images/', {
         method: 'POST',
+        credentials: 'include',
         body: imgForm,
       });
 
@@ -164,7 +136,7 @@ async function handleAddRent(e) {
   }
 }
 
-
+// Модалка
 function setupPostModal() {
   const openBtn = document.getElementById('openPostBtn');
   const cancelBtn = document.getElementById('cancelPostLocal');
