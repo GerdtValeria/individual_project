@@ -582,9 +582,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function navigateToRentDetail(rentId) {
         try {
-            window.location.href = `/web/detail?id=${rentId}`;
+            window.location.href = `/web/rents/${rentId}`;
         } catch (error) {
-            window.location.href = `/web/detail?id=${rentId}`;
+            window.location.href = `/web/rents/${rentId}`;
         }
     }
 

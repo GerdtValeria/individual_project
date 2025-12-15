@@ -69,3 +69,7 @@ class RentService(BaseService):
         await self.db.rents.delete_rent(id)
         await self.db.commit()
         return {"message": f"Объявление с id={id} успешно удалено"} 
+    
+    async def get_rent(self, id: int):
+        rent = await self.db.rents.get_one_or_none(id=id)
+        return rent
