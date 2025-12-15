@@ -1,54 +1,101 @@
 // list.js — логика страницы "Сдать в аренду"
-
-// Запускаем код ПОСЛЕ общего common.js
 document.addEventListener('DOMContentLoaded', () => {
-  // Здесь НЕТ повторного feather, навигации и поиска:
-  // это уже сделано в common.js
-
-  setupPostModal();   // только модалка объявления
+  setupPostModal();
 });
 
-// ---------- Отправка объявления ----------
+// 1. ФУНКЦИЯ ЗАГРУЗКИ КАТЕГОРИЙ
+async function loadCategories() {
+  const select = document.getElementById('categorySelect'); // id у <select>
+  if (!select) return;
+
+  try {
+    const res = await fetch('/categories/', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (!res.ok) {
+      console.error('Не удалось загрузить категории');
+      return;
+    }
+
+    const categories = await res.json();
+
+    select.innerHTML = '<option value=\"\">Выберите категорию</option>';
+
+    categories.forEach(cat => {
+      const opt = document.createElement('option');
+      opt.value = cat.id;          // В value кладём id
+      opt.textContent = cat.name;  // В текст — название
+      select.appendChild(opt);
+    });
+  } catch (err) {
+    console.error('Ошибка загрузки категорий:', err);
+  }
+}document.addEventListener('DOMContentLoaded', () => {
+  setupPostModal();
+});
+
+// 1. ФУНКЦИЯ ЗАГРУЗКИ КАТЕГОРИЙ
+async function loadCategories() {
+  const select = document.getElementById('categorySelect'); // id у <select>
+  if (!select) return;
+
+  try {
+    const res = await fetch('/categories/', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (!res.ok) {
+      console.error('Не удалось загрузить категории');
+      return;
+    }
+
+    const categories = await res.json();
+
+    select.innerHTML = '<option value=\"\">Выберите категорию</option>';
+
+    categories.forEach(cat => {
+      const opt = document.createElement('option');
+      opt.value = cat.id;          // В value кладём id
+      opt.textContent = cat.name;  // В текст — название
+      select.appendChild(opt);
+    });
+  } catch (err) {
+    console.error('Ошибка загрузки категорий:', err);
+  }
+}
 async function handleAddRent(e) {
   e.preventDefault();
-  console.log('1 start');
 
   const form = e.target;
   const formData = new FormData(form);
-  console.log('2 formData', [...formData.entries()]);
 
   const title = (formData.get('title') || '').toString().trim();
   const city = (formData.get('city') || '').toString().trim();
   const description = (formData.get('description') || '').toString().trim();
-  const categoryRaw = formData.get('category');
+  const categoryRaw = formData.get('category'); // здесь будет строка id
   const price = Number(formData.get('price')) || 0;
   const photo = formData.get('photo');
-  console.log('3 fields', { title, city, description, categoryRaw, price, photo });
 
   if (!title || !city || !description || !categoryRaw || price <= 0) {
-    console.log('4 validation failed');
     alert('Заполните все поля формы и укажите корректную цену');
     return;
   }
 
   const user = CommonAPI.getUserFromStorage();
-  console.log('5 user', user);
   if (!user) {
-    console.log('6 no user');
     alert('Для добавления объявления нужно войти');
     window.location.href = '/web/auth';
     return;
   }
 
   const idCategory = Number(categoryRaw);
-  console.log('7 idCategory', idCategory);
   if (!Number.isInteger(idCategory)) {
-    console.log('8 bad category');
     alert('Ошибка: категория должна быть числом (id категории)');
     return;
   }
-
-  console.log('9 before fetch');
 
   const rentPayload = {
     title,
@@ -61,12 +108,13 @@ async function handleAddRent(e) {
   };
 
   const submitBtn = form.querySelector('button[type="submit"]');
-  const originalText = submitBtn.textContent;
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Публикация...';
+  const originalText = submitBtn ? submitBtn.textContent : '';
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Публикация...';
+  }
 
   try {
-    // 1. Создаём объявление
     const rentRes = await fetch('/rents/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -74,8 +122,7 @@ async function handleAddRent(e) {
     });
 
     if (!rentRes.ok) {
-      const err = await rentRes.json().catch(() => ({}));
-      console.error('Ошибка создания объявления:', err);
+      console.error('Ошибка создания объявления:', await rentRes.text());
       alert('Ошибка создания объявления');
       return;
     }
@@ -83,7 +130,6 @@ async function handleAddRent(e) {
     const rent = await rentRes.json();
     const rentId = rent.id;
 
-    // 2. Загружаем фото (если есть)
     if (photo && photo.size > 0) {
       const imgForm = new FormData();
       imgForm.append('rent_id', rentId);
@@ -95,8 +141,7 @@ async function handleAddRent(e) {
       });
 
       if (!imgRes.ok) {
-        const imgErr = await imgRes.json().catch(() => ({}));
-        console.warn('Фото не загрузилось:', imgErr);
+        console.warn('Фото не загрузилось:', await imgRes.text());
       }
     }
 
@@ -107,15 +152,17 @@ async function handleAddRent(e) {
       window.location.href = '/web/rent';
     }, 800);
   } catch (err) {
-    console.error(err);
+    console.error('Не удалось создать объявление:', err);
     alert('Не удалось создать объявление');
   } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = originalText;
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+    }
   }
 }
 
-// ---------- Модалка объявления ----------
+
 function setupPostModal() {
   const openBtn = document.getElementById('openPostBtn');
   const cancelBtn = document.getElementById('cancelPostLocal');
@@ -125,13 +172,16 @@ function setupPostModal() {
   if (!modal || !form) return;
 
   if (openBtn) {
-    openBtn.addEventListener('click', () => {
+    openBtn.addEventListener('click', async () => {
       const user = CommonAPI.getUserFromStorage();
       if (!user) {
         alert('Для добавления объявления нужно войти в аккаунт');
         window.location.href = '/web/auth';
         return;
       }
+
+      await loadCategories(); // подгружаем категории перед показом
+
       modal.style.display = 'grid';
       modal.setAttribute('aria-hidden', 'false');
     });

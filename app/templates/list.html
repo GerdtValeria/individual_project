@@ -12,7 +12,7 @@
     <div class="brand">
       <div class="logo" aria-hidden="false">
         <a href="/" class="logo-link" aria-label="Перейти на главную">
-          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
+          <img src="/static/img/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
         </a>
       </div>
     </div>
@@ -63,7 +63,7 @@
     <div class="footer-inner">
       <div class="footer-col footer-contact">
         <div class="footer-brand">
-          <img src="/static/freepik_assistant_1762764092507.png"
+          <img src="/static/img/freepik_assistant_1762764092507.png"
                alt="Угол Комфорта логотип" class="footer-logo">
           <div class="company-name">Угол Комфорта</div>
         </div>
@@ -114,14 +114,7 @@
           <textarea name="description" rows="3" required></textarea>
         </label>
         <label>Категория
-          <select name="category" required>
-            <option value="">— Выберите —</option>
-            <option value="Студия">Студия</option>
-            <option value="1‑комнатная">1‑комнатная</option>
-            <option value="2‑комнатная">2‑комнатная</option>
-            <option value="Дом">Дом</option>
-            <option value="Апартаменты с видом">Апартаменты с видом</option>
-          </select>
+          <select name="category" id="categorySelect"></select>
         </label>
         <label>Цена (₽/ночь)
           <input name="price" type="number" min="1" required>
