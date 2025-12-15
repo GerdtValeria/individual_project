@@ -3,6 +3,8 @@ import asyncio
 import random
 from datetime import datetime, timedelta
 from sqlalchemy import text
+from pathlib import Path
+from PIL import Image, ImageDraw
 
 from app.database.database import async_session_maker
 from app.models.roles import RoleModel
@@ -14,6 +16,7 @@ from app.models.comments import CommentsModel
 from app.models.bookings import BookingsModel
 from app.models.help import HelpModel
 from app.models.favorites import FavoritesModel
+import generate_images
 
 
 class DataSeeder:
@@ -212,7 +215,7 @@ class DataSeeder:
                     selected_image = random.choice(image_data)
                     image_url = selected_image.image_url
                 else:
-                    image_url = f"/static/rent_{i}_image_1.jpg"  # fallback
+                    image_url = f"/static/img/rent_{i}_image_1.jpg"
                 
                 rent = RentsModel(
                     title=f"{random.choice(titles)} {random.randint(1, 100)}",
@@ -243,7 +246,7 @@ class DataSeeder:
                 image_count = random.randint(1, 5)
                 for i in range(image_count):
                     image = ImagesModel(
-                        image_url=f"/static/rent_{rent_id}_image_{i+1}.jpg"
+                        image_url=f"/static/img/rent_{rent_id}_image_{i+1}.jpg"
                     )
                     session.add(image)
             
@@ -369,10 +372,27 @@ class DataSeeder:
         else:
             print("Favorites already exist")
 
+    def make_placeholder(path: Path, text: str, size=(800, 600)):
+        img = Image.new("RGB", size, color=(230, 230, 230))
+        draw = ImageDraw.Draw(img)
+        w, h = draw.textsize(text)
+        draw.text(((size[0]-w)//2, (size[1]-h)//2), text, fill=(50, 50, 50))
+        img.save(path)
+
+    def generate_images():
+        base_dir = Path(__file__).resolve().parent
+        img_dir = base_dir / "app" / "static" / "img"
+        img_dir.mkdir(parents=True, exist_ok=True)
+        for rent_id in range(1, 101):
+            for i in range(1, 6):
+                path = img_dir / f"rent_{rent_id}_image_{i}.jpg"
+                if not path.exists():
+                    generate_images.make_placeholder(path, f"Rent {rent_id} #{i}")
 
 async def main():
     """Запуск заполнения данных"""
     seeder = DataSeeder()
+    generate_images()
     await seeder.initialize()
 
 
