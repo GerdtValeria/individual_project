@@ -3,6 +3,7 @@ from typing import List, Optional
 from app.models.rents import RentsModel
 from app.repositories.base import BaseRepository
 from app.schemas.rents import SRentAdd, SRentGet
+from app.database.database import engine
 from sqlalchemy.orm import selectinload
 
 class RentsRepository(BaseRepository):
@@ -25,6 +26,7 @@ class RentsRepository(BaseRepository):
         """
         Получение отфильтрованного списка аренд с отношениями
         """
+        print(active)
         query = select(self.model).options(
             selectinload(self.model.category),
             selectinload(self.model.images),
@@ -87,6 +89,7 @@ class RentsRepository(BaseRepository):
         ).where(RentsModel.id == id)
         
         result = await self.session.execute(query)
+        print(query.compile(bind=engine, compile_kwargs={"literal_binds": True}))
         return result.scalar_one_or_none()
     
     async def get_active_rents(self):
