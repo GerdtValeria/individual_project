@@ -35,7 +35,7 @@ async function loadCategories() {
 
     categoriesCache = {};
     categories.forEach(cat => {
-      categoriesCache[cat.id] = cat.name;  // id / name из схемы SCategoriesGet
+      categoriesCache[cat.id] = cat.name; // поля из SCategoriesGet
     });
 
     console.log('categoriesCache', categoriesCache);
@@ -43,8 +43,8 @@ async function loadCategories() {
   } catch (e) {
     console.error('loadCategories error', e);
     return [];
-  }                    // <-- ЭТОЙ СКОБКИ НЕ ХВАТАЛО
-}   
+  }
+}
   // ==================== Навигация ====================
   const logoLink = document.querySelector('.logo-link');
   if (logoLink) {
