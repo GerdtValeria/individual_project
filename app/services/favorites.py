@@ -3,7 +3,7 @@ from app.schemas.favorites import SFavoriteRentAdd, SFavoriteRentGet
 from app.services.rents import RentService
 
 class FavoritesService(RentService):
-    async def get_all_rents(self) -> list[SFavoriteRentGet]:
+    async def get_all_favorite_rents(self) -> list[SFavoriteRentGet]:
         favorite_rents = await self.db.favorites.get_all_favorite_rents()
         return favorite_rents
     
