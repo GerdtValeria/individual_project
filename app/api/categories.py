@@ -16,7 +16,7 @@ async def get_categories( db: DBDep,) -> list[SCategoriesGet]:
 
 @router.get("/{id}", response_model=SCategoriesGet)
 async def get_category(id:int, db: DBDep,):
-    category = await CategoryService(db).get_all_categories(id=id)   
+    category = await CategoryService(db).get_category(id=id)   
     return category
 
 @router.post("/", response_model=SCategoriesGet)

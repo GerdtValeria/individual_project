@@ -401,10 +401,10 @@ function initListings() {
  */
 async function navigateToRentPage() {
     try {
-        window.location.href = '/web/rent';
+        window.location.href = '/web/rents';
     } catch (error) {
         console.error('Ошибка при переходе на страницу аренды:', error);
-        window.location.href = '/web/rent';
+        window.location.href = '/web/rents';
     }
 }
 

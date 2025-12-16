@@ -4,8 +4,14 @@ from app.repositories.images import ImagesRepository
 
 
 class ImageService(BaseService):
-    async def get_image(self, id: int):
-        image = await self.db.images.get_one_or_none(id=id)
+    async def get_image(self, id: int | None = None, rent_id: int | None = None):
+        image = ""
+        if id:
+            await self.db.images.get_one_or_none(id=id)        
+        elif rent_id:
+            rent = await self.db.rents.get_one_or_none(id=rent_id)
+            id_img = rent.id_image
+            image = await self.db.images.get_one_or_none(id=id_img)
         return image
 
     async def add_image(self, image_data: SImagesAdd) -> SImagesGet:

@@ -35,10 +35,10 @@ async function loadCategories() {
     const categories = await res.json();
     console.log('categories raw', categories);
 
-    categoriesCache = {};
-    categories.forEach(cat => {
-      categoriesCache[cat.id] = cat.name;   // SCategoriesGet: id, name
-    });
+    // categories.forEach(cat => {
+    //   categoriesCache[cat.id] = cat.name;   // SCategoriesGet: id, name
+    // });
+    categoriesCache = categories;
 
     console.log('categoriesCache', categoriesCache);
     return categories;
@@ -54,7 +54,7 @@ function initCategoryCarousel() {
   console.log('initCategoryCarousel', { scrollContainer, categoriesCache });
   if (!scrollContainer) return;
 
-  if (Object.keys(categoriesCache).length === 0) {
+  if (categoriesCache.length === 0) {
     scrollContainer.innerHTML =
       '<span style="color:var(--muted);font-size:13px">Категорий нет</span>';
     return;
@@ -68,19 +68,21 @@ function initCategoryCarousel() {
     { bg: '#fffaf4', text: '#6b4a11' }
   ];
 
-  scrollContainer.innerHTML = Object.entries(categoriesCache)
-    .map(([id, name], index) => {
-      const color = colors[index % colors.length];
-      return `
-        <a class="category-card" data-category="${id}"
-           style="min-width:160px;flex:0 0 auto;text-decoration:none;color:inherit;cursor:pointer">
-          <div style="background:${color.bg};border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;box-shadow:var(--card-shadow)">
-            <strong style="font-size:15px;color:${color.text}">${name}</strong>
-            <span style="color:var(--muted);font-size:13px">Популярные варианты</span>
-          </div>
-        </a>`;
-    })
-    .join('');
+  let categoryHTML = '';
+  for (let i = 0; i < categoriesCache.length; i++) {
+    const category = categoriesCache[i];
+    const color = colors[i % colors.length];
+    categoryHTML += `
+      <a class="category-card" data-category="${category.id}"
+         style="min-width:160px;flex:0 0 auto;text-decoration:none;color:inherit;cursor:pointer">
+        <div style="background:${color.bg};border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;box-shadow:var(--card-shadow)">
+          <strong style="font-size:15px;color:${color.text}">${category.name}</strong>
+          <span style="color:var(--muted);font-size:13px">Популярные варианты</span>
+        </div>
+      </a>`;
+  }
+  scrollContainer.innerHTML = categoryHTML;
+    console.log(categoriesCache)
 
   // обработчики кликов по категориям
   document.querySelectorAll('.category-card').forEach(card => {
@@ -290,6 +292,7 @@ function initCategoryCarousel() {
       });
       if (response.ok) {
         const categoryRents = await response.json();
+        console.log(`categoryRents:${categoryRents}`)
         renderRentListings(categoryRents);
       }
     } catch (error) {
@@ -327,10 +330,11 @@ function initCategoryCarousel() {
   }
 
   function renderRentCard(rent) {
+    // console.log(rent)
     const isFavorite = currentFavorites.has(rent.id);
-    const categoryName = categoriesCache[rent.id_category] || 'Неизвестно';
+    
     const mainPhoto =
-      (rent.photos && rent.photos[0]) || rent.img || '/static/default.jpg';
+      (rent.photos && rent.photos[0]) || rent.img || '/static/img/default.jpg';
 
     return `
       <div class="rent-card" id="card_${rent.id}">
@@ -338,7 +342,7 @@ function initCategoryCarousel() {
         <div class="rent-info">
           <h3>${rent.title || 'Без названия'}</h3>
           <div class="rent-meta">
-            <span class="category">${categoryName}</span> · ${rent.rooms || '1к'}
+            <span class="category">${rent.category.name}</span> · ${rent.rooms || '1к'}
           </div>
           <div class="rent-price">₽${rent.price || 0}/ночь</div>
           <div class="rent-actions">
@@ -355,7 +359,7 @@ function initCategoryCarousel() {
   }
 
   function navigateToRentDetail(rentId) {
-    window.location.href = `/web/rent/${rentId}`;
+    window.location.href = `/web/rents/${rentId}`;
   }
 
   // ==================== Поиск ====================

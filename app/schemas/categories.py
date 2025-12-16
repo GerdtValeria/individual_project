@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class SCategories(BaseModel):
@@ -8,5 +8,6 @@ class SCategories(BaseModel):
 class SCategoriesAdd(BaseModel):
     name: str = Field(...)
     
-class SCategoriesGet(SCategoriesAdd):
-    name: str = Field(...)
+class SCategoriesGet(SCategories):
+    pass
+    model_config = ConfigDict(from_attributes=True)
