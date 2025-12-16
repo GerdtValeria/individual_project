@@ -9,7 +9,7 @@ from app.schemas.users import SUserGet
 
 class SRent(BaseModel):
     id_category: int 
-    id_image: int
+    id_image: int | None = None
     id_user: int
     title: str = Field(..., min_length=1, max_length=50)
     address: str = Field(..., min_length=1, max_length=50) 
@@ -19,7 +19,7 @@ class SRent(BaseModel):
     
 class SRentAdd(BaseModel):
     id_category: int 
-    id_image: int
+    id_image: int | None = None
     id_user: int
     title: str = Field(..., min_length=1, max_length=50)
     address: str = Field(..., min_length=1, max_length=50) 
