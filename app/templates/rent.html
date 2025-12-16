@@ -1,191 +1,101 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Угол Комфорта — Арендовать</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аренда - Здесь собраны доступные варианты</title>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-  <header class="site-header">
-    <div class="brand">
-      <div class="logo" aria-hidden="false">
-        <a href="/" class="logo-link" aria-label="Перейти на главную">
-          <img src="/static/img/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
-        </a>
-      </div>
+    <!-- Шапка -->
+    <header class="header">
+        <div class="container">
+            <a href="/web/" class="logo-link">
+                <img src="/static/logo.png" alt="Логотип" class="logo">
+            </a>
+            
+            <nav class="top-tabs">
+                <button class="tab active" data-tab="rent">Аренда</button>
+                <button class="tab" data-tab="list">Продажа</button>
+                <button class="tab" data-tab="favorites">Избранное</button>
+                <button class="tab" data-tab="help">Помощь</button>
+            </nav>
+            
+            <div class="auth">
+                <button id="registerBtn">Зарегистрироваться</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <main class="main">
+        <div class="container">
+            <!-- Заголовок и поиск -->
+            <section class="hero">
+                <h1>Здесь собраны доступные для аренды варианты</h1>
+                <p>Используйте фильтры и карточки объявлений для деталей и бронирования</p>
+                
+                <form id="searchForm" class="search-form">
+                    <input type="text" id="searchInput" placeholder="Поиск по адресу, названию...">
+                    <button type="submit">Найти</button>
+                </form>
+            </section>
+
+            <!-- Карусель категорий - ДИНАМИЧЕСКАЯ -->
+            <section class="categories-section">
+                <h2>Категории</h2>
+                <div class="categories-carousel">
+                    <!-- Категории будут загружены динамически из /categories/ API -->
+                    <div class="categories-list loading">
+                        <div class="category-item skeleton"></div>
+                        <div class="category-item skeleton"></div>
+                        <div class="category-item skeleton"></div>
+                        <div class="category-item skeleton"></div>
+                        <div class="category-item skeleton"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Список объявлений -->
+            <section class="rentings-section">
+                <div class="section-header">
+                    <h2>Доступные варианты аренды</h2>
+                    <div class="sort-controls">
+                        <select id="sortSelect">
+                            <option value="price_asc">Цена: по возрастанию</option>
+                            <option value="price_desc">Цена: по убыванию</option>
+                            <option value="date_desc">Новее сначала</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="rentListings" class="rent-grid loading">
+                    <div class="rent-card skeleton"></div>
+                    <div class="rent-card skeleton"></div>
+                    <div class="rent-card skeleton"></div>
+                </div>
+                
+                <div id="errorContainer" class="error-container" style="display: none;"></div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="container">
+            <p>Здесь вы найдёте ответы на частые вопросы, инструкции по бронированию и контакты службы поддержки.</p>
+        </div>
+    </footer>
+
+    <!-- Модальное окно помощи -->
+    <div id="helpModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Помощь</h3>
+            <p>Частые вопросы и поддержка</p>
+        </div>
     </div>
-    <form id="searchForm" class="search-form" aria-label="Поиск аренды" style="margin-left:12px;">
-      <input id="q" name="q" type="search" placeholder="Поиск по городу, району или опции" />
-    </form>
-    <nav class="top-tabs" aria-label="Главная навигация">
-      <button class="tab active" data-tab="rent">Арендовать</button>
-      <button class="tab" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
-      <a class="tab" href="/web/favorites">Избранное</a>
-      <button class="tab" data-tab="help">Помощь</button>
-      <div class="auth">
-        <a class="tab primary" href="/web/auth">Зарегистрироваться</a>
-      </div>
-    </nav>
-  </header>
 
-  <main class="container" style="padding:18px;">
-    <section style="max-width:900px;margin:0 auto">
-      <h1 style="margin:0 0 12px;font-size:28px;color:#042018">Арендовать — поиск и предложения</h1>
-      <p style="color:var(--muted);margin:0 0 18px">Здесь собраны доступные для аренды варианты — используйте фильтры и карточки объявлений для деталей и бронирования.</p>
-
-      <!-- Housing categories feed -->
-      <section class="categories-feed" aria-label="Категории жилья" style="margin:16px 0 22px">
-        <div class="feed-wrap">
-          <button class="feed-arrow left" aria-label="Скролл влево">‹</button>
-          <div class="feed-scroll" style="display:flex;gap:12px;overflow:hidden;padding-bottom:4px">
-            <a class="category-card" href="/?q=Студии" style="min-width:160px;flex:0 0 auto;text-decoration:none;color:inherit">
-              <div style="background:#f1f9f7;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;box-shadow:var(--card-shadow)">
-                <strong style="font-size:15px;color:#044036">Студии</strong>
-                <span style="color:var(--muted);font-size:13px">Компактные и недорогие варианты</span>
-              </div>
-            </a>
-            <a class="category-card" href="/?q=1+комната" style="min-width:160px;flex:0 0 auto;text-decoration:none;color:inherit">
-              <div style="background:#fff6f0;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;box-shadow:var(--card-shadow)">
-                <strong style="font-size:15px;color:#7a3b2b">1‑комнатные</strong>
-                <span style="color:var(--muted);font-size:13px">Уютные квартиры для пары</span>
-              </div>
-            </a>
-            <a class="category-card" href="/?q=2+комнаты" style="min-width:160px;flex:0 0 auto;text-decoration:none;color:inherit">
-              <div style="background:#eef7ff;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;box-shadow:var(--card-shadow)">
-                <strong style="font-size:15px;color:#084a7a">2‑комнатные</strong>
-                <span style="color:var(--muted);font-size:13px">Для небольших семей</span>
-              </div>
-            </a>
-            <a class="category-card" href="/?q=Дома" style="min-width:160px;flex:0 0 auto;text-decoration:none;color:inherit">
-              <div style="background:#f5fff8;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;box-shadow:var(--card-shadow)">
-                <strong style="font-size:15px;color:#0b6b45">Дома</strong>
-                <span style="color:var(--muted);font-size:13px">Просторные варианты с садом</span>
-              </div>
-            </a>
-            <a class="category-card" href="/?q=Апартаменты+с+видом" style="min-width:160px;flex:0 0 auto;text-decoration:none;color:inherit">
-              <div style="background:#fffaf4;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;box-shadow:var(--card-shadow)">
-                <strong style="font-size:15px;color:#6b4a11">С видом</strong>
-                <span style="color:var(--muted);font-size:13px">Панорамные окна и вид на воду</span>
-              </div>
-            </a>
-          </div>
-          <button class="feed-arrow right" aria-label="Скролл вправо">›</button>
-        </div>
-
-        <!-- ADDED: category-specific ads container -->
-        <div id="categoryAds" class="ads" aria-label="Рекламные предложения по категории" style="margin-top:12px">
-          <div id="categoryAdsInner" class="ads-inner" style="width:100%;max-width:92%;"></div>
-        </div>
-      </section>
-
-      <!-- Reuse the listings container from the main app; keep simple client-side rendering via existing app.js if desired -->
-      <div id="rentListings" class="listings">
-        <!-- minimal static fallback cards to ensure content appears if app.js is not loaded -->
-        <article class="card">
-          <img class="thumb" src="/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg" alt="">
-          <div class="card-body">
-            <div class="card-top"><h3 class="title">Примеры предложений</h3></div>
-            <p class="meta">Набережная · 1к</p>
-            <p class="price">₽85/ночь</p>
-            <div class="tags"><span class="tag-pill">Wi‑Fi</span></div>
-            <button class="details btn small">Подробнее</button>
-          </div>
-        </article>
-      </div>
-
-      <!-- NEW: Recently viewed block -->
-      <section id="recentlyViewedWrap" aria-label="Недавно смотрели" style="margin-top:18px">
-        <h3 style="margin:0 0 8px;color:#042018">Недавно смотрели</h3>
-        <div id="recentlyViewed" class="ads-inner" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));">
-          <!-- populated by js/rent-page.js -->
-        </div>
-      </section>
-
-      <!-- Restored: Ads block -->
-      <section class="ads" id="ads" aria-label="Реклама">
-        <div class="ads-inner" id="adsInner">
-          <!-- ads inserted by JS -->
-        </div>
-      </section>
-    </section>
-  </main>
-
-  <!-- NEW: Help overlay block (opens on top of rent page when clicking 'Помощь') -->
-  <div id="helpBlock" class="overlay-block" aria-hidden="true">
-    <div class="overlay-dialog" role="dialog" aria-label="Помощь">
-      <header class="modal-header">
-        <h3>Помощь</h3>
-        <button id="closeHelpBlock" class="help-close" aria-label="Закрыть"><i data-feather="x"></i></button>
-      </header>
-      <div class="post-form" style="max-width:520px;">
-        <p style="margin:0 0 8px;color:var(--muted)">Здесь вы найдёте ответы на частые вопросы, инструкции по бронированию и контакты службы поддержки.</p>
-        <ul style="margin:0 0 8px;color:var(--muted);line-height:1.5">
-          <li>Как забронировать жильё?</li>
-          <li>Как отменить бронирование?</li>
-          <li>Как разместить объявление?</li>
-        </ul>
-
-        <!-- ADDED: Support contact form so users on the rent page can message Support directly -->
-        <hr style="border:0;height:1px;background:rgba(0,0,0,0.06);margin:8px 0">
-        <form id="helpContactFormRent" class="help-contact-form" style="display:flex;flex-direction:column;gap:8px;">
-          <label style="font-size:13px">Ваш e-mail
-            <input type="email" name="email" placeholder="you@example.com" required style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)">
-          </label>
-          <label style="font-size:13px">Сообщение
-            <textarea name="message" rows="3" placeholder="Опишите проблему или вопрос" required style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)"></textarea>
-          </label>
-          <div style="display:flex;justify-content:flex-end;gap:8px">
-            <button type="submit" class="btn">Отправить</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <footer class="site-footer" aria-label="Сайт футер" style="margin-top:28px">
-    <div class="footer-inner">
-      <div class="footer-col footer-contact">
-        <div class="footer-brand">
-          <img src="/static/img/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
-          <div class="company-name">Угол Комфорта</div>
-        </div>
-      </div>
-
-      <div class="footer-col">
-        <h4 class="footer-heading">Меню</h4>
-        <ul>
-          <li><a href="/web/rents" data-nav="rent">Арендовать</a></li>
-          <li><a href="/web/list" data-nav="list">Сдать в аренду</a></li>
-          <li><a href="/" data-nav="help">Помощь</a></li>
-          <li><a href="/" data-nav="home">Главная</a></li>
-          <li><a href="/web/auth" data-nav="signup">Зарегистрироваться</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col">
-        <h4 class="footer-heading">О проекте</h4>
-        <ul>
-          <li><a href="/#team">Команда</a></li>
-          <li><a href="/#history">Наша история</a></li>
-          <li><a href="/#mission">Миссия проекта</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col">
-        <h4 class="footer-heading">Мы в соцсетях</h4>
-        <ul class="social-list">
-          <li><a href="#">ВК</a></li>
-          <li><a href="#">Телеграмм</a></li>
-          <li><a href="#">Одноклассники</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bar" aria-hidden="true"></div>
-  </footer>
-
-  <script type="module" src="/static/js/rent.js"></script>
-
+    <script src="/static/rent.js"></script>
 </body>
 </html>
