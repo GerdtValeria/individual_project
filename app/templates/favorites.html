@@ -8,29 +8,39 @@
   <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
-<header class="page-header">
-  <a href="/web/" class="logo-link">Угол Комфорта</a>
+  <header class="site-header">
+    <div class="brand">
+      <div class="logo" aria-hidden="false">
+        <a href="web/" class="logo-link" aria-label="Перейти на главную">
+          <img src="/static/img/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
+        </a>
+      </div>
+    </div>
+    <form id="searchForm" class="search-form" aria-label="Поиск аренды" style="margin-left:12px;">
+      <input id="q" name="q" type="search" placeholder="Поиск по городу, району или опции" />
+    </form>
+    <nav class="top-tabs" aria-label="Главная навигация">
+        <a href="/web/rents" class="tab" data-tab="rent">Арендовать</a>
+        <a href="/web/list" class="tab" data-tab="list">Сдать в аренду</a>
+        <a href="/web/favorites" class="tab" data-tab="favorites">Избранное</a>
+        <button class="tab" data-tab="help">Помощь</button>
+        <a href="/web/profile" class="btn btn-outline" id="topProfileBtn">Профиль</a>
 
-  <nav class="top-tabs">
-    <a href="/web/rents" class="tab" data-tab="rent">Арендовать</a>
-    <a href="/web/list" class="tab" data-tab="list">Сдать в аренду</a>
-    <a href="/web/favorites" class="tab active" data-tab="favorites">Избранное</a>
-    <button class="tab" data-tab="help">Помощь</button>
-    <button class="tab primary" data-tab="signup">Зарегистрироваться</button>
-  </nav>
+      </div>
+    </nav>
+  </header>
 
-  <!-- Кнопка вверху страницы → ПРОФИЛЬ -->
-  <a href="/web/profile" class="btn btn-outline" id="topProfileBtn">Профиль</a>
-</header>
+  <main class="container" style="padding:18px;">
+    <section style="max-width:1100px;margin:0 auto">
+      <h1 style="margin:0 0 12px;font-size:28px;color:#042018">Избранное</h1>
+      <p id="favoritesEmptyMsg" style="color:var(--muted);margin:0 0 12px">У вас пока нет сохранённых объявлений.</p>
+      <div id="favoritesList" class="listings" style="margin-top:8px"></div>
+      <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+      <a href="/web/rents" class="btn" id="bodyBackToListBtn">К списку</a>
+      </div>
+    </section>
 
-<main>
-  <!-- Кнопка в теле страницы → К СПИСКУ (Арендовать) -->
-  <section class="favorites-actions">
-    <a href="/web/rents" class="btn" id="bodyBackToListBtn">К списку</a>
-  </section>
-
-  <!-- модалка помощи -->
-  <div id="helpBlock" class="overlay-block" aria-hidden="true">
+      <div id="helpBlock" class="overlay-block" aria-hidden="true">
     <div class="overlay-content">
       <button id="closeHelpBlock" class="overlay-close" aria-label="Закрыть">×</button>
       <h2>Помощь</h2>
@@ -48,7 +58,7 @@
       </form>
     </div>
   </div>
-</main>
+  </main>
 
   <!-- In-page Help overlay -->
   <div id="helpBlock" class="overlay-block" aria-hidden="true">
