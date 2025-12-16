@@ -21,25 +21,29 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ==================== Загрузка категорий ====================
-  async function loadCategories() {
-    try {
-      const response = await fetch('/categories/', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      });
-      if (response.ok) {
-        const categories = await response.json();
-        categoriesCache = {};
-        categories.forEach(cat => {
-          categoriesCache[cat.id] = cat.name;
-        });
-        console.log('Категории загружены:', categoriesCache);
-      }
-    } catch (error) {
-      console.error('Ошибка загрузки категорий:', error);
-    }
-  }
+async function loadCategories() {
+  try {
+    const res = await fetch('/categories/', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    console.log('GET /categories status', res.status);
+    if (!res.ok) return [];
 
+    const categories = await res.json();
+    console.log('categories raw', categories);
+    categoriesCache = {};
+    categories.forEach(cat => {
+      // убедись, что тут именно cat.id и cat.name
+      categoriesCache[cat.id] = cat.name;
+    });
+    console.log('categoriesCache', categoriesCache);
+    return categories;
+  } catch (e) {
+    console.error('loadCategories error', e);
+    return [];
+  }
+}
   // ==================== Навигация ====================
   const logoLink = document.querySelector('.logo-link');
   if (logoLink) {
@@ -217,14 +221,15 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ==================== Карусель категорий ====================
- function initCategoryCarousel() {
-const scrollContainer = document.getElementById('categoriesScroll');
-  if (!scrollContainer || Object.keys(categoriesCache).length === 0) {
-console.log(categoriesCache);
-console.log(scrollContainer);
+function initCategoryCarousel() {
+  const scrollContainer = document.getElementById('categoriesScroll');
+  console.log('initCategoryCarousel', { scrollContainer, categoriesCache });
+
+  if (!scrollContainer) return;
+  if (Object.keys(categoriesCache).length === 0) {
+    scrollContainer.innerHTML = '<span style="color:var(--muted);font-size:13px">Категорий нет</span>';
     return;
   }
-
   // Цвета для категорий (циклически)
   const colors = [
     { bg: '#f1f9f7', text: '#044036' },
