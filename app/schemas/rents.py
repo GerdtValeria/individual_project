@@ -2,6 +2,10 @@ from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel, ConfigDict, Field
 
+from app.schemas.categories import SCategoriesGet
+from app.schemas.images import SImagesGet
+from app.schemas.users import SUserGet
+
 
 class SRent(BaseModel):
     id_category: int 
@@ -29,3 +33,14 @@ class SRentGet(SRentAdd):
     created_at: datetime
     updated_at: Optional[datetime] = None
     model_config = ConfigDict(from_attributes=True)
+
+class SRentGetWithRels(SRentAdd):
+    id: int
+    id_image: Optional[int] = None  # Поле из модели
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+    model_config = ConfigDict(from_attributes=True)
+
+    category: SCategoriesGet | None
+    images: SImagesGet | None
+    user: SUserGet | None

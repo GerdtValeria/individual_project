@@ -127,8 +127,9 @@ function renderRentDetails(rentData) {
   if (!container) return;
   
   const categoryName = categoriesCache[rentData.id_category] || 'Неизвестно';
-  const imageSrc = rentData.id_image ? `/images/${rentData.id_image}` : '/static/default.jpg';
-  
+  const imageSrc = rentData.id_image ? `/images/${rentData.id_image}` : '/static/img/default.jpg';
+  console.log(`rentData.id_image${rentData.id_image}`)
+
   document.getElementById('mainImage').src = imageSrc;
   document.getElementById('rentInfo').innerHTML = `
     <h1 style="margin:0 0 8px;font-size:28px;color:#042018">${rentData.title}</h1>
@@ -169,7 +170,7 @@ function renderSimilarRents(rents) {
   }
   
   container.innerHTML = rents.map(rent => {
-    const imageSrc = rent.id_image ? `/images/${rent.id_image}` : '/static/default.jpg';
+    const imageSrc = rent.id_image ? `/images/?rent_id=${rent.id}` : '/static/img/default.jpg';
     return `
       <article class="rent-card" data-rent-id="${rent.id}">
         <img src="${imageSrc}" alt="${rent.title}" class="rent-card__img" loading="lazy">

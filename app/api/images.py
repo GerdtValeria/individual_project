@@ -89,7 +89,18 @@ async def add_image(
 @router.get("/{id}", response_model=dict)
 async def get_image(id: int, db: Session = Depends(get_db)):
     """Получение информации об изображении"""
-    image = db.query(Image).filter(Image.id == id).first()
+    image = await ImageService(db).get_image(id=id)
+    if not image:
+        raise HTTPException(status_code=404, detail="Изображение не найдено")
+    return {
+        "id": image.id,
+        "id_rent": image.id_rent,
+        "path": image.path
+    }
+@router.get("/", response_model=dict)
+async def get_rent_image(rent_id: int, db: Session = Depends(get_db)):
+    """Получение информации об изображении"""
+    image = await ImageService(db).get_image(rent_id=rent_id)
     if not image:
         raise HTTPException(status_code=404, detail="Изображение не найдено")
     return {

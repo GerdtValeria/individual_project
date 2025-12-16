@@ -1,6 +1,6 @@
 from datetime import date
 from typing import List, Optional
-from app.schemas.rents import SRentAdd, SRentGet
+from app.schemas.rents import SRentAdd, SRentGet, SRentGetWithRels
 from app.services.base import BaseService
 from app.repositories.rents import RentsRepository
 
@@ -18,7 +18,7 @@ class RentService(BaseService):
         id_category: Optional[int] = None,
         id_user: Optional[int] = None,
         active: Optional[bool] = None,
-    ) -> List[SRentGet]:
+    ) -> List[SRentGetWithRels]:
         """
         Получить отфильтрованные объявления об аренде.
         """
@@ -44,7 +44,7 @@ class RentService(BaseService):
         )
         
         # Конвертируем модели в схемы
-        return [SRentGet.from_orm(rent) for rent in rents]
+        return [SRentGetWithRels.model_validate(rent) for rent in rents]
     
 
     async def get_all_rents(self) -> list[SRentGet]:

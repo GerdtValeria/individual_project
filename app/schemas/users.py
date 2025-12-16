@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr
 if TYPE_CHECKING:
     from app.schemas.roles import SRoleGet
 
@@ -25,6 +25,7 @@ class SUserAuth(BaseModel):
 
 class SUserGet(SUserAdd):
     id: int
+    model_config = ConfigDict(from_attributes=True)
 
 
 class SUserPatch(BaseModel):

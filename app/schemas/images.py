@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class SImages(BaseModel):
@@ -11,3 +11,4 @@ class SImagesAdd(BaseModel):
     
 class SImagesGet(SImagesAdd):
     id: int
+    model_config = ConfigDict(from_attributes=True)
