@@ -1,99 +1,98 @@
 // rent-handler.js
 document.addEventListener('DOMContentLoaded', function () {
-  // ==================== Глобальные переменные ====================
-  let currentUser = null;
-  let currentFavorites = new Set();
-  let allRentListings = [];
-  let categoriesCache = {};
-  let isLoading = false;
+// ==================== Глобальные переменные ====================
+let currentUser = null;
+let currentFavorites = new Set();
+let allRentListings = [];
+let categoriesCache = {};
+let isLoading = false;
 
-  // ==================== Инициализация ====================
-  console.log('Rent handler initialized');
-  initPage();
+// ==================== Инициализация ====================
+console.log('Rent handler initialized');
+initPage();
 
-  async function initPage() {
-    await checkAuth();
-    await loadFavorites();
-    await loadCategories();        // загружаем категории
-    await loadAllRents();
-    loadRecentlyViewed();
-    setupEventHandlers();
-    initCategoryCarousel();        // после загрузки категорий
-  }
+async function initPage() {
+  await checkAuth();
+  await loadFavorites();
+  await loadCategories();      // загружаем категории
+  await loadAllRents();
+  loadRecentlyViewed();
+  setupEventHandlers();
+  initCategoryCarousel();      // рисуем после загрузки категорий
+}
 
-  // ==================== Загрузка категорий ====================
-  async function loadCategories() {
-    try {
-      console.log('loadCategories called');
-      const res = await fetch('/categories/', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      });
-      console.log('GET /categories status', res.status);
-      if (!res.ok) return [];
+// ==================== Загрузка категорий ====================
+async function loadCategories() {
+  try {
+    console.log('loadCategories called');
+    const res = await fetch('/categories/', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    console.log('GET /categories status', res.status);
+    if (!res.ok) return [];
 
-      const categories = await res.json();
-      console.log('categories raw', categories);
+    const categories = await res.json();
+    console.log('categories raw', categories);
 
-      categoriesCache = {};
-      categories.forEach(cat => {
-        categoriesCache[cat.id] = cat.name; // SCategoriesGet: id, name
-      });
-
-      console.log('categoriesCache', categoriesCache);
-      return categories;
-    } catch (e) {
-      console.error('loadCategories error', e);
-      return [];
-    }
-  }
-
-  // ==================== Карусель категорий ====================
-  function initCategoryCarousel() {
-    const scrollContainer = document.getElementById('categoriesScroll');
-    console.log('initCategoryCarousel', { scrollContainer, categoriesCache });
-    if (!scrollContainer) return;
-
-    if (Object.keys(categoriesCache).length === 0) {
-      scrollContainer.innerHTML =
-        '<span style="color:var(--muted);font-size:13px">Категорий нет</span>';
-      return;
-    }
-
-    const colors = [
-      { bg: '#f1f9f7', text: '#044036' },
-      { bg: '#fff6f0', text: '#7a3b2b' },
-      { bg: '#eef7ff', text: '#084a7a' },
-      { bg: '#f5fff8', text: '#0b6b45' },
-      { bg: '#fffaf4', text: '#6b4a11' }
-    ];
-
-    scrollContainer.innerHTML = Object.entries(categoriesCache)
-      .map(([id, name], index) => {
-        const color = colors[index % colors.length];
-        return `
-          <a class="category-card" data-category="${id}"
-             style="min-width:160px;flex:0 0 auto;text-decoration:none;color:inherit;cursor:pointer">
-            <div style="background:${color.bg};border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;box-shadow:var(--card-shadow)">
-              <strong style="font-size:15px;color:${color.text}">${name}</strong>
-              <span style="color:var(--muted);font-size:13px">Популярные варианты</span>
-            </div>
-          </a>`;
-      })
-      .join('');
-
-    // клики по категориям
-    document.querySelectorAll('.category-card').forEach(card => {
-      card.addEventListener('click', e => {
-        e.preventDefault();
-        const categoryId = card.dataset.category;
-        loadRentsByCategory(categoryId);
-      });
+    categoriesCache = {};
+    categories.forEach(cat => {
+      categoriesCache[cat.id] = cat.name;   // SCategoriesGet: id, name
     });
 
-    // прокрутка стрелками
-    initCategoriesScroll();
+    console.log('categoriesCache', categoriesCache);
+    return categories;
+  } catch (e) {
+    console.error('loadCategories error', e);
+    return [];
   }
+} // ← обязательно закрываем функцию ЗДЕСЬ
+
+// ==================== Карусель категорий ====================
+function initCategoryCarousel() {
+  const scrollContainer = document.getElementById('categoriesScroll');
+  console.log('initCategoryCarousel', { scrollContainer, categoriesCache });
+  if (!scrollContainer) return;
+
+  if (Object.keys(categoriesCache).length === 0) {
+    scrollContainer.innerHTML =
+      '<span style="color:var(--muted);font-size:13px">Категорий нет</span>';
+    return;
+  }
+
+  const colors = [
+    { bg: '#f1f9f7', text: '#044036' },
+    { bg: '#fff6f0', text: '#7a3b2b' },
+    { bg: '#eef7ff', text: '#084a7a' },
+    { bg: '#f5fff8', text: '#0b6b45' },
+    { bg: '#fffaf4', text: '#6b4a11' }
+  ];
+
+  scrollContainer.innerHTML = Object.entries(categoriesCache)
+    .map(([id, name], index) => {
+      const color = colors[index % colors.length];
+      return `
+        <a class="category-card" data-category="${id}"
+           style="min-width:160px;flex:0 0 auto;text-decoration:none;color:inherit;cursor:pointer">
+          <div style="background:${color.bg};border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;box-shadow:var(--card-shadow)">
+            <strong style="font-size:15px;color:${color.text}">${name}</strong>
+            <span style="color:var(--muted);font-size:13px">Популярные варианты</span>
+          </div>
+        </a>`;
+    })
+    .join('');
+
+  // обработчики кликов по категориям
+  document.querySelectorAll('.category-card').forEach(card => {
+    card.addEventListener('click', e => {
+      e.preventDefault();
+      const categoryId = card.dataset.category;
+      loadRentsByCategory(categoryId);
+    });
+  });
+
+  initCategoriesScroll();  // твоя функция прокрутки как есть
+}
 
   // ==================== Прокрутка категорий ====================
   function initCategoriesScroll() {
