@@ -1,118 +1,98 @@
 // rent-handler.js
-document.addEventListener('DOMContentLoaded', function () {
-// ==================== Глобальные переменные ====================
-let currentUser = null;
-let currentFavorites = new Set();
-let allRentListings = [];
-let categoriesCache = {};
-let isLoading = false;
+document.addEventListener('DOMContentLoaded', () => {
+  let currentUser = null;
+  let currentFavorites = new Set();
+  let allRentListings = [];
+  let categoriesCache = {};
+  let isLoading = false;
 
-// ==================== Инициализация ====================
-console.log('Rent handler initialized');
-initPage();
+  console.log('Rent handler initialized');
+  initPage();
 
-async function initPage() {
-  await checkAuth();
-  await loadFavorites();
-  await loadCategories();      // загружаем категории
-  await loadAllRents();
-  loadRecentlyViewed();
-  setupEventHandlers();
-  initCategoryCarousel();      // рисуем после загрузки категорий
-}
-
-// ==================== Загрузка категорий ====================
-async function loadCategories() {
-  try {
-    console.log('loadCategories called');
-    const res = await fetch('/categories/', {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    });
-    console.log('GET /categories status', res.status);
-    if (!res.ok) return [];
-
-    const categories = await res.json();
-    console.log('categories raw', categories);
-
-    categoriesCache = {};
-    categories.forEach(cat => {
-      categoriesCache[cat.id] = cat.name;   // SCategoriesGet: id, name
-    });
-
-    console.log('categoriesCache', categoriesCache);
-    return categories;
-  } catch (e) {
-    console.error('loadCategories error', e);
-    return [];
-  }
-} // ← обязательно закрываем функцию ЗДЕСЬ
-
-// ==================== Карусель категорий ====================
-function initCategoryCarousel() {
-  const scrollContainer = document.getElementById('categoriesScroll');
-  console.log('initCategoryCarousel', { scrollContainer, categoriesCache });
-  if (!scrollContainer) return;
-
-  if (Object.keys(categoriesCache).length === 0) {
-    scrollContainer.innerHTML =
-      '<span style="color:var(--muted);font-size:13px">Категорий нет</span>';
-    return;
+  async function initPage() {
+    await checkAuth();
+    await loadFavorites();
+    await loadCategories();
+    await loadAllRents();
+    loadRecentlyViewed();
+    setupEventHandlers();
+    initCategoryCarousel();
   }
 
-  const colors = [
-    { bg: '#f1f9f7', text: '#044036' },
-    { bg: '#fff6f0', text: '#7a3b2b' },
-    { bg: '#eef7ff', text: '#084a7a' },
-    { bg: '#f5fff8', text: '#0b6b45' },
-    { bg: '#fffaf4', text: '#6b4a11' }
-  ];
+  // ===== категории =====
+  async function loadCategories() {
+    try {
+      const res = await fetch('/categories/', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      if (!res.ok) return [];
+      const categories = await res.json();
+      categoriesCache = {};
+      categories.forEach(c => (categoriesCache[c.id] = c.name));
+      return categories;
+    } catch (e) {
+      console.error('loadCategories error', e);
+      return [];
+    }
+  }
 
-  scrollContainer.innerHTML = Object.entries(categoriesCache)
-    .map(([id, name], index) => {
-      const color = colors[index % colors.length];
-      return `
-        <a class="category-card" data-category="${id}"
-           style="min-width:160px;flex:0 0 auto;text-decoration:none;color:inherit;cursor:pointer">
-          <div style="background:${color.bg};border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;box-shadow:var(--card-shadow)">
-            <strong style="font-size:15px;color:${color.text}">${name}</strong>
-            <span style="color:var(--muted);font-size:13px">Популярные варианты</span>
-          </div>
-        </a>`;
-    })
-    .join('');
+  function initCategoryCarousel() {
+    const scrollContainer = document.getElementById('categoriesScroll');
+    if (!scrollContainer) return;
 
-  // обработчики кликов по категориям
-  document.querySelectorAll('.category-card').forEach(card => {
-    card.addEventListener('click', e => {
-      e.preventDefault();
-      const categoryId = card.dataset.category;
-      loadRentsByCategory(categoryId);
+    if (Object.keys(categoriesCache).length === 0) {
+      scrollContainer.innerHTML =
+        '<span style="color:var(--muted);font-size:13px">Категорий нет</span>';
+      return;
+    }
+
+    const colors = [
+      { bg: '#f1f9f7', text: '#044036' },
+      { bg: '#fff6f0', text: '#7a3b2b' },
+      { bg: '#eef7ff', text: '#084a7a' },
+      { bg: '#f5fff8', text: '#0b6b45' },
+      { bg: '#fffaf4', text: '#6b4a11' }
+    ];
+
+    scrollContainer.innerHTML = Object.entries(categoriesCache)
+      .map(([id, name], index) => {
+        const color = colors[index % colors.length];
+        return `
+          <a class="category-card" data-category="${id}"
+             style="min-width:160px;flex:0 0 auto;text-decoration:none;color:inherit;cursor:pointer">
+            <div style="background:${color.bg};border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;box-shadow:var(--card-shadow)">
+              <strong style="font-size:15px;color:${color.text}">${name}</strong>
+              <span style="color:var(--muted);font-size:13px">Популярные варианты</span>
+            </div>
+          </a>`;
+      })
+      .join('');
+
+    document.querySelectorAll('.category-card').forEach(card => {
+      card.addEventListener('click', e => {
+        e.preventDefault();
+        loadRentsByCategory(card.dataset.category);
+      });
     });
-  });
 
-  initCategoriesScroll();  // твоя функция прокрутки как есть
-}
+    initCategoriesScroll();
+  }
 
-  // ==================== Прокрутка категорий ====================
   function initCategoriesScroll() {
     const feedWrap = document.querySelector('.feed-wrap');
     const scrollContainer = document.getElementById('categoriesScroll');
     const leftArrow = feedWrap?.querySelector('.feed-arrow.left');
     const rightArrow = feedWrap?.querySelector('.feed-arrow.right');
-
     if (!scrollContainer || !leftArrow || !rightArrow) return;
 
     const scrollAmount = 180;
-
     leftArrow.addEventListener('click', () => {
       scrollContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
     });
-
     rightArrow.addEventListener('click', () => {
       scrollContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     });
-
     scrollContainer.addEventListener('scroll', () => {
       const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
       leftArrow.style.opacity = scrollLeft > 0 ? '1' : '0.5';
@@ -121,66 +101,49 @@ function initCategoryCarousel() {
     });
   }
 
-  // ==================== Навигация ====================
-  const logoLink = document.querySelector('.logo-link');
-  if (logoLink) {
-    logoLink.addEventListener('click', async function (e) {
-      e.preventDefault();
-      await navigateToHome();
-    });
-  }
-
+  // ===== навигация =====
   const navButtons = {
-    rent: null,
+    rent: '/web/rents',
     list: '/web/list',
     help: null,
     favorites: '/web/favorites',
     signup: '/web/auth'
   };
 
-  document
-    .querySelectorAll('.top-tabs .tab[data-tab]')
-    .forEach(button => {
-      button.addEventListener('click', async function (e) {
-        e.preventDefault();
-        const tab = this.dataset.tab;
-        if (tab === 'help') {
-          openHelpBlock();
-          return;
-        }
-        if (navButtons[tab]) {
-          try {
-            window.location.href = navButtons[tab];
-          } catch (error) {
-            console.error('Ошибка сети:', error);
-            fallbackNavigation(tab);
-          }
-        }
-      });
-    });
-
-  const favoritesLink = document.querySelector('a[href="/favorites.html"]');
-  if (favoritesLink) {
-    favoritesLink.addEventListener('click', async function (e) {
+  document.querySelectorAll('.top-tabs .tab[data-tab]').forEach(button => {
+    button.addEventListener('click', e => {
+      const tab = button.dataset.tab;
+      if (!tab) return;
       e.preventDefault();
-      await navigateToFavorites();
+      if (tab === 'help') {
+        openHelpBlock();
+        return;
+      }
+      if (navButtons[tab]) window.location.href = navButtons[tab];
+    });
+  });
+
+  const logoLink = document.querySelector('.logo-link');
+  if (logoLink) {
+    logoLink.addEventListener('click', e => {
+      e.preventDefault();
+      navigateToHome();
     });
   }
 
-  // ==================== Аутентификация ====================
+  // ===== auth =====
   async function checkAuth() {
     try {
-      const response = await fetch('/auth/me', {
+      const res = await fetch('/auth/me', {
         method: 'GET',
         credentials: 'include'
       });
-      if (response.ok) {
-        currentUser = await response.json();
-        console.log('Пользователь авторизован:', currentUser);
+      if (res.ok) {
+        currentUser = await res.json();
         updateProfileButton();
       }
-    } catch (error) {
-      console.log('Пользователь не авторизован');
+    } catch {
+      currentUser = null;
     }
   }
 
@@ -188,48 +151,34 @@ function initCategoryCarousel() {
     const authDiv = document.querySelector('.auth');
     if (!authDiv) return;
     if (currentUser) {
-      authDiv.innerHTML = `<button id="profileBtn">Профиль</button>`;
-      const profileBtn = document.getElementById('profileBtn');
-      if (profileBtn) {
-        profileBtn.addEventListener('click', async function (e) {
-          e.preventDefault();
-          await navigateToProfile();
-        });
-      }
+      authDiv.innerHTML = `<button id="profileBtn" class="tab primary">Профиль</button>`;
+      document.getElementById('profileBtn')?.addEventListener('click', e => {
+        e.preventDefault();
+        navigateToProfile();
+      });
     } else {
-      authDiv.innerHTML = `<button id="registerBtn">Зарегистрироваться</button>`;
-      const registerBtn = document.getElementById('registerBtn');
-      if (registerBtn) {
-        registerBtn.addEventListener('click', async function (e) {
-          e.preventDefault();
-          await navigateToRegistration();
-        });
-      }
+      authDiv.innerHTML = `<a class="tab primary" href="/web/auth" data-tab="signup">Зарегистрироваться</a>`;
     }
   }
 
-  async function navigateToProfile() {
+  function navigateToProfile() {
     window.location.href = '/web/profile';
   }
 
-  async function navigateToRegistration() {
-    window.location.href = '/web/auth';
-  }
-
-  // ==================== Избранное ====================
+  // ===== избранное =====
   async function loadFavorites() {
     if (!currentUser) return;
     try {
-      const response = await fetch('/favorites/', {
+      const res = await fetch('/favorites/', {
         method: 'GET',
         credentials: 'include'
       });
-      if (response.ok) {
-        const favorites = await response.json();
-        currentFavorites = new Set(favorites.map(fav => fav.rent_id));
+      if (res.ok) {
+        const favorites = await res.json();
+        currentFavorites = new Set(favorites.map(f => f.rent_id));
       }
-    } catch (error) {
-      console.error('Ошибка при загрузке избранного:', error);
+    } catch (e) {
+      console.error('Ошибка при загрузке избранного:', e);
     }
   }
 
@@ -240,40 +189,37 @@ function initCategoryCarousel() {
     }
     try {
       const method = currentFavorites.has(rentId) ? 'DELETE' : 'POST';
-      const response = await fetch(`/favorites/${rentId}`, {
+      const res = await fetch(`/favorites/${rentId}`, {
         method,
         credentials: 'include'
       });
-      if (response.ok) {
-        if (method === 'POST') {
-          currentFavorites.add(rentId);
-        } else {
-          currentFavorites.delete(rentId);
-        }
+      if (res.ok) {
+        if (method === 'POST') currentFavorites.add(rentId);
+        else currentFavorites.delete(rentId);
         renderRentListings(allRentListings);
       }
-    } catch (error) {
-      console.error('Ошибка избранного:', error);
+    } catch (e) {
+      console.error('Ошибка избранного:', e);
     }
   }
 
-  // ==================== Загрузка объявлений ====================
+  // ===== загрузка объявлений =====
   async function loadAllRents() {
     if (isLoading) return;
     isLoading = true;
     try {
-      const response = await fetch('/rents/', {
+      const res = await fetch('/rents/?active=true', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
-      if (response.ok) {
-        allRentListings = await response.json();
+      if (res.ok) {
+        allRentListings = await res.json();
         renderRentListings(allRentListings);
       } else {
         showError('Не удалось загрузить объявления');
       }
-    } catch (error) {
-      console.error('Ошибка при загрузке объявлений:', error);
+    } catch (e) {
+      console.error('Ошибка при загрузке объявлений:', e);
       showError('Ошибка сети при загрузке объявлений');
     } finally {
       isLoading = false;
@@ -284,45 +230,41 @@ function initCategoryCarousel() {
     if (isLoading) return;
     isLoading = true;
     try {
-      const response = await fetch(`/rents/?id_category=${categoryId}`, {
+      const res = await fetch(`/rents/?id_category=${categoryId}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
-      if (response.ok) {
-        const categoryRents = await response.json();
-        renderRentListings(categoryRents);
+      if (res.ok) {
+        const rents = await res.json();
+        renderRentListings(rents);
       }
-    } catch (error) {
-      console.error('Ошибка при загрузке категории:', error);
+    } catch (e) {
+      console.error('Ошибка при загрузке категории:', e);
     } finally {
       isLoading = false;
     }
   }
 
-  // ==================== Рендер карточек ====================
+  // ===== рендер карточек =====
   function renderRentListings(rents) {
     const container = document.getElementById('rentListings');
     if (!container) return;
 
-    if (rents.length === 0) {
+    if (!rents || rents.length === 0) {
       container.innerHTML =
         '<div class="empty-state">Объявлений не найдено</div>';
       return;
     }
 
-    container.innerHTML = rents.map(rent => renderRentCard(rent)).join('');
+    container.innerHTML = rents.map(r => renderRentCard(r)).join('');
 
     rents.forEach(rent => {
-      const detailsBtn = document.getElementById(`details_${rent.id}`);
-      if (detailsBtn) {
-        detailsBtn.addEventListener('click', () =>
-          navigateToRentDetail(rent.id)
-        );
-      }
-      const favoriteBtn = document.getElementById(`favorite_${rent.id}`);
-      if (favoriteBtn) {
-        favoriteBtn.addEventListener('click', () => toggleFavorite(rent.id));
-      }
+      document
+        .getElementById(`details_${rent.id}`)
+        ?.addEventListener('click', () => navigateToRentDetail(rent.id));
+      document
+        .getElementById(`favorite_${rent.id}`)
+        ?.addEventListener('click', () => toggleFavorite(rent.id));
     });
   }
 
@@ -333,89 +275,95 @@ function initCategoryCarousel() {
       (rent.photos && rent.photos[0]) || rent.img || '/static/default.jpg';
 
     return `
-      <div class="rent-card" id="card_${rent.id}">
-        <img src="${mainPhoto}" alt="${rent.title}">
-        <div class="rent-info">
-          <h3>${rent.title || 'Без названия'}</h3>
-          <div class="rent-meta">
-            <span class="category">${categoryName}</span> · ${rent.rooms || '1к'}
-          </div>
-          <div class="rent-price">₽${rent.price || 0}/ночь</div>
-          <div class="rent-actions">
-            <button id="details_${rent.id}" class="btn-primary">Подробнее</button>
-            <button id="favorite_${rent.id}" class="favorite ${
+      <article class="card" id="card_${rent.id}">
+        <img class="thumb" src="${mainPhoto}" alt="${rent.title}">
+        <div class="card-body">
+          <h3 style="margin:0 0 4px;font-size:18px">${rent.title || 'Без названия'}</h3>
+          <p class="desc-snippet">${rent.address || 'Адрес не указан'}</p>
+          <p style="margin:0 0 4px;color:var(--muted);font-size:14px">
+            ${categoryName} · ${rent.rooms || '1к'}
+          </p>
+          <p style="margin:0 0 8px;font-weight:700;font-size:16px">
+            ₽${rent.price || 0}/ночь
+          </p>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:auto">
+            <button id="details_${rent.id}" class="btn small">Подробнее</button>
+            <button id="favorite_${rent.id}" class="fav small-fav ${
               isFavorite ? 'active' : ''
-            }">
-              ${isFavorite ? '★' : '☆'}
-            </button>
+            }" aria-pressed="${isFavorite}"></button>
           </div>
         </div>
-      </div>
+      </article>
     `;
   }
 
   function navigateToRentDetail(rentId) {
-    window.location.href = `/web/rent/${rentId}`;
+    window.location.href = `/web/rents/${rentId}`;
   }
 
-  // ==================== Поиск ====================
+  // ===== поиск =====
   const searchForm = document.getElementById('searchForm');
   if (searchForm) {
-    searchForm.addEventListener('submit', async function (e) {
+    searchForm.addEventListener('submit', e => {
       e.preventDefault();
-      await performSearch();
+      performSearch();
     });
   }
 
   async function performSearch() {
-    const query = document.getElementById('searchInput')?.value || '';
+    const query = document.getElementById('q')?.value || '';
     try {
-      const response = await fetch(
-        `/rents/?search=${encodeURIComponent(query)}`
-      );
-      if (response.ok) {
-        const results = await response.json();
+      const res = await fetch(`/rents/?q=${encodeURIComponent(query)}`);
+      if (res.ok) {
+        const results = await res.json();
         renderRentListings(results);
       }
-    } catch (error) {
-      console.error('Ошибка поиска:', error);
+    } catch (e) {
+      console.error('Ошибка поиска:', e);
     }
   }
 
-  // ==================== Недавно просмотренные ====================
+  // ===== прочее =====
   function loadRecentlyViewed() {
     const viewed = JSON.parse(
       localStorage.getItem('recentlyViewed') || '[]'
     );
-    // Логика отображения
+    console.log('recently viewed:', viewed);
   }
 
-  // ==================== Утилиты ====================
   function setupEventHandlers() {
-    // Дополнительные обработчики
+    const closeHelp = document.getElementById('closeHelpBlock');
+    if (closeHelp) {
+      closeHelp.addEventListener('click', e => {
+        e.preventDefault();
+        closeHelpBlock();
+      });
+    }
+    document.getElementById('helpBlock')?.addEventListener('click', e => {
+      if (e.target.id === 'helpBlock') closeHelpBlock();
+    });
   }
 
   function showError(message) {
     const container = document.getElementById('errorContainer');
-    if (container) {
-      container.textContent = message;
-      container.style.display = 'block';
-    }
+    if (!container) return;
+    container.textContent = message;
+    container.style.display = 'block';
   }
 
-  async function navigateToHome() {
+  function navigateToHome() {
     window.location.href = '/web/';
   }
 
-  async function navigateToFavorites() {
-    window.location.href = '/web/favorites';
-  }
-
   function openHelpBlock() {
-    // Логика помощи
+    const block = document.getElementById('helpBlock');
+    if (!block) return;
+    block.setAttribute('aria-hidden', 'false');
   }
 
-  function fallbackNavigation(tab) {
-    window.location.href = navButtons[tab];
+  function closeHelpBlock() {
+    const block = document.getElementById('helpBlock');
+    if (!block) return;
+    block.setAttribute('aria-hidden', 'true');
   }
 });
