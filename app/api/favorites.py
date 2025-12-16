@@ -7,8 +7,8 @@ from app.services.favorites import FavoritesService
 router = APIRouter(prefix="/comments",tags=["Comment"])
 
 @router.get("/", response_model=list[SFavoriteRentGet])
-async def get_rents(db: DBDep, user = Depends(get_current_user_id)):
-    favorite_rents = await FavoritesService(db).get_all_favorite_rents(user.id)
+async def get_rents(db: DBDep, user_id: int = 1):
+    favorite_rents = await FavoritesService(db).get_all_favorite_rents(user_id)
     return favorite_rents
 
 @router.post("/", response_model=SFavoriteRentGet)
