@@ -187,28 +187,39 @@ function initCategoryCarousel() {
   }
 
   function updateProfileButton() {
-    const authDiv = document.querySelector('.auth');
-    if (!authDiv) return;
-    if (currentUser) {
-      authDiv.innerHTML = `<button id="profileBtn">Профиль</button>`;
-      const profileBtn = document.getElementById('profileBtn');
-      if (profileBtn) {
-        profileBtn.addEventListener('click', async function (e) {
-          e.preventDefault();
-          await navigateToProfile();
-        });
-      }
-    } else {
-      authDiv.innerHTML = `<button id="registerBtn">Зарегистрироваться</button>`;
-      const registerBtn = document.getElementById('registerBtn');
-      if (registerBtn) {
-        registerBtn.addEventListener('click', async function (e) {
-          e.preventDefault();
-          await navigateToRegistration();
-        });
-      }
+  const authDiv = document.querySelector('.auth');
+  if (!authDiv) return;
+
+  if (currentUser) {
+    authDiv.innerHTML = `
+      <a href="/web/profile" 
+         id="profileBtn" 
+         class="tab primary">
+         Профиль
+      </a>`;
+    const profileBtn = document.getElementById('profileBtn');
+    if (profileBtn) {
+      profileBtn.addEventListener('click', async e => {
+        e.preventDefault();
+        await navigateToProfile();
+      });
+    }
+  } else {
+    authDiv.innerHTML = `
+      <a href="/web/auth" 
+         id="registerBtn" 
+         class="tab ghost">
+         Войти / зарегистрироваться
+      </a>`;
+    const registerBtn = document.getElementById('registerBtn');
+    if (registerBtn) {
+      registerBtn.addEventListener('click', async e => {
+        e.preventDefault();
+        await navigateToRegistration();
+      });
     }
   }
+}
 
   async function navigateToProfile() {
     window.location.href = '/web/profile';
@@ -334,7 +345,7 @@ function initCategoryCarousel() {
     const isFavorite = currentFavorites.has(rent.id);
     
     const mainPhoto =
-      (rent.photos && rent.photos[0]) || rent.img || '/static/img/default.jpg';
+      (rent.photos && rent.photos[0]) || rent.img || '/static/img/';
 
     return `
       <article class="card">
