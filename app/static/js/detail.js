@@ -1,296 +1,467 @@
-// detail-handler.js
-document.addEventListener('DOMContentLoaded', function() {
-  // ==================== Глобальные переменные ====================
-  let currentRentId = null;
-  let currentUser = null;
-  let categoriesCache = {};
-  let comments = [];
+// detail-handler.js - Полная версия с похожими, комментариями и избранным
 
-  // ==================== Инициализация ====================
-  initPage();
+// ==================== Глобальные переменные ====================
+let currentRentId = null;
+let currentUser = null;
+let categoriesCache = {};
+let comments = [];
 
-  function getRentIdFromUrl() {
-    const pathParts = window.location.pathname.split('/');
-    return pathParts[3];
+// ==================== Инициализация ====================
+document.addEventListener('DOMContentLoaded', initPage);
+
+async function initPage() {
+  await checkAuth();
+  await loadCategories();
+  currentRentId = getRentIdFromUrl();
+  
+  if (!currentRentId) {
+    showError('ID объявления не указан');
+    return;
   }
+  
+  await Promise.all([
+    loadRentData(currentRentId),
+    loadComments(currentRentId)
+  ]);
+  
+  setupEventHandlers();
+  setupCommentForm();
+  setupCommentActions();
+  setupRentButton();
+  updateAuthButtons();
+}
 
-  async function initPage() {
-    await checkAuth();
-    await loadCategories();
-    
-    currentRentId = getRentIdFromUrl();
-    if (!currentRentId) {
-      showError('ID объявления не указан');
-      return;
-    }
+function getRentIdFromUrl() {
+  const pathParts = window.location.pathname.split('/');
+  return pathParts[pathParts.length - 1]; // /web/rents/123 -> 123
+}
 
-    await loadRentData(currentRentId);
-    await loadComments(currentRentId);
-    setupEventHandlers();
-  }
-
-  // ==================== Загрузка категорий ====================
-  async function loadCategories() {
-    try {
-      const response = await fetch('/categories/', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+// ==================== Загрузка категорий ====================
+async function loadCategories() {
+  try {
+    const response = await fetch('/categories/', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    if (response.ok) {
+      const categories = await response.json();
+      categoriesCache = {};
+      categories.forEach(cat => {
+        categoriesCache[cat.id] = cat.name;
       });
-      if (response.ok) {
-        const categories = await response.json();
-        categoriesCache = {};
-        categories.forEach(cat => {
-          categoriesCache[cat.id] = cat.name;
-        });
-        console.log('Категории для detail загружены');
-      }
-    } catch (error) {
-      console.error('Ошибка загрузки категорий:', error);
+      console.log('Категории загружены:', categoriesCache);
     }
+  } catch (error) {
+    console.error('Ошибка загрузки категорий:', error);
   }
+}
 
-  // ==================== Аутентификация ====================
-  async function checkAuth() {
-    try {
-      const response = await fetch('/auth/me', {
-        method: 'GET',
-        credentials: 'include'
-      });
-      if (response.ok) {
-        currentUser = await response.json();
-        console.log('Пользователь авторизован:', currentUser);
-        updateAuthButtons();
-      }
-    } catch (error) {
+// ==================== Аутентификация ====================
+async function checkAuth() {
+  try {
+    const response = await fetch('/auth/me', {
+      method: 'GET',
+      credentials: 'include'
+    });
+    if (response.ok) {
+      currentUser = await response.json();
+      console.log('Пользователь авторизован:', currentUser);
+    } else {
+      currentUser = null;
       console.log('Пользователь не авторизован');
     }
+  } catch (error) {
+    console.error('Ошибка проверки авторизации:', error);
+    currentUser = null;
   }
+}
 
-  function updateAuthButtons() {
-    const authDiv = document.querySelector('.auth');
-    if (!authDiv) return;
-    
-    if (currentUser) {
-      authDiv.innerHTML = `<button id="profileBtn">Профиль</button>`;
-      const profileBtn = document.getElementById('profileBtn');
-      if (profileBtn) {
-        profileBtn.addEventListener('click', async function(e) {
-          e.preventDefault();
-          window.location.href = '/web/profile';
-        });
-      }
-    } else {
-      authDiv.innerHTML = `<button data-tab="signup">Зарегистрироваться</button>`;
-    }
-  }
-
-  // ==================== Загрузка данных объявления ====================
-  async function loadRentData(rentId) {
-    try {
-      const response = await fetch(`/rents/${rentId}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      });
-      if (response.ok) {
-        const rentData = await response.json();
-        renderRentDetails(rentData);
-        await checkFavoriteStatus(rentId);
-      } else {
-        showError('Не удалось загрузить данные объявления');
-      }
-    } catch (error) {
-      console.error('Ошибка при загрузке объявления:', error);
-      showError('Ошибка сети при загрузке объявления');
-    }
-  }
-
-  function renderRentDetails(rentData) {
-    const container = document.getElementById('detailCard');
-    if (!container) return;
-
-    const categoryName = categoriesCache[rentData.id_category] || 'Неизвестно';
-    const imageSrc = rentData.id_image ? `/images/${rentData.id_image}` : '/static/default.jpg';
-
-    container.innerHTML = `
-      <div class="rent-detail-header">
-        <img src="${imageSrc}" alt="${rentData.title}">
-        <div class="rent-detail-info">
-          <h1>${rentData.title || 'Без названия'}</h1>
-          <div class="rent-meta">
-            <span class="category">${categoryName}</span>
-            <span class="address">${rentData.address || ''}</span>
-          </div>
-          <div class="rent-price-large">₽${rentData.price || 0}/ночь</div>
-        </div>
-      </div>
-      <div class="rent-description">
-        <p>${rentData.description || 'Описание отсутствует'}</p>
-      </div>
-      <div class="rent-actions">
-        <button class="btn-primary">Забронировать</button>
-        <button id="favoriteDetail_${rentData.id}" class="favorite">☆</button>
-      </div>
+function updateAuthButtons() {
+  const authDiv = document.getElementById('authContainer');
+  if (!authDiv) return;
+  
+  if (currentUser) {
+    authDiv.innerHTML = `
+      <span style="color:var(--muted);font-size:14px">Привет, ${currentUser.username || currentUser.email}</span>
+      <button id="profileBtn" class="tab primary" style="margin-left:8px">Профиль</button>
     `;
-
-    setupDetailEventHandlers(rentData);
+    document.getElementById('profileBtn')?.addEventListener('click', e => {
+      e.preventDefault();
+      window.location.href = '/web/profile';
+    });
+  } else {
+    authDiv.innerHTML = `
+      <button class="tab primary" data-tab="signup">Войти / Регистрация</button>
+    `;
+    authDiv.querySelector('[data-tab="signup"]')?.addEventListener('click', e => {
+      e.preventDefault();
+      window.location.href = '/web/auth';
+    });
   }
+}
 
-  // ==================== Комментарии ====================
-  async function loadComments(rentId) {
-    try {
-      const response = await fetch(`/comments/?rent_id=${rentId}`);
-      if (response.ok) {
-        comments = await response.json();
-        renderComments();
-      }
-    } catch (error) {
-      console.error('Ошибка загрузки комментариев:', error);
+// ==================== Загрузка данных объявления ====================
+async function loadRentData(rentId) {
+  try {
+    const response = await fetch(`/rents/${rentId}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    
+    if (response.ok) {
+      const rentData = await response.json();
+      renderRentDetails(rentData);
+      await loadSimilarRents(rentData.id_category, rentId);
+      await checkFavoriteStatus(rentId);
+    } else {
+      showError('Не удалось загрузить данные объявления');
     }
+  } catch (error) {
+    console.error('Ошибка при загрузке объявления:', error);
+    showError('Ошибка сети при загрузке объявления');
   }
+}
 
-  function renderComments() {
-    const container = document.getElementById('commentsList');
-    if (!container) return;
+function renderRentDetails(rentData) {
+  const container = document.getElementById('detailCard');
+  if (!container) return;
+  
+  const categoryName = categoriesCache[rentData.id_category] || 'Неизвестно';
+  const imageSrc = rentData.id_image ? `/images/${rentData.id_image}` : '/static/default.jpg';
+  
+  document.getElementById('mainImage').src = imageSrc;
+  document.getElementById('rentInfo').innerHTML = `
+    <h1 style="margin:0 0 8px;font-size:28px;color:#042018">${rentData.title}</h1>
+    <p style="margin:0 0 4px;color:var(--muted);font-size:16px">${rentData.address}</p>
+    <p style="margin:0 0 12px;font-size:14px;color:var(--muted)">${categoryName}</p>
+    <div style="font-size: 32px; font-weight: 700; color: #044036; margin-bottom: 8px;">
+      ${rentData.price} ₽ / ночь
+    </div>
+    <p style="margin:0;font-size:16px;line-height:1.5">${rentData.description || 'Описание отсутствует'}</p>
+  `;
+}
 
-    if (comments.length === 0) {
-      container.innerHTML = '<div class="empty-comments">Отзывов пока нет</div>';
+// ==================== Похожие объявления ====================
+async function loadSimilarRents(categoryId, excludeRentId) {
+  try {
+    const params = new URLSearchParams({
+      id_category: categoryId,
+      active: true
+    });
+    const response = await fetch(`/rents/?${params.toString()}`);
+    if (!response.ok) return;
+    
+    const allRents = await response.json();
+    const similarRents = allRents.filter(rent => rent.id !== Number(excludeRentId)).slice(0, 4);
+    renderSimilarRents(similarRents);
+  } catch (error) {
+    console.error('Ошибка загрузки похожих объявлений:', error);
+  }
+}
+
+function renderSimilarRents(rents) {
+  const container = document.getElementById('similarRents');
+  if (!container) return;
+  
+  if (!rents.length) {
+    container.innerHTML = '<p style="color:var(--muted);font-size:14px;text-align:center;padding:40px 0">Похожих объявлений не найдено</p>';
+    return;
+  }
+  
+  container.innerHTML = rents.map(rent => {
+    const imageSrc = rent.id_image ? `/images/${rent.id_image}` : '/static/default.jpg';
+    return `
+      <article class="rent-card" data-rent-id="${rent.id}">
+        <img src="${imageSrc}" alt="${rent.title}" class="rent-card__img" loading="lazy">
+        <div class="rent-card__body">
+          <h3 style="margin:0 0 4px;font-size:18px">${rent.title}</h3>
+          <p style="margin:0 0 4px;font-size:14px;color:var(--muted)">${rent.address}</p>
+          <p style="margin:0 0 12px;font-weight:700;font-size:16px">${rent.price} ₽/ночь</p>
+          <div style="position:absolute;bottom:16px;right:16px;display:flex;gap:8px">
+            <button class="btn small rent-open-btn">Подробнее</button>
+            <button class="favorite-btn" aria-label="Добавить в избранное">
+              <img src="/static/img/love_4900029.png" alt="Избранное">
+            </button>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join('');
+}
+
+// ==================== Избранное ====================
+async function checkFavoriteStatus(rentId) {
+  if (!currentUser) return;
+  
+  try {
+    // Пока без проверки статуса - просто показываем кнопку
+    const mainBtn = document.getElementById('favoriteMainBtn');
+    if (mainBtn) {
+      mainBtn.style.opacity = '1';
+    }
+  } catch (e) {
+    console.error('Ошибка проверки избранного:', e);
+  }
+}
+
+async function addToFavorites(rentId) {
+  if (!currentUser) {
+    window.location.href = '/web/auth';
+    return;
+  }
+  
+  try {
+    const response = await fetch('/comments/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id_rent: Number(rentId),
+        id_user: currentUser.id
+      })
+    });
+    
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    
+    alert('Добавлено в избранное!');
+  } catch (error) {
+    console.error('Ошибка добавления в избранное:', error);
+    alert('Не удалось добавить в избранное');
+  }
+}
+
+// ==================== Комментарии ====================
+async function loadComments(rentId) {
+  try {
+    const response = await fetch(`/rents/${rentId}/comments`);
+    if (response.ok) {
+      comments = await response.json();
+      renderComments();
+    }
+  } catch (error) {
+    console.error('Ошибка загрузки комментариев:', error);
+  }
+}
+
+function renderComments() {
+  const container = document.getElementById('commentsList');
+  if (!container) return;
+  
+  if (!comments.length) {
+    container.innerHTML = '<p style="color:var(--muted);font-size:14px;text-align:center;padding:40px 0">Комментариев пока нет. Будьте первым!</p>';
+    return;
+  }
+  
+  container.innerHTML = comments.map(comment => `
+    <article class="comment-item" data-comment-id="${comment.id}">
+      <div class="comment-header">
+        <span class="comment-author">Пользователь #${comment.id_user}</span>
+      </div>
+      <p class="comment-content">${escapeHtml(comment.content)}</p>
+      ${currentUser && currentUser.id === comment.id_user ? `
+        <div class="comment-actions">
+          <button class="btn small comment-edit">Редактировать</button>
+          <button class="btn small danger comment-delete">Удалить</button>
+        </div>
+      ` : ''}
+    </article>
+  `).join('');
+}
+
+function setupCommentForm() {
+  const form = document.getElementById('commentForm');
+  if (!form) return;
+  
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    if (!currentUser) {
+      window.location.href = '/web/auth';
       return;
     }
-
-    container.innerHTML = comments.map(comment => renderCommentItem(comment)).join('');
-    setupCommentHandlers();
-  }
-
-  // ==================== Избранное ====================
-  async function checkFavoriteStatus(rentId) {
-    if (!currentUser) return;
+    
+    const textarea = document.getElementById('commentContent');
+    const content = textarea.value.trim();
+    
+    if (content.length < 10) {
+      alert('Комментарий должен содержать минимум 10 символов');
+      return;
+    }
+    
     try {
-      const response = await fetch(`/favorites/${rentId}`, {
-        method: 'GET',
-        credentials: 'include'
+      const response = await fetch(`/rents/${currentRentId}/comments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content })
       });
-      if (response.ok) {
-        const favoriteBtn = document.getElementById(`favoriteDetail_${rentId}`);
-        if (favoriteBtn) {
-          favoriteBtn.classList.add('active');
-          favoriteBtn.textContent = '★';
-        }
-      }
+      
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      
+      const newComment = await response.json();
+      comments.unshift(newComment); // добавляем в начало
+      renderComments();
+      textarea.value = '';
+      alert('Комментарий добавлен!');
     } catch (error) {
-      console.error('Ошибка проверки избранного:', error);
+      console.error('Ошибка добавления комментария:', error);
+      alert('Не удалось добавить комментарий');
     }
-  }
+  });
+}
 
-  // ==================== Обработчики событий ====================
-  function setupEventHandlers() {
-    const logoLink = document.querySelector('.logo-link');
-    if (logoLink) {
-      logoLink.addEventListener('click', function(e) {
-        e.preventDefault();
-        window.location.href = '/web/';
-      });
+function setupCommentActions() {
+  const container = document.getElementById('commentsList');
+  if (!container) return;
+  
+  container.addEventListener('click', async (e) => {
+    const item = e.target.closest('.comment-item');
+    if (!item) return;
+    
+    const commentId = item.dataset.commentId;
+    
+    // Удаление
+    if (e.target.classList.contains('comment-delete')) {
+      if (!currentUser) {
+        window.location.href = '/web/auth';
+        return;
+      }
+      
+      if (!confirm('Вы уверены, что хотите удалить комментарий?')) return;
+      
+      try {
+        const response = await fetch(`/rents/${currentRentId}/comments/${commentId}`, {
+          method: 'DELETE'
+        });
+        
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        
+        comments = comments.filter(c => c.id !== Number(commentId));
+        renderComments();
+        alert('Комментарий удалён');
+      } catch (error) {
+        console.error('Ошибка удаления комментария:', error);
+        alert('Не удалось удалить комментарий');
+      }
+      return;
     }
+    
+    // Редактирование
+    if (e.target.classList.contains('comment-edit')) {
+      if (!currentUser) {
+        window.location.href = '/web/auth';
+        return;
+      }
+      
+      const existing = comments.find(c => c.id === Number(commentId));
+      if (!existing) return;
+      
+      const newContent = prompt('Редактировать комментарий:', existing.content);
+      if (!newContent || newContent.length < 10 || newContent === existing.content) return;
+      
+      try {
+        const response = await fetch(`/rents/${currentRentId}/comments/${commentId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: newContent })
+        });
+        
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        
+        existing.content = newContent;
+        renderComments();
+        alert('Комментарий обновлён');
+      } catch (error) {
+        console.error('Ошибка редактирования комментария:', error);
+        alert('Не удалось обновить комментарий');
+      }
+    }
+  });
+}
 
-    document.querySelectorAll('.top-tabs .tab[data-tab]').forEach(button => {
-      button.addEventListener('click', function(e) {
-        e.preventDefault();
-        const tab = this.dataset.tab;
-        const navButtons = {
-          'rent': '/web/rent',
-          'list': '/web/list',
-          'favorites': '/web/favorites'
-        };
-        if (navButtons[tab]) {
-          window.location.href = navButtons[tab];
-        }
-      });
+// ==================== Кнопка Арендовать ====================
+function setupRentButton() {
+  const button = document.getElementById('rentButton');
+  if (!button) return;
+  
+  button.addEventListener('click', (e) => {
+    e.preventDefault();
+    
+    if (!currentUser) {
+      window.location.href = '/web/auth';
+      return;
+    }
+    
+    window.location.href = `/web/booking?id=${currentRentId}`;
+  });
+}
+
+// ==================== Обработчики событий ====================
+function setupEventHandlers() {
+  // Навигация в хедере
+  document.querySelectorAll('.top-tabs .tab').forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      const tabType = e.currentTarget.dataset.tab;
+      e.preventDefault();
+      
+      switch(tabType) {
+        case 'rent': window.location.href = '/web/rent'; break;
+        case 'list': window.location.href = '/web/list'; break;
+        case 'favorites': window.location.href = '/web/favorites'; break;
+        case 'help': window.location.href = '/'; break;
+      }
+    });
+  });
+  
+  // Логотип
+  document.querySelector('.logo-link')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.location.href = '/';
+  });
+  
+  // Похожие объявления + главное избранное
+  const similarContainer = document.getElementById('similarRents');
+  if (similarContainer) {
+    similarContainer.addEventListener('click', (e) => {
+      const card = e.target.closest('.rent-card');
+      if (!card) return;
+      
+      const rentId = card.dataset.rentId;
+      
+      if (e.target.closest('.favorite-btn')) {
+        addToFavorites(rentId);
+        return;
+      }
+      
+      if (e.target.closest('.rent-open-btn')) {
+        window.location.href = `/web/rents/${rentId}`;
+      }
     });
   }
+  
+  // Главное избранное
+  document.getElementById('favoriteMainBtn')?.addEventListener('click', () => {
+    addToFavorites(currentRentId);
+  });
+}
 
-  function setupDetailEventHandlers(rentData) {
-    const favoriteBtn = document.getElementById(`favoriteDetail_${rentData.id}`);
-    if (favoriteBtn && currentUser) {
-      favoriteBtn.addEventListener('click', () => toggleFavoriteDetail(rentData.id));
-    }
+// ==================== Вспомогательные функции ====================
+function showError(message) {
+  const main = document.querySelector('main');
+  if (main) {
+    main.innerHTML = `<div class="card" style="max-width:600px;margin:0 auto;padding:40px;text-align:center">
+      <h2 style="color:#d32f2f">Ошибка</h2>
+      <p style="color:var(--muted);font-size:16px">${message}</p>
+      <a href="/web/rent" class="btn primary" style="margin-top:20px">К списку объявлений</a>
+    </div>`;
   }
+}
 
-  async function toggleFavoriteDetail(rentId) {
-    try {
-      const method = document.getElementById(`favoriteDetail_${rentId}`).classList.contains('active') ? 'DELETE' : 'POST';
-      const response = await fetch(`/favorites/${rentId}`, {
-        method,
-        credentials: 'include'
-      });
-      if (response.ok) {
-        const btn = document.getElementById(`favoriteDetail_${rentId}`);
-        if (method === 'POST') {
-          btn.classList.add('active');
-          btn.textContent = '★';
-        } else {
-          btn.classList.remove('active');
-          btn.textContent = '☆';
-        }
-      }
-    } catch (error) {
-      console.error('Ошибка избранного:', error);
-    }
-  }
-
-  function setupCommentHandlers() {
-    comments.forEach(comment => {
-      if (currentUser && currentUser.id === comment.user_id) {
-        const editBtn = document.getElementById(`editComment_${comment.id}`);
-        const deleteBtn = document.getElementById(`deleteComment_${comment.id}`);
-        if (editBtn) editBtn.addEventListener('click', () => editComment(comment.id));
-        if (deleteBtn) deleteBtn.addEventListener('click', () => deleteComment(comment.id));
-      }
-    });
-
-    const commentForm = document.getElementById('commentForm');
-    if (commentForm) {
-      commentForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await addNewComment();
-      });
-    }
-  }
-
-  function renderCommentItem(comment) {
-    const isOwner = currentUser && currentUser.id === comment.user_id;
-    return `
-      <div class="comment-item" id="comment_${comment.id}">
-        <div class="comment-header">
-          <span class="comment-author">${comment.username}</span>
-          <span class="comment-date">${new Date(comment.created_at).toLocaleDateString()}</span>
-          ${isOwner ? `
-            <div class="comment-actions">
-              <button id="editComment_${comment.id}">Редактировать</button>
-              <button id="deleteComment_${comment.id}">Удалить</button>
-            </div>
-          ` : ''}
-        </div>
-        <div class="comment-text">${comment.text}</div>
-      </div>
-    `;
-  }
-
-  async function addNewComment() {
-    // Логика добавления комментария
-  }
-
-  async function editComment(commentId) {
-    // Логика редактирования
-  }
-
-  async function deleteComment(commentId) {
-    // Логика удаления
-  }
-
-  function showError(message) {
-    const container = document.getElementById('errorContainer');
-    if (container) {
-      container.textContent = message;
-      container.style.display = 'block';
-    }
-  }
-});
+function escapeHtml(text) {
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+  return text.replace(/[&<>"']/g, m => map[m]);
+}

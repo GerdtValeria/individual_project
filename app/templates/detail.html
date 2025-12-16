@@ -3,80 +3,83 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Угол Комфорта — Объявление</title>
+  <title>Угол Комфорта — Подробности</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/css/styles.css">
+  <style>
+    .detail-section { margin: 40px 0; }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+    .rent-card { position: relative; border-radius: 12px; overflow: hidden; box-shadow: var(--card-shadow); transition: transform 0.2s; }
+    .rent-card:hover { transform: translateY(-4px); }
+    .rent-card__img { width: 100%; height: 200px; object-fit: cover; }
+    .rent-card__body { padding: 16px; }
+    .favorite-btn { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.9); border: none; border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .favorite-btn img { width: 24px; height: 24px; }
+    .comment-item { border: 1px solid rgba(0,0,0,0.08); border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+    .comment-header { font-size: 14px; color: var(--muted); margin-bottom: 8px; }
+    .comment-actions { margin-top: 12px; display: flex; gap: 8px; }
+    .comment-form { background: rgba(0,0,0,0.02); padding: 20px; border-radius: 12px; margin-top: 20px; }
+  </style>
 </head>
-<body class="Ad">
+<body>
   <header class="site-header">
     <div class="brand">
-      <div class="logo" aria-hidden="false">
+      <div class="logo">
         <a href="/" class="logo-link" aria-label="Перейти на главную">
           <img src="/static/img/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
         </a>
       </div>
     </div>
-    <form id="searchForm" class="search-form" aria-label="Поиск аренды" style="margin-left:12px;">
-      <input id="q" name="q" type="search" placeholder="Поиск по городу, району или опции" />
-    </form>
     <nav class="top-tabs" aria-label="Главная навигация">
-      <button class="tab" data-tab="rents">Арендовать</button>
+      <button class="tab" data-tab="rent">Арендовать</button>
       <button class="tab" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
       <a class="tab" href="/web/favorites">Избранное</a>
       <button class="tab" data-tab="help">Помощь</button>
-      <div class="auth">
-        <button class="tab primary" data-tab="signup">Зарегистрироваться</button>
-      </div>
+      <div class="auth" id="authContainer"></div>
     </nav>
   </header>
 
-  <main class="container" style="padding:18px;">
-    <section style="max-width:none;margin:0;padding:0;width:100%">
-      <div id="detailCard" class="card" style="padding:0;overflow:visible"></div>
+  <main class="container" style="padding: 24px; max-width: 1200px;">
+    <!-- Основное объявление -->
+    <section id="detailCard" class="card" style="max-width: 800px; padding: 32px;">
+      <div style="display: flex; gap: 24px;">
+        <div style="flex: 1;">
+          <img id="mainImage" src="/static/default.jpg" alt="Фото жилья" style="width: 100%; height: 300px; object-fit: cover; border-radius: 12px;">
+        </div>
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 16px;">
+          <div id="rentInfo"></div>
+          <button id="rentButton" class="btn primary" style="font-size: 16px; padding: 16px;">Арендовать</button>
+          <div style="display: flex; gap: 12px;">
+            <button id="favoriteMainBtn" class="favorite-btn" aria-label="Добавить в избранное" style="width: auto; padding: 12px 20px;">
+              <img src="/static/img/love_4900029.png" alt="Избранное" style="width: 20px; height: 20px;">
+              Добавить в избранное
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Похожие объявления -->
+    <section id="similarSection" class="detail-section">
+      <h2 style="font-size: 24px; margin-bottom: 20px;">Похожие объявления</h2>
+      <div id="similarRents" class="cards-grid" style="min-height: 200px;"></div>
+    </section>
+
+    <!-- Комментарии -->
+    <section id="commentsSection" class="detail-section">
+      <h2 style="font-size: 24px; margin-bottom: 20px;">Комментарии</h2>
+      <div id="commentsList" style="min-height: 100px;"></div>
+      
+      <form id="commentForm" class="comment-form">
+        <textarea id="commentContent" name="content" rows="3" 
+                  placeholder="Оставьте комментарий (минимум 10 символов)..." 
+                  required style="width: 100%; padding: 12px; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; resize: vertical;"></textarea>
+        <button type="submit" class="btn primary" style="margin-top: 12px;">Добавить комментарий</button>
+      </form>
     </section>
   </main>
 
-  <footer class="site-footer" aria-label="Сайт футер" style="margin-top:28px">
-    <div class="footer-inner">
-      <div class="footer-col footer-contact">
-        <div class="footer-brand">
-          <img src="/static/img/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
-          <div class="company-name">Угол Комфорта</div>
-        </div>
-      </div>
-      <div class="footer-col">
-        <h4 class="footer-heading">Меню</h4>
-        <ul>
-          <li><a href="/web/rents" data-nav="rent">Арендовать</a></li>
-          <li><a href="/web/list" data-nav="list">Сдать в аренду</a></li>
-          <li><a href="/" data-nav="help">Помощь</a></li>
-          <li><a href="/" data-nav="home">Главная</a></li>
-          <li><a href="/web/auth" data-nav="signup">Зарегистрироваться</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col">
-        <h4 class="footer-heading">О проекте</h4>
-        <ul>
-          <li><a href="/#team">Команда</a></li>
-          <li><a href="/#history">Наша история</a></li>
-          <li><a href="/#mission">Миссия проекта</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col">
-        <h4 class="footer-heading">Мы в соцсетях</h4>
-        <ul class="social-list">
-          <li><a href="#">ВК</a></li>
-          <li><a href="#">Телеграмм</a></li>
-          <li><a href="#">Одноклассники</a></li>
-        </ul>
-      </div>
-    </div>
-  </footer>
-
-
+  <script type="module" src="/static/js/detail.js"></script>
   <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
-  <script src="/static/js/detail.js"></script>
 </body>
 </html>
