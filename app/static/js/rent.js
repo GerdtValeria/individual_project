@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // ==================== Загрузка категорий ====================
 async function loadCategories() {
   try {
-    const res = await fetch('/categories/', {
+    const res = await fetch('/api/categories/', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     });
