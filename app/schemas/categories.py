@@ -8,5 +8,5 @@ class SCategories(BaseModel):
 class SCategoriesAdd(BaseModel):
     name: str = Field(...)
     
-class SCategoriesGet(SCategoriesAdd):
-    name: str = Field(...)
+class SCategoriesGet(SCategories):
+    pass

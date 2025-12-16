@@ -35,10 +35,10 @@ async function loadCategories() {
     const categories = await res.json();
     console.log('categories raw', categories);
 
-    categoriesCache = {};
-    categories.forEach(cat => {
-      categoriesCache[cat.id] = cat.name;   // SCategoriesGet: id, name
-    });
+    categoriesCache = categories;
+    // categories.forEach(cat => {
+    //   categoriesCache[cat.id] = cat.name;   // SCategoriesGet: id, name
+    // });
 
     console.log('categoriesCache', categoriesCache);
     return categories;
@@ -81,6 +81,7 @@ function initCategoryCarousel() {
         </a>`;
     })
     .join('');
+    console.log(categoriesCache)
 
   // обработчики кликов по категориям
   document.querySelectorAll('.category-card').forEach(card => {
