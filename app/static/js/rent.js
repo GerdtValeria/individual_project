@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // ==================== Загрузка категорий ====================
 async function loadCategories() {
   try {
-    const res = await fetch('/api/categories/', {
+    const res = await fetch('/categories/', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     });
@@ -32,18 +32,19 @@ async function loadCategories() {
 
     const categories = await res.json();
     console.log('categories raw', categories);
+
     categoriesCache = {};
     categories.forEach(cat => {
-      // убедись, что тут именно cat.id и cat.name
-      categoriesCache[cat.id] = cat.name;
+      categoriesCache[cat.id] = cat.name;  // id / name из схемы SCategoriesGet
     });
+
     console.log('categoriesCache', categoriesCache);
     return categories;
   } catch (e) {
     console.error('loadCategories error', e);
     return [];
-  }
-}
+  }                    // <-- ЭТОЙ СКОБКИ НЕ ХВАТАЛО
+}   
   // ==================== Навигация ====================
   const logoLink = document.querySelector('.logo-link');
   if (logoLink) {
