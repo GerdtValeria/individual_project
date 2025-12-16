@@ -218,9 +218,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ==================== Карусель категорий ====================
  function initCategoryCarousel() {
-  const scrollContainer = document.getElementById('categoriesScroll');
+const scrollContainer = document.getElementById('categoriesScroll');
   if (!scrollContainer || Object.keys(categoriesCache).length === 0) {
-    console.log('Категории не загружены');
+console.log(categoriesCache);
+console.log(scrollContainer);
     return;
   }
 
