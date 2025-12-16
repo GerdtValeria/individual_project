@@ -366,7 +366,7 @@ function initCategoryCarousel() {
   }
 
   function navigateToRentDetail(rentId) {
-    window.location.href = `/web/rents/${id}`;
+    window.location.href = `/web/rents/${rentId}`; 
   }
 
   // ==================== Поиск ====================
