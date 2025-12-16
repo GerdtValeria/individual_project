@@ -41,7 +41,6 @@
         Здесь вы можете разместить объявление о сдаче жилья: заполните форму и публикуйте предложение.
       </p>
 
-      <!-- Информационный блок (без демо) -->
       <div class="card" style="padding:18px;max-width:900px;margin:12px auto">
         <strong>Разместить объявление</strong>
         <p style="color:var(--muted)">
@@ -116,7 +115,9 @@
           <textarea name="description" rows="3" required></textarea>
         </label>
         <label>Категория
-          <select name="category" id="categorySelect"></select>
+          <select name="category" id="categorySelect" required>
+            <!-- наполняется из JS -->
+          </select>
         </label>
         <label>Цена (₽/ночь)
           <input name="price" type="number" min="1" required>

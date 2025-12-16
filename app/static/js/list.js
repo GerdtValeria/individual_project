@@ -1,9 +1,27 @@
 // list.js — логика страницы "Сдать в аренду"
+
 document.addEventListener('DOMContentLoaded', () => {
   setupPostModal();
+  setupTopNav();
 });
 
-// Загрузка категорий из БД
+// ==================== Навигация в шапке ====================
+function setupTopNav() {
+  document.querySelectorAll('.top-tabs .tab').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const tab = btn.dataset.tab;
+      if (!tab) return;
+      e.preventDefault();
+      if (tab === 'rent') window.location.href = '/web/rent';
+      if (tab === 'list') window.location.href = '/web/list';
+      if (tab === 'favorites') window.location.href = '/web/favorites';
+      if (tab === 'help') window.location.href = '/';
+      if (tab === 'signup') window.location.href = '/web/auth';
+    });
+  });
+}
+
+// ==================== Загрузка категорий из БД ====================
 async function loadCategories() {
   const select = document.getElementById('categorySelect');
   if (!select) return;
@@ -16,17 +34,24 @@ async function loadCategories() {
     });
 
     if (!res.ok) {
-      console.error('Не удалось загрузить категории');
+      console.error('Не удалось загрузить категории, статус:', res.status);
       return;
     }
 
     const categories = await res.json();
 
-    select.innerHTML = '<option value="">Выберите категорию</option>';
+    // очищаем и добавляем плейсхолдер
+    select.innerHTML = '';
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = 'Выберите категорию';
+    placeholder.disabled = true;
+    placeholder.selected = true;
+    select.appendChild(placeholder);
 
     categories.forEach(cat => {
       const opt = document.createElement('option');
-      opt.value = cat.id;        // id категории из БД
+      opt.value = String(cat.id);      // id категории из БД
       opt.textContent = cat.name;
       select.appendChild(opt);
     });
@@ -35,7 +60,7 @@ async function loadCategories() {
   }
 }
 
-// Отправка объявления
+// ==================== Отправка объявления ====================
 async function handleAddRent(e) {
   e.preventDefault();
 
@@ -45,7 +70,7 @@ async function handleAddRent(e) {
   const title = (formData.get('title') || '').toString().trim();
   const city = (formData.get('city') || '').toString().trim();
   const description = (formData.get('description') || '').toString().trim();
-  const categoryRaw = (formData.get('category') || '').toString().trim();
+  const categoryRaw = formData.get('category');
   const price = Number(formData.get('price')) || 0;
   const photo = formData.get('photo');
 
@@ -54,7 +79,7 @@ async function handleAddRent(e) {
     return;
   }
 
-  const user = CommonAPI.getUserFromStorage();
+  const user = CommonAPI?.getUserFromStorage?.();
   if (!user) {
     alert('Для добавления объявления нужно войти');
     window.location.href = '/web/auth';
@@ -62,7 +87,7 @@ async function handleAddRent(e) {
   }
 
   const idCategory = Number(categoryRaw);
-  if (!Number.isInteger(idCategory) || idCategory <= 0) {
+  if (!Number.isFinite(idCategory) || idCategory <= 0) {
     alert('Ошибка: выберите корректную категорию');
     return;
   }
@@ -75,6 +100,7 @@ async function handleAddRent(e) {
     id_category: idCategory,
     id_user: user.id,
     active: true,
+    id_image: 0, // временно, если поле обязательно в схеме SRentAdd
   };
 
   const submitBtn = form.querySelector('button[type="submit"]');
@@ -85,7 +111,7 @@ async function handleAddRent(e) {
   }
 
   try {
-    // 1. создаём объявление в БД
+    // 1. создаём объявление
     const rentRes = await fetch('/rents/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -102,7 +128,7 @@ async function handleAddRent(e) {
     const rent = await rentRes.json();
     const rentId = rent.id;
 
-    // 2. загружаем фото, если выбрано
+    // 2. загружаем фото (если есть)
     if (photo && photo.size > 0) {
       const imgForm = new FormData();
       imgForm.append('rent_id', rentId);
@@ -136,7 +162,7 @@ async function handleAddRent(e) {
   }
 }
 
-// Модалка
+// ==================== Модалка ====================
 function setupPostModal() {
   const openBtn = document.getElementById('openPostBtn');
   const cancelBtn = document.getElementById('cancelPostLocal');
@@ -147,15 +173,14 @@ function setupPostModal() {
 
   if (openBtn) {
     openBtn.addEventListener('click', async () => {
-      const user = CommonAPI.getUserFromStorage();
+      const user = CommonAPI?.getUserFromStorage?.();
       if (!user) {
         alert('Для добавления объявления нужно войти в аккаунт');
         window.location.href = '/web/auth';
         return;
       }
 
-      await loadCategories(); // подгружаем категории перед показом
-
+      await loadCategories();
       modal.style.display = 'grid';
       modal.setAttribute('aria-hidden', 'false');
     });
