@@ -217,29 +217,77 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ==================== Карусель категорий ====================
-  function initCategoryCarousel() {
-    const categoriesContainer = document.querySelector('.categories-list');
-    if (!categoriesContainer || Object.keys(categoriesCache).length === 0) {
-      console.log('Категории не загружены');
-      return;
-    }
-
-    categoriesContainer.innerHTML = Object.entries(categoriesCache)
-      .map(([id, name]) => `
-        <div class="category-item" data-category="${id}">
-          ${name}
-        </div>
-      `).join('');
-
-    document.querySelectorAll('.category-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const categoryId = item.dataset.category;
-        loadRentsByCategory(categoryId);
-      });
-    });
+ function initCategoryCarousel() {
+  const scrollContainer = document.getElementById('categoriesScroll');
+  if (!scrollContainer || Object.keys(categoriesCache).length === 0) {
+    console.log('Категории не загружены');
+    return;
   }
 
+  // Цвета для категорий (циклически)
+  const colors = [
+    { bg: '#f1f9f7', text: '#044036' },
+    { bg: '#fff6f0', text: '#7a3b2b' },
+    { bg: '#eef7ff', text: '#084a7a' },
+    { bg: '#f5fff8', text: '#0b6b45' },
+    { bg: '#fffaf4', text: '#6b4a11' }
+  ];
+
+  scrollContainer.innerHTML = Object.entries(categoriesCache)
+    .map(([id, name], index) => {
+      const color = colors[index % colors.length];
+      return `
+        <a class="category-card" data-category="${id}" 
+           style="min-width:160px;flex:0 0 auto;text-decoration:none;color:inherit;cursor:pointer">
+          <div style="background:${color.bg};border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;box-shadow:var(--card-shadow)">
+            <strong style="font-size:15px;color:${color.text}">${name}</strong>
+            <span style="color:var(--muted);font-size:13px">Популярные варианты</span>
+          </div>
+        </a>
+      `;
+    }).join('');
+
+  // Обработчики кликов
+  document.querySelectorAll('.category-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      e.preventDefault();
+      const categoryId = card.dataset.category;
+      loadRentsByCategory(categoryId);
+    });
+  });
+
+  // Инициализация прокрутки
+  initCategoriesScroll();
+}
+
   // ==================== Рендер карточек ====================
+  function initCategoriesScroll() {
+  const feedWrap = document.querySelector('.feed-wrap');
+  const scrollContainer = document.getElementById('categoriesScroll');
+  const leftArrow = feedWrap?.querySelector('.feed-arrow.left');
+  const rightArrow = feedWrap?.querySelector('.feed-arrow.right');
+
+  if (!scrollContainer || !leftArrow || !rightArrow) return;
+
+  const scrollAmount = 180; // Ширина карточки + gap
+
+  leftArrow.addEventListener('click', () => {
+    scrollContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+  });
+
+  rightArrow.addEventListener('click', () => {
+    scrollContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  });
+
+  // Обновление стрелок при скролле
+  scrollContainer.addEventListener('scroll', () => {
+    const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
+    leftArrow.style.opacity = scrollLeft > 0 ? '1' : '0.5';
+    rightArrow.style.opacity = scrollLeft < scrollWidth - clientWidth ? '1' : '0.5';
+  });
+}
+
+
   function renderRentListings(rents) {
     const container = document.getElementById('rentListings');
     if (!container) return;
