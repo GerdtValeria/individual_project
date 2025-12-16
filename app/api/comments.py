@@ -6,8 +6,8 @@ from app.services.comments import CommentService
 router = APIRouter(prefix="/rents",tags=["Comment"])
 
 @router.get("/{rent_id}/comments", response_model=list[SComment])
-async def get_comments( db: DBDep,) -> list[SComment]:
-    comments = await CommentService(db).get_all_comments()   
+async def get_comments(rent_id: int, db: DBDep,) -> list[SComment]:
+    comments = await CommentService(db).get_rent_comments(rent_id)   
     return comments
 
 @router.post("/{rent_id}/comments", response_model=SComment)

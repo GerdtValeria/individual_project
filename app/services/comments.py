@@ -7,6 +7,11 @@ class CommentService(BaseService):
         comments = await CommentsRepository.get_all()
         return comments
     
+    async def get_rent_comments(self, rent_id: int) -> list[SComment]:
+        """Получить комментарии конкретного объявления"""
+        comments = await self.db.comments.get_rent_comments(rent_id)
+        return comments or []
+    
     async def add_comment(self, comment_data: SCommentAdd) -> SComment:
         comment = await self.db.comments.add_comment(comment_data)
         await self.db.commit()
