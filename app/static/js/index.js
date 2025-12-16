@@ -4,8 +4,6 @@ document.addEventListener('DOMContentLoaded', function() {
   initSearch();
   initFilters();
   initModals();
-  initListings();
-  loadInitialRents();
   checkUserAuth();
 });
 
