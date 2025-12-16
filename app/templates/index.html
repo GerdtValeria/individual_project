@@ -642,36 +642,7 @@
       // ====================
       // 6. ЗАГРУЗКА ОБЪЯВЛЕНИЙ
       // ====================
-      
-      async function loadRentals() {
-        const listingsContainer = document.getElementById('listings');
-        if (!listingsContainer) return;
-        
-        try {
-          const API_BASE_URL = 'http://localhost:8000';
-          
-          // Загружаем объявления из API
-          const response = await fetch(`${API_BASE_URL}/rents/`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          });
-          
-          if (response.ok) {
-            const rentals = await response.json();
-            renderRentals(rentals);
-          } else {
-            console.error('Ошибка загрузки объявлений:', response.status);
-            // Используем демо-данные если API недоступен
-            renderDemoRentals();
-          }
-        } catch (error) {
-          console.error('Ошибка при загрузке объявлений:', error);
-          // Используем демо-данные
-          renderDemoRentals();
-        }
-      }
+
       
       function renderRentals(rentals) {
         const listingsContainer = document.getElementById('listings');

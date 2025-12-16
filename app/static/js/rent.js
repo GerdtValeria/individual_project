@@ -236,27 +236,27 @@ function initCategoryCarousel() {
   }
 
   async function toggleFavorite(rentId) {
-    if (!currentUser) {
-      showError('Войдите в аккаунт');
+    const user = currentUser;
+    if (!user) {
+      lert('Нужно войти, чтобы добавлять в избранное');
       return;
     }
-    try {
-      const method = currentFavorites.has(rentId) ? 'DELETE' : 'POST';
-      const response = await fetch(`/favorites/${rentId}`, {
-        method,
-        credentials: 'include'
+
+    const isFav = currentFavorites.has(rentId);
+
+    if (!isFav) {
+      await fetch('/comments/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id_rent: rentId, id_user: user.id })
       });
-      if (response.ok) {
-        if (method === 'POST') {
-          currentFavorites.add(rentId);
-        } else {
-          currentFavorites.delete(rentId);
-        }
-        renderRentListings(allRentListings);
-      }
-    } catch (error) {
-      console.error('Ошибка избранного:', error);
+      currentFavorites.add(rentId);
+    } else {
+      await fetch(`/comments/${rentId}`, { method: 'DELETE' });
+      currentFavorites.delete(rentId);
     }
+
+    renderRentListings(allRentListings); // перерисовать карточки с актуальным состоянием
   }
 
   // ==================== Загрузка объявлений ====================
@@ -347,10 +347,8 @@ function initCategoryCarousel() {
           <div class="rent-price">₽${rent.price || 0}/ночь</div>
           <div class="rent-actions">
             <button id="details_${rent.id}" class="btn-primary">Подробнее</button>
-            <button id="favorite_${rent.id}" class="favorite ${
-              isFavorite ? 'active' : ''
-            }">
-              ${isFavorite ? '★' : '☆'}
+            <button id="favorite_${rent.id}" class="favorite ${isFavorite ? 'active' : ''}">
+              <img src="/static/img/love_4900029.png" alt="В избранное">
             </button>
           </div>
         </div>
@@ -359,7 +357,7 @@ function initCategoryCarousel() {
   }
 
   function navigateToRentDetail(rentId) {
-    window.location.href = `/web/rents/${rentId}`;
+    window.location.href = `/web/rents/${id}`;
   }
 
   // ==================== Поиск ====================
