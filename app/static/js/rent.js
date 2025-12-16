@@ -1,26 +1,29 @@
 // rent-handler.js
 document.addEventListener('DOMContentLoaded', function() {
-  // ==================== Глобальные переменные ====================
-  let currentUser = null;
-  let currentFavorites = new Set();
-  let allRentListings = [];
-  let categoriesCache = {};
-  let isLoading = false;
+ // ==================== Глобальные переменные ====================
+let currentUser = null;
+let currentFavorites = new Set();
+let allRentListings = [];
+let categoriesCache = {};
+let isLoading = false;
 
-  // ==================== Инициализация ====================
+// ==================== Инициализация ====================
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('Rent handler initialized');
   initPage();
+});
 
-  async function initPage() {
-    await checkAuth();
-    await loadFavorites();
-    await loadCategories();
-    await loadAllRents();
-    loadRecentlyViewed();
-    setupEventHandlers();
-    initCategoryCarousel();
-  }
+async function initPage() {
+  await checkAuth();
+  await loadFavorites();
+  await loadCategories();     // обязательно await
+  await loadAllRents();
+  loadRecentlyViewed();
+  setupEventHandlers();
+  initCategoryCarousel();
+}
 
-  // ==================== Загрузка категорий ====================
+// ==================== Загрузка категорий ====================
 async function loadCategories() {
   try {
     const res = await fetch('/categories/', {
@@ -35,7 +38,8 @@ async function loadCategories() {
 
     categoriesCache = {};
     categories.forEach(cat => {
-      categoriesCache[cat.id] = cat.name; // поля из SCategoriesGet
+      // SCategoriesGet: id, name
+      categoriesCache[cat.id] = cat.name;
     });
 
     console.log('categoriesCache', categoriesCache);
@@ -44,7 +48,55 @@ async function loadCategories() {
     console.error('loadCategories error', e);
     return [];
   }
+} // ← ЭТОЙ скобки раньше не хватало
+
+// ==================== Карусель категорий ====================
+function initCategoryCarousel() {
+  const scrollContainer = document.getElementById('categoriesScroll');
+  console.log('initCategoryCarousel', { scrollContainer, categoriesCache });
+  if (!scrollContainer) return;
+
+  if (Object.keys(categoriesCache).length === 0) {
+    scrollContainer.innerHTML =
+      '<span style="color:var(--muted);font-size:13px">Категорий нет</span>';
+    return;
+  }
+
+  const colors = [
+    { bg: '#f1f9f7', text: '#044036' },
+    { bg: '#fff6f0', text: '#7a3b2b' },
+    { bg: '#eef7ff', text: '#084a7a' },
+    { bg: '#f5fff8', text: '#0b6b45' },
+    { bg: '#fffaf4', text: '#6b4a11' }
+  ];
+
+  scrollContainer.innerHTML = Object.entries(categoriesCache)
+    .map(([id, name], index) => {
+      const color = colors[index % colors.length];
+      return `
+        <a class="category-card" data-category="${id}"
+           style="min-width:160px;flex:0 0 auto;text-decoration:none;color:inherit;cursor:pointer">
+          <div style="background:${color.bg};border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;box-shadow:var(--card-shadow)">
+            <strong style="font-size:15px;color:${color.text}">${name}</strong>
+            <span style="color:var(--muted);font-size:13px">Популярные варианты</span>
+          </div>
+        </a>`;
+    })
+    .join('');
+
+  // клики по категориям
+  document.querySelectorAll('.category-card').forEach(card => {
+    card.addEventListener('click', e => {
+      e.preventDefault();
+      const categoryId = card.dataset.category;
+      loadRentsByCategory(categoryId);
+    });
+  });
+
+  // инициализация стрелок прокрутки (если уже была — оставь свою реализацию)
+  initCategoriesScroll();
 }
+
   // ==================== Навигация ====================
   const logoLink = document.querySelector('.logo-link');
   if (logoLink) {
@@ -221,52 +273,7 @@ async function loadCategories() {
     }
   }
 
-  // ==================== Карусель категорий ====================
-function initCategoryCarousel() {
-  const scrollContainer = document.getElementById('categoriesScroll');
-  console.log('initCategoryCarousel', { scrollContainer, categoriesCache });
-
-  if (!scrollContainer) return;
-  if (Object.keys(categoriesCache).length === 0) {
-    scrollContainer.innerHTML = '<span style="color:var(--muted);font-size:13px">Категорий нет</span>';
-    return;
-  }
-  // Цвета для категорий (циклически)
-  const colors = [
-    { bg: '#f1f9f7', text: '#044036' },
-    { bg: '#fff6f0', text: '#7a3b2b' },
-    { bg: '#eef7ff', text: '#084a7a' },
-    { bg: '#f5fff8', text: '#0b6b45' },
-    { bg: '#fffaf4', text: '#6b4a11' }
-  ];
-
-  scrollContainer.innerHTML = Object.entries(categoriesCache)
-    .map(([id, name], index) => {
-      const color = colors[index % colors.length];
-      return `
-        <a class="category-card" data-category="${id}" 
-           style="min-width:160px;flex:0 0 auto;text-decoration:none;color:inherit;cursor:pointer">
-          <div style="background:${color.bg};border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;box-shadow:var(--card-shadow)">
-            <strong style="font-size:15px;color:${color.text}">${name}</strong>
-            <span style="color:var(--muted);font-size:13px">Популярные варианты</span>
-          </div>
-        </a>
-      `;
-    }).join('');
-
-  // Обработчики кликов
-  document.querySelectorAll('.category-card').forEach(card => {
-    card.addEventListener('click', (e) => {
-      e.preventDefault();
-      const categoryId = card.dataset.category;
-      loadRentsByCategory(categoryId);
-    });
-  });
-
-  // Инициализация прокрутки
-  initCategoriesScroll();
-}
-
+ 
   // ==================== Рендер карточек ====================
   function initCategoriesScroll() {
   const feedWrap = document.querySelector('.feed-wrap');
