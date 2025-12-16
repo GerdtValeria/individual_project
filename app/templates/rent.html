@@ -22,31 +22,71 @@
     <nav class="top-tabs" aria-label="Главная навигация">
       <button class="tab active" data-tab="rent">Арендовать</button>
       <button class="tab" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
-      <a class="tab" href="/web/favorites" data-tab="favorites">Избранное</a>
+      <a class="tab" href="/web/favorites">Избранное</a>
       <button class="tab" data-tab="help">Помощь</button>
       <div class="auth">
-        <a class="tab primary" href="/web/auth" data-tab="signup">Зарегистрироваться</a>
+        <a class="tab primary" href="/web/auth">Зарегистрироваться</a>
       </div>
     </nav>
   </header>
 
   <main class="container" style="padding:18px;">
-    <section style="max-width:1200px;margin:0 auto;">
-      <h1 style="margin:0 0 12px;font-size:28px;color:#042018">
-        Доступные варианты аренды
-      </h1>
-      <p style="color:var(--muted);margin:0 0 18px">
-        Здесь собраны доступные для аренды варианты — используйте фильтры и карточки объявлений для деталей и бронирования.
-      </p>
+    <section style="max-width:900px;margin:0 auto">
+      <h1 style="margin:0 0 12px;font-size:28px;color:#042018">Арендовать — поиск и предложения</h1>
+      <p style="color:var(--muted);margin:0 0 18px">Здесь собраны доступные для аренды варианты — используйте фильтры и карточки объявлений для деталей и бронирования.</p>
 
-      <!-- тут будут карточки -->
-      <div id="rentListings" class="listings"></div>
+      <!-- Housing categories feed -->
+<section class="categories-feed" aria-label="Категории жилья" style="margin:16px 0 22px">
+  <div class="feed-wrap">
+    <button class="feed-arrow left" aria-label="Скролл влево">‹</button>
+    <div class="feed-scroll" id="categoriesScroll"
+     style="display:flex;gap:12px;overflow:hidden;padding-bottom:4px">
+      <div class="category-loading" style="min-width:160px;flex:0 0 auto">
+        <div style="background:#f0f0f0;border-radius:10px;padding:12px;height:80px;animation:pulse 1.5s infinite"></div>
+      </div>
+    </div>
+    <button class="feed-arrow right" aria-label="Скролл вправо">›</button>
+  </div>
 
-      <div id="errorContainer" style="display:none;color:#b00020;margin-top:12px;"></div>
+  <!-- ADDED: category-specific ads container (сохранен) -->
+  <div id="categoryAds" class="ads" aria-label="Рекламные предложения по категории" style="margin-top:12px">
+    <div id="categoryAdsInner" class="ads-inner" style="width:100%;max-width:92%;"></div>
+  </div>
+</section>
+
+      <!-- Reuse the listings container from the main app; keep simple client-side rendering via existing app.js if desired -->
+      <div id="rentListings" class="listings">
+        <!-- minimal static fallback cards to ensure content appears if app.js is not loaded -->
+        <article class="card">
+          <img class="thumb" src="/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg" alt="">
+          <div class="card-body">
+            <div class="card-top"><h3 class="title">Примеры предложений</h3></div>
+            <p class="meta">Набережная · 1к</p>
+            <p class="price">₽85/ночь</p>
+            <div class="tags"><span class="tag-pill">Wi‑Fi</span></div>
+            <button class="details btn small">Подробнее</button>
+          </div>
+        </article>
+      </div>
+
+      <!-- NEW: Recently viewed block -->
+      <section id="recentlyViewedWrap" aria-label="Недавно смотрели" style="margin-top:18px">
+        <h3 style="margin:0 0 8px;color:#042018">Недавно смотрели</h3>
+        <div id="recentlyViewed" class="ads-inner" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));">
+          <!-- populated by js/rent-page.js -->
+        </div>
+      </section>
+
+      <!-- Restored: Ads block -->
+      <section class="ads" id="ads" aria-label="Реклама">
+        <div class="ads-inner" id="adsInner">
+          <!-- ads inserted by JS -->
+        </div>
+      </section>
     </section>
   </main>
 
-  <!-- Оверлей помощи -->
+  <!-- NEW: Help overlay block (opens on top of rent page when clicking 'Помощь') -->
   <div id="helpBlock" class="overlay-block" aria-hidden="true">
     <div class="overlay-dialog" role="dialog" aria-label="Помощь">
       <header class="modal-header">
@@ -61,6 +101,7 @@
           <li>Как разместить объявление?</li>
         </ul>
 
+        <!-- ADDED: Support contact form so users on the rent page can message Support directly -->
         <hr style="border:0;height:1px;background:rgba(0,0,0,0.06);margin:8px 0">
         <form id="helpContactFormRent" class="help-contact-form" style="display:flex;flex-direction:column;gap:8px;">
           <label style="font-size:13px">Ваш e-mail
@@ -92,7 +133,7 @@
           <li><a href="/web/rents" data-nav="rent">Арендовать</a></li>
           <li><a href="/web/list" data-nav="list">Сдать в аренду</a></li>
           <li><a href="/" data-nav="help">Помощь</a></li>
-          <li><a href="/web/" data-nav="home">Главная</a></li>
+          <li><a href="/" data-nav="home">Главная</a></li>
           <li><a href="/web/auth" data-nav="signup">Зарегистрироваться</a></li>
         </ul>
       </div>
@@ -118,7 +159,7 @@
     <div class="footer-bar" aria-hidden="true"></div>
   </footer>
 
-  <script src="/static/js/common.js"></script>
-  <script src="/static/js/rent.js"></script>
+  <script type="module" src="/static/js/rent.js"></script>
+
 </body>
 </html>
