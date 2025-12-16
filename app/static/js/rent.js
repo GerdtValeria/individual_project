@@ -337,23 +337,21 @@ function initCategoryCarousel() {
       (rent.photos && rent.photos[0]) || rent.img || '/static/img/default.jpg';
 
     return `
-      <div class="rent-card" id="card_${rent.id}">
-        <img src="${mainPhoto}" alt="${rent.title}">
-        <div class="rent-info">
+      <article class="card">
+        <img src="${mainPhoto}" alt="${rent.title}" class="thumb">
+        <div class="card-body">
           <h3>${rent.title || 'Без названия'}</h3>
-          <div class="rent-meta">
-            <span class="category">${rent.category.name}</span> · ${rent.rooms || '1к'}
-          </div>
-          <div class="rent-price">₽${rent.price || 0}/ночь</div>
-          <div class="rent-actions">
-            <button id="details_${rent.id}" class="btn-primary">Подробнее</button>
-            <button id="favorite_${rent.id}" class="favorite ${isFavorite ? 'active' : ''}">
-              <img src="/static/img/love_4900029.png" alt="В избранное">
-            </button>
+          <p class="desc-snippet">${rent.category.name} · ${rent.rooms || '1к'}</p>
+          <div class="card-footer">
+            <div class="price">₽${rent.price || 0}/ночь</div>
+            <div class="actions">
+              <button id="details_${rent.id}" class="btn small">Подробнее</button>
+              <button id="favorite_${rent.id}" class="fav small-fav ${isFavorite ? 'active' : ''}"></button>
+            </div>
           </div>
         </div>
-      </div>
-    `;
+      </article>
+`;
   }
 
   function navigateToRentDetail(rentId) {
