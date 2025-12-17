@@ -141,7 +141,6 @@ function renderMyRents(rents) {
   const emptyMsg = document.getElementById('myListingsEmpty');
   
   if (!container) return;
-  
   container.innerHTML = '';
   
   if (!rents || !Array.isArray(rents) || rents.length === 0) {
@@ -154,9 +153,10 @@ function renderMyRents(rents) {
   rents.forEach(rent => {
     const card = document.createElement('article');
     card.className = 'card';
+    card.dataset.rentId = rent.id;
     card.innerHTML = `
       <div style="display:grid;grid-template-columns:80px 1fr auto;gap:16px;align-items:start;padding:16px">
-        <img src="/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg" 
+        <img src="${rent.images?.image_url || '/static/rents/default.jpg'}" 
              alt="${escapeHtml(rent.title || '')}" 
              style="width:80px;height:60px;object-fit:cover;border-radius:8px">
         <div style="flex:1">
@@ -168,14 +168,26 @@ function renderMyRents(rents) {
             ₽${formatPrice(rent.price)}/ночь
           </div>
         </div>
-        <div style="text-align:right">
-          <a href="/web/list?edit=${rent.id}" class="btn" style="font-size:12px;padding:6px 12px">
+        <div style="text-align:right;display:flex;gap:8px;flex-direction:column">
+          <button class="btn edit-rent-btn" data-rent-id="${rent.id}" style="font-size:12px;padding:6px 12px">
             Редактировать
-          </a>
+          </button>
+          <button class="btn delete-rent-btn danger" data-rent-id="${rent.id}" style="font-size:12px;padding:6px 12px">
+            Удалить
+          </button>
         </div>
       </div>
     `;
     container.appendChild(card);
+  });
+
+  // Обработчики кнопок
+  container.querySelectorAll('.edit-rent-btn').forEach(btn => {
+    btn.addEventListener('click', () => openEditModal(btn.dataset.rentId));
+  });
+  
+  container.querySelectorAll('.delete-rent-btn').forEach(btn => {
+    btn.addEventListener('click', () => deleteRent(btn.dataset.rentId));
   });
 }
 
@@ -334,10 +346,42 @@ function escapeHtml(text) {
 // Инициализация кнопки выхода при загрузке
 setupLogout();
 
-// Экспорт для common.js
-window.ProfileAPI = {
-  getUserFromStorage,
-  loadCurrentUser,
-  loadMyRents,
-  renderMyRents
-};
+let currentEditRent = null;
+function openEditModal(rentId) {
+  // Загружаем данные объявления
+  fetch(`/rents/${rentId}`)
+    .then(res => res.json())
+    .then(rent => {
+      currentEditRent = rent;
+      showEditModal(rent);
+    });
+}
+
+function showEditModal(rent) {
+  const modal = document.createElement('div');
+  modal.id = 'editRentModal';
+  modal.className = 'modal';
+  modal.innerHTML = `
+    <div class="modal-content">
+      <h3>Редактировать "${rent.title}"</h3>
+      <form id="editRentForm">
+        <input name="title" value="${escapeHtml(rent.title)}">
+        <!-- другие поля -->
+        <button type="submit">Сохранить</button>
+        <button type="button" onclick="closeEditModal()">Отмена</button>
+      </form>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  // обработчик формы
+}
+
+async function deleteRent(rentId) {
+  if (!confirm('Удалить объявление?')) return;
+  try {
+    await fetch(`/rents/${rentId}`, { method: 'DELETE', credentials: 'include' });
+    await loadMyRents(); // перезагрузка списка
+  } catch (error) {
+    alert('Ошибка удаления');
+  }
+}
