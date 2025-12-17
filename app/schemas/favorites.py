@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict, Field
-from app.models.rents import RentsModel
+from pydantic import BaseModel, ConfigDict, Field
 
 class SFavoriteRent(BaseModel):
     id: int
@@ -7,7 +7,6 @@ class SFavoriteRent(BaseModel):
     id_user: int
     
 class SFavoriteRentAdd(BaseModel):
-    id: int
     id_rent: int
     id_user: int
 

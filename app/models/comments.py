@@ -19,4 +19,4 @@ class CommentsModel(Base):
     
     @property
     def username(self) -> str:
-        return self.user.username if self.user else ""
+        return self.user.name if self.user else ""

@@ -42,5 +42,5 @@ class SRentGetWithRels(SRentAdd):
     model_config = ConfigDict(from_attributes=True)
 
     category: SCategoriesGet | None
-    images: SImagesGet | None
+    images: list[SImagesGet] | None
     user: SUserGet | None

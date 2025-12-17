@@ -54,7 +54,6 @@ async def add_image(
 
         # создаём запись в БД через сервис/репозиторий
         img_data = SImagesAdd(
-            id=0,  # если id автоинкремент, поле можно убрать из схемы
             image_url=f"/static/img/{file_name}",
         )
         saved_img = await ImageService(db).add_image(img_data)
@@ -78,8 +77,7 @@ async def get_image(id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Изображение не найдено")
     return {
         "id": image.id,
-        "id_rent": image.id_rent,
-        "path": image.path
+        "path": image.image_url
     }
 @router.get("/", response_model=dict)
 async def get_rent_image(rent_id: int, db: Session = Depends(get_db)):
@@ -89,8 +87,7 @@ async def get_rent_image(rent_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Изображение не найдено")
     return {
         "id": image.id,
-        "id_rent": image.id_rent,
-        "path": image.path
+        "path": image.image_url
     }
 
 @router.put("/{id}")
