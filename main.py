@@ -11,7 +11,7 @@ from app.api.favorites import router as router_favorites
 from app.api.help import router as router_help
 from app.api.web import router as router_web
 
-app = FastAPI()
+app = FastAPI(title="Угол комфорта")
 
 
 app.mount("/static", StaticFiles(directory="app/static"), "static")
