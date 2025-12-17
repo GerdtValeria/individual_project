@@ -25,7 +25,16 @@ async def add_comment(
     return comment
 
 @router.put("/{rent_id}/comments/{id}")
-async def edit_comment(id:int, comment_data: SCommentAdd,db: DBDep, user_id: UserIdDep,) -> dict[str, str]:
+async def edit_comment(    
+    rent_id: int,
+    id: int,
+    db: DBDep,
+    user_id: UserIdDep,
+    content: str = Body(..., embed=True),) -> dict[str, str]:
+    comment_data = SCommentAdd(
+        id_user=user_id,
+        id_rent=rent_id,
+        content=content,)
     await CommentService(db).edit_comment(id,comment_data)
     return {"message": "Comment updated successfully"}
 
