@@ -22,7 +22,7 @@ class ImageOut(BaseModel):
     id_rent: int
     path: str
 
-@router.post("/")
+@router.post("/", response_model=None, status_code=201)
 async def add_image(
     rent_id: int = Form(...),
     image: UploadFile = File(...),

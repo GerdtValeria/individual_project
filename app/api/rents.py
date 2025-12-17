@@ -53,7 +53,7 @@ async def get_rent(db: DBDep,id:int,):
     return rent
 
 
-@router.put("/{rent_id}", response_model=None)
+@router.put("/{rent_id}")
 async def edit_rent(
     rent_id: int,
     rent_data: SRentAdd,
