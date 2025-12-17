@@ -269,7 +269,7 @@ function createFavoriteCard(favorite) {
   card.dataset.id = favorite.id;
 
   const rentId = favorite.id_rent;
-  const photoUrl = favorite.photo_url || '/static/img/default.jpg';
+  const photoUrl = favorite.photo_url || '/static/rents/';
 
   card.innerHTML = `
     <div class="card-image">
@@ -282,13 +282,12 @@ function createFavoriteCard(favorite) {
       <div class="card-actions">
         <button class="btn primary details-btn" data-rent-id="${rentId}">Подробнее</button>
         <button class="favorite-btn" data-fav-id="${favorite.id}">
-          <img src="/app/static/img/love_4900029.png" alt="Удалить из избранного">
+          <img src="/static/img/love_4900029.png" alt="Удалить из избранного">
         </button>
       </div>
     </div>
   `;
 
-  // кнопка "Подробнее"
   const detailsBtn = card.querySelector('.details-btn');
   if (detailsBtn) {
     detailsBtn.addEventListener('click', () => {
@@ -296,11 +295,10 @@ function createFavoriteCard(favorite) {
     });
   }
 
-  // кнопка-сердечко
   const favBtn = card.querySelector('.favorite-btn');
   if (favBtn) {
     favBtn.addEventListener('click', () => {
-      removeFavorite(favorite.id); // дергает DELETE /comments/{id}
+      removeFavorite(favorite.id);
     });
   }
 
