@@ -1,6 +1,7 @@
 # seed.py
 import asyncio
 import random
+import os
 from datetime import datetime, timedelta
 from sqlalchemy import text
 
@@ -14,8 +15,6 @@ from app.models.comments import CommentsModel
 from app.models.bookings import BookingsModel
 from app.models.help import HelpModel
 from app.models.favorites import FavoritesModel
-
-
 
 class DataSeeder:
     def __init__(self):
@@ -165,9 +164,56 @@ class DataSeeder:
         else:
             print("Regular users already exist (49 users)")
     
+    async def create_images(self, session):
+        """Создание изображений из папки app/static/rents/"""
+        print('Creating images from app/static/rents/...')
+        
+        # Проверяем, есть ли уже изображения
+        existing_images = await session.execute(text("SELECT COUNT(*) FROM images"))
+        
+        # Путь к папке с изображениями
+        image_folder = "app/static/rents/"
+        
+        # Проверяем существование папки
+        if not os.path.exists(image_folder):
+            print(f"Warning: Image folder '{image_folder}' does not exist. Creating placeholder images...")
+            # Создаем placeholder изображения если папки нет
+            for i in range(1, 101):
+                image = ImagesModel(
+                    image_url=f"/static/rents/placeholder_{i}.jpg"
+                )
+                session.add(image)
+        else:
+            # Получаем список файлов изображений из папки
+            image_files = []
+            for file in os.listdir(image_folder):
+                if file.lower().endswith(('.jpg', '.jpeg', '.png', '.webp')):
+                    image_files.append(file)
+            
+            if not image_files:
+                print(f"Warning: No image files found in '{image_folder}'. Creating placeholder images...")
+                # Создаем placeholder изображения если файлов нет
+                for i in range(1, 101):
+                    image = ImagesModel(
+                        image_url=f"/static/rents/placeholder_{i}.jpg"
+                    )
+                    session.add(image)
+            else:
+                # Создаем записи в базе для каждого изображения
+                for i, image_file in enumerate(image_files[:100]):  # Ограничиваем 100 изображениями
+                    image = ImagesModel(
+                        image_url=f"/static/rents/{image_file}"
+                    )
+                    session.add(image)
+                
+                print(f"Created {len(image_files[:100])} image records")
+        
+        await session.flush()
+        print("Images created")
+    
     async def create_rents(self, session):
-        """Создание объявлений об аренде, если их нет"""
-        print('Creating rents...')
+        """Создание объявлений об аренде с привязкой к изображениям"""
+        print('Creating rents with image assignments...')
         
         # Проверяем, есть ли уже объявления
         existing_rents = await session.execute(text("SELECT COUNT(*) FROM rents"))
@@ -182,7 +228,17 @@ class DataSeeder:
                 'Квартира в новостройке',
                 'Дом с бассейном и садом',
                 'Студия рядом с метро',
-                'Апартаменты с террасой'
+                'Апартаменты с террасой',
+                'Уютный коттедж в сосновом бору',
+                'Пентхаус с видом на море',
+                'Гостевой домик на окраине леса',
+                'Современная квартира-студия',
+                'Загородный дом с сауной',
+                'Элитные апартаменты в центре',
+                'Дом для большой семьи',
+                'Уютная дача у реки',
+                'Квартира с евроремонтом',
+                'Лофт в стиле лофт'
             ]
             
             descriptions = [
@@ -195,55 +251,62 @@ class DataSeeder:
                 'Новый ремонт, современная техника и удобная планировка.',
                 'Большой участок с фруктовыми деревьями, зона для барбекю и детская площадка.',
                 'Удобное расположение в шаговой доступности от метро и основных достопримечательностей.',
-                'Просторная терраса с видом на город, идеальное место для вечерних посиделок.'
+                'Просторная терраса с видом на город, идеальное место для вечерних посиделок.',
+                'Экологически чистое место, свежий воздух и тишина.',
+                'Роскошные условия проживания, панорамные окна от пола до потолка.',
+                'Уединенное место для отдыха от городской суеты.',
+                'Минималистичный дизайн, функциональное пространство.',
+                'Идеально для любителей банных процедур и отдыха на природе.',
+                'Высокий уровень комфорта, система умный дом, консьерж-сервис.',
+                'Просторные комнаты, большая кухня-гостиная, игровая комната для детей.',
+                'Тихий и спокойный уголок для рыбалки и отдыха на природе.',
+                'Качественный ремонт, итальянская мебель, техника премиум-класса.',
+                'Просторное помещение с индустриальным дизайном, высокими потолками.'
             ]
             
             # Получаем все ID изображений
-            image_ids_result = await session.execute(text("SELECT id, image_url FROM images"))
-            image_data = image_ids_result.fetchall()
+            image_ids_result = await session.execute(text("SELECT id FROM images ORDER BY id"))
+            all_image_ids = [row[0] for row in image_ids_result.fetchall()]
             
+            # Если изображений недостаточно, создаем дополнительные
+            if len(all_image_ids) < 100:
+                print(f"Warning: Only {len(all_image_ids)} images available, need 100")
+                # Дублируем существующие ID если их мало
+                while len(all_image_ids) < 100:
+                    all_image_ids.append(random.choice(all_image_ids))
+            
+            # Перемешиваем ID изображений для случайного распределения
+            random.shuffle(all_image_ids)
+            
+            # Создаем 100 объявлений
             for i in range(1, 101):
                 city = random.choice(self.cities)
                 street = random.choice(['Тверская', 'Невский проспект', 'Баумана', 'Ленина',
                                       'Красный проспект', 'Большая Покровская', 'Курортный проспект',
                                       'Красная', 'Проспект Революции', 'Московская'])
                 
+                # Выбираем случайное название БЕЗ нумерации в конце
+                title = random.choice(titles)
+                
+                # Назначаем ID изображения для этого объявления
+                image_id = all_image_ids[i-1] if i-1 < len(all_image_ids) else all_image_ids[0]
+                
                 rent = RentsModel(
-                    title=f"{random.choice(titles)} {random.randint(1, 100)}",
+                    title=title,
                     address=f"{city}, ул. {street}, д. {random.randint(1, 100)}",
                     description=random.choice(descriptions),
                     price=random.randint(1000, 10000),
                     id_category=random.randint(1, 10),
                     id_user=random.randint(1, 49),
+                    id_images=image_id,  # Привязываем изображение
                     active=random.random() > 0.1
                 )
                 session.add(rent)
             
             await session.flush()
-            print("100 rents created")
+            print("100 rents created with image assignments")
         else:
             print("Rents already exist")
-    
-    async def create_images(self, session):
-        """Создание изображений, если их нет"""
-        print('Creating images...')
-        
-        # Проверяем, есть ли уже изображения
-        existing_images = await session.execute(text("SELECT COUNT(*) FROM images"))
-        if existing_images.scalar() == 0:
-            # Создаем изображения
-            for rent_id in range(1, 101):
-                image_count = random.randint(1, 5)
-                for i in range(image_count):
-                    image = ImagesModel(
-                        image_url=f"/static/img/rent_{rent_id}_image_{i+1}.jpg"
-                    )
-                    session.add(image)
-            
-            await session.flush()
-            print("Images created")
-        else:
-            print("Images already exist")
     
     async def create_comments(self, session):
         """Создание комментариев, если их нет"""
@@ -365,7 +428,6 @@ class DataSeeder:
 async def main():
     """Запуск заполнения данных"""
     seeder = DataSeeder()
-    generate_images()
     await seeder.initialize()
 
 
