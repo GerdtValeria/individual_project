@@ -288,7 +288,7 @@ function setupLogout() {
       }
       
       // Переход на главную
-      window.location.href = '/web/index';
+      window.location.href = '/web/';
     } catch (error) {
       console.error('Ошибка выхода:', error);
       // Принудительно очищаем и перенаправляем
