@@ -361,19 +361,49 @@ function showEditModal(rent) {
   const modal = document.createElement('div');
   modal.id = 'editRentModal';
   modal.className = 'modal';
+  modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center';
+  
   modal.innerHTML = `
-    <div class="modal-content">
-      <h3>Редактировать "${rent.title}"</h3>
+    <div class="modal-content" style="background:white;border-radius:12px;padding:24px;max-width:500px;width:90%;max-height:90vh;overflow:auto">
+      <h3 style="margin:0 0 20px">Редактировать "${escapeHtml(rent.title)}"</h3>
       <form id="editRentForm">
-        <input name="title" value="${escapeHtml(rent.title)}">
-        <!-- другие поля -->
-        <button type="submit">Сохранить</button>
-        <button type="button" onclick="closeEditModal()">Отмена</button>
+        <input name="title" value="${escapeHtml(rent.title || '')}" placeholder="Название" style="width:100%;padding:12px;margin-bottom:12px;border:1px solid #ddd;border-radius:6px">
+        <input name="price" type="number" value="${rent.price || ''}" placeholder="Цена за ночь" style="width:100%;padding:12px;margin-bottom:12px;border:1px solid #ddd;border-radius:6px">
+        <input name="city" value="${escapeHtml(rent.city || '')}" placeholder="Город" style="width:100%;padding:12px;margin-bottom:20px;border:1px solid #ddd;border-radius:6px">
+        <div style="display:flex;gap:12px">
+          <button type="submit" class="btn primary" style="flex:1;padding:12px">Сохранить</button>
+          <button type="button" class="btn" onclick="closeEditModal()" style="flex:1;padding:12px;background:#eee">Отмена</button>
+        </div>
       </form>
     </div>
   `;
+  
   document.body.appendChild(modal);
-  // обработчик формы
+  
+  // Обработчик сохранения
+  document.getElementById('editRentForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData);
+    
+    try {
+      await fetch(`/rents/${rent.id}`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      closeEditModal();
+      await loadMyRents(); // перезагрузка
+    } catch (error) {
+      alert('Ошибка сохранения');
+    }
+  });
+}
+
+function closeEditModal() {
+  const modal = document.getElementById('editRentModal');
+  if (modal) modal.remove();
 }
 
 async function deleteRent(rentId) {
