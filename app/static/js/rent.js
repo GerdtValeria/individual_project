@@ -246,29 +246,54 @@ function initCategoryCarousel() {
     }
   }
 
-  async function toggleFavorite(rentId) {
-    const user = currentUser;
-    if (!user) {
-      lert('Нужно войти, чтобы добавлять в избранное');
-      return;
-    }
-
-    const isFav = currentFavorites.has(rentId);
-
-    if (!isFav) {
-      await fetch('/comments/', {
+  async function toggleFavorite(button) {
+  const card = button.closest('.card');
+  if (!card || !card.dataset.id) return;
+  
+  const rentId = parseInt(card.dataset.id);
+  const user = getUserData(); // из index.js / common.js
+  if (!user?.id) {
+    alert('Нужно войти в аккаунт');
+    window.location.href = '/web/auth';
+    return;
+  }
+  
+  const isFavorite = button.getAttribute('aria-pressed') === 'true';
+  
+  try {
+    if (isFavorite) {
+      // Удаляем из избранного DELETE /favorites/{rent_id}
+      const response = await fetch(`/favorites/${rentId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        button.setAttribute('aria-pressed', 'false');
+        button.classList.remove('active');
+        showNotification('Удалено из избранного', 'info');
+      }
+    } else {
+      // Добавляем в избранное POST /favorites/
+      const response = await fetch('/favorites/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_rent: rentId, id_user: user.id })
+        body: JSON.stringify({ id_rent: rentId }),
+        credentials: 'include'
       });
-      currentFavorites.add(rentId);
-    } else {
-      await fetch(`/comments/${rentId}`, { method: 'DELETE' });
-      currentFavorites.delete(rentId);
+      
+      if (response.ok) {
+        button.setAttribute('aria-pressed', 'true');
+        button.classList.add('active');
+        showNotification('Добавлено в избранное', 'success');
+      }
     }
-
-    renderRentListings(allRentListings); // перерисовать карточки с актуальным состоянием
+  } catch (error) {
+    console.error('Ошибка избранного:', error);
+    showNotification('Ошибка при работе с избранным', 'error');
   }
+}
 
   // ==================== Загрузка объявлений ====================
   async function loadAllRents() {
