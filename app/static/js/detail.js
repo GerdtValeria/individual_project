@@ -127,7 +127,7 @@ function renderRentDetails(rentData) {
   if (!container) return;
   
   const categoryName = categoriesCache[rentData.id_category] || 'Неизвестно';
-  const imageSrc = rentData.id_image ? `/images/${rentData.id_image}` : '/static/img/default.jpg';
+  const imageSrc = rentData.id_image ? `/images/${rentData.id_image}` : '/static/rents/';
   console.log(`rentData.id_image${rentData.id_image}`)
 
   document.getElementById('mainImage').src = imageSrc;
@@ -179,11 +179,6 @@ function renderSimilarRents(rents) {
           <p style="margin:0 0 4px;font-size:14px;color:var(--muted)">${rent.address}</p>
           <p style="margin:0 0 12px;font-weight:700;font-size:16px">${rent.price} ₽/ночь</p>
           <div class="card-actions">
-            <button class="btn small rent-open-btn">Подробнее</button>
-            <button class="favorite-btn" aria-label="Добавить в избранное">
-              <img src="/static/img/love_4900029.png" alt="Избранное">
-            </button>
-          </div>
             <button class="btn small rent-open-btn">Подробнее</button>
             <button class="favorite-btn" aria-label="Добавить в избранное">
               <img src="/static/img/love_4900029.png" alt="Избранное">
