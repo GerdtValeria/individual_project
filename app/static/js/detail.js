@@ -137,10 +137,6 @@ function renderRentDetails(rentData) {
     <p style="margin:0 0 12px;font-size:14px;color:var(--muted)">${categoryName}</p>
     <div style="font-size: 32px; font-weight: 700; color: #044036; margin-bottom: 8px;">
       ${rentData.price} ₽ / ночь
-      <div style="display:flex;gap:12px;align-items:center;margin:16px 0">
-        <button id="rentButton" class="btn primary" style="flex:1">Арендовать</button>
-        <button id="favoriteMainBtn" class="fav small-fav" style="flex:0 0 44px" aria-label="В избранное"></button>
-      </div>
     </div>
     <p style="margin:0;font-size:16px;line-height:1.5">${rentData.description || 'Описание отсутствует'}</p>
   `;
@@ -174,7 +170,7 @@ function renderSimilarRents(rents) {
   }
   
   container.innerHTML = rents.map(rent => {
-    const imageSrc = rent.id_image ? `/images/?rent_id=${rent.id}` : '/static/img/default.jpg';
+    const imageSrc = rent.id_image ? `/images/?rent_id=${rent.id}` : '/static/rents/';
     return `
       <article class="rent-card" data-rent-id="${rent.id}">
         <img src="${imageSrc}" alt="${rent.title}" class="rent-card__img" loading="lazy">
@@ -182,7 +178,12 @@ function renderSimilarRents(rents) {
           <h3 style="margin:0 0 4px;font-size:18px">${rent.title}</h3>
           <p style="margin:0 0 4px;font-size:14px;color:var(--muted)">${rent.address}</p>
           <p style="margin:0 0 12px;font-weight:700;font-size:16px">${rent.price} ₽/ночь</p>
-          <div style="position:absolute;bottom:16px;right:16px;display:flex;gap:8px">
+          <div class="card-actions">
+            <button class="btn small rent-open-btn">Подробнее</button>
+            <button class="favorite-btn" aria-label="Добавить в избранное">
+              <img src="/static/img/love_4900029.png" alt="Избранное">
+            </button>
+          </div>
             <button class="btn small rent-open-btn">Подробнее</button>
             <button class="favorite-btn" aria-label="Добавить в избранное">
               <img src="/static/img/love_4900029.png" alt="Избранное">

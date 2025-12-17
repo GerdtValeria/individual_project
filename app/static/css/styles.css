@@ -1798,4 +1798,34 @@ img {
   textarea::placeholder {
     color: #94a3b8;
   }
+
+  .rent-card__body {
+    position: static;        /* убираем возможный relative */
+  }
+
+  .card-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 8px;
+  }
+
+  .card-actions .btn.small {
+    flex: 1;                 /* “Подробнее” растягивается */
+  }
+
+  .card-actions .favorite-btn {
+    border: none;
+    background: transparent;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .card-actions .favorite-btn img {
+    width: 24px;
+    height: 24px;
+    display: block;
+  }
 }
