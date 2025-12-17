@@ -255,7 +255,9 @@ function renderComments() {
   container.innerHTML = comments.map(comment => `
     <article class="comment-item" data-comment-id="${comment.id}">
       <div class="comment-header">
-        <span class="comment-author">Пользователь #${comment.id_user}</span>
+        <span class="comment-author">
+          ${comment.username || `Пользователь #${comment.id_user}`}
+        </span>
       </div>
       <p class="comment-content">${escapeHtml(comment.content)}</p>
       ${currentUser && currentUser.id === comment.id_user ? `
