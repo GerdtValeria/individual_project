@@ -267,24 +267,43 @@ function createFavoriteCard(favorite) {
   const card = document.createElement('article');
   card.className = 'card';
   card.dataset.id = favorite.id;
-  const photoUrl = favorite.photos && favorite.photos[0] ? favorite.photos[0] : '/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg';
-  
+
+  const rentId = favorite.id_rent;
+  const photoUrl = favorite.photo_url || '/static/img/default.jpg';
+
   card.innerHTML = `
-    <img src="${photoUrl}" alt="Фото жилья" loading="lazy">
+    <div class="card-image">
+      <img src="${photoUrl}" alt="Квартира">
+    </div>
     <div class="card-body">
-      <h3>${escapeHtml(favorite.title || 'Без названия')}</h3>
-      <p>${escapeHtml(favorite.description ? (favorite.description.length > 120 ? favorite.description.substring(0, 117) + '...' : favorite.description) : '')}</p>
-      <div class="card-footer">
-        <span>₽${escapeHtml(favorite.price || 0)}/ночь</span>
-        <button class="btn secondary remove-fav" data-id="${favorite.id}">Удалить</button>
+      <h3 class="card-title">${favorite.title || 'Квартира'}</h3>
+      <p class="card-subtitle">Квартиры · ${favorite.rooms || '1к'}</p>
+      <p class="card-price">₽${favorite.price || 0}/ночь</p>
+      <div class="card-actions">
+        <button class="btn primary details-btn" data-rent-id="${rentId}">Подробнее</button>
+        <button class="favorite-btn" data-fav-id="${favorite.id}">
+          <img src="/app/static/img/love_4900029.png" alt="Удалить из избранного">
+        </button>
       </div>
     </div>
   `;
-  
-  card.querySelector('.remove-fav').addEventListener('click', () => {
-    removeFavorite(favorite.id);
-  });
-  
+
+  // кнопка "Подробнее"
+  const detailsBtn = card.querySelector('.details-btn');
+  if (detailsBtn) {
+    detailsBtn.addEventListener('click', () => {
+      window.location.href = `/web/rents/${rentId}`;
+    });
+  }
+
+  // кнопка-сердечко
+  const favBtn = card.querySelector('.favorite-btn');
+  if (favBtn) {
+    favBtn.addEventListener('click', () => {
+      removeFavorite(favorite.id); // дергает DELETE /comments/{id}
+    });
+  }
+
   return card;
 }
 
