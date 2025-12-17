@@ -17,7 +17,10 @@ async def add_comment(
     user_id: UserIdDep,
     content: str = Body(..., embed=True),
 ) -> dict[str, str]:
-    comment_data = SCommentAdd(rent_id=rent_id, user_id=user_id, content=content)
+    comment_data = SCommentAdd(        
+        id_user=user_id,
+        id_rent=rent_id,
+        content=content,)
     comment = await CommentService(db).add_comment(comment_data)
     return comment
 
