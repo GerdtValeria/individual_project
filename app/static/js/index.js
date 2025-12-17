@@ -34,20 +34,32 @@ function initNavigation() {
   // Кнопка "Сдать в аренду" - роутинг на get_list_html
   const listTab = document.querySelector('.top-tabs a[href="/list.html"]');
   if (listTab) {
-    listTab.addEventListener('click', function(e) {
-      e.preventDefault();
-      navigateToListPage();
-    });
-  }
+  listTab.addEventListener('click', function (e) {
+    e.preventDefault();
+    const user = getUserData();
+    if (!user) {
+      alert('Нужно войти в аккаунт');
+      navigateToRegistrationPage(); // /web/auth
+      return;
+    }
+    navigateToListPage();
+  });
+}
   
   // Кнопка "Избранное" - роутинг на get_favorites_html
   const favoritesTab = document.querySelector('.top-tabs a[href="/favorites.html"]');
   if (favoritesTab) {
-    favoritesTab.addEventListener('click', function(e) {
-      e.preventDefault();
-      navigateToFavoritesPage();
-    });
-  }
+  favoritesTab.addEventListener('click', function (e) {
+    e.preventDefault();
+    const user = getUserData();
+    if (!user) {
+      alert('Нужно войти в аккаунт');
+      navigateToRegistrationPage();
+      return;
+    }
+    navigateToFavoritesPage();
+  });
+}
 
   // Логотип - переход на главную
   const logoLink = document.querySelector('.logo-link');
@@ -70,9 +82,21 @@ function initNavigation() {
         } else if (href === '/rent.html') {
           navigateToRentPage();   // /web/rent
         } else if (href === '/list.html') {
-          navigateToListPage();   // /web/list
+            const user = getUserData();
+            if (!user) {
+                alert('Нужно войти в аккаунт');
+                navigateToRegistrationPage();
+                return;
+            }
+            navigateToListPage();
         } else if (href === '/favorites.html') {
-          navigateToFavoritesPage(); // /web/favorites
+            const user = getUserData();
+            if (!user) {
+                alert('Нужно войти в аккаунт');
+                navigateToRegistrationPage();
+                return;
+            }
+            navigateToFavoritesPage();
         } else if (href.startsWith('/signup')) {
           navigateToRegistrationPage(); // /web/auth
         } else if (href === '#team' || href === '#history' || href === '#mission') {
