@@ -25,8 +25,8 @@
   <header class="site-header">
     <div class="brand">
       <div class="logo" aria-hidden="false">
-        <a href="/web" class="logo-link" aria-label="Перейти на главную">
-          <img src="/static/img/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
+        <a href="/web/" class="logo-link" aria-label="Перейти на главную">
+          <img src="/static/img/logo.png" alt="Угол Комфорта логотип">
         </a>
       </div>
       <div>
@@ -248,7 +248,7 @@
     <div class="footer-inner">
       <div class="footer-col footer-contact">
         <div class="footer-brand">
-          <img src="/static/img/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
+          <img src="/static/img/logo.png" alt="Угол Комфорта логотип" class="footer-logo">
           <div class="company-name">Угол Комфорта</div>
         </div>
       </div>
@@ -256,10 +256,10 @@
       <div class="footer-col">
         <h4 class="footer-heading">Меню</h4>
         <ul>
-          <li><a href="/web/rent">Арендовать</a></li>
+          <li><a href="/web/rents">Арендовать</a></li>
           <li><a href="/web/list">Сдать в аренду</a></li>
           <li><a href="/web/favorites">Избранное</a></li>
-          <li><a href="/">Главная</a></li>
+          <li><a href="/web/">Главная</a></li>
           <li><a href="/web/auth">Зарегистрироваться</a></li>
         </ul>
       </div>
@@ -738,48 +738,7 @@
           listingsContainer.appendChild(cardClone);
         });
       }
-      
-      function renderDemoRentals() {
-        const demoRentals = [
-          {
-            id: 1,
-            title: "Уютная квартира в центре",
-            address: "Москва, Центр",
-            guests: 2,
-            price: 2500,
-            photos: ["/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg"],
-            pet_friendly: true,
-            has_wifi: true,
-            description: "Уютная квартира в самом центре города с видом на парк."
-          },
-          {
-            id: 2,
-            title: "Современная студия",
-            address: "Санкт-Петербург, Васильевский остров",
-            guests: 1,
-            price: 1800,
-            photos: ["/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg"],
-            has_parking: true,
-            has_wifi: true,
-            description: "Современная студия с новой мебелью и техникой."
-          },
-          {
-            id: 3,
-            title: "Просторная 3-комнатная квартира",
-            address: "Казань, Центр",
-            guests: 4,
-            price: 3500,
-            photos: ["/static/1686570026_staisha-top-p-dizain-otdelki-kvartiri-v-sovremennom-stil-26.jpg"],
-            pet_friendly: true,
-            has_parking: true,
-            has_wifi: true,
-            description: "Просторная квартира для большой семьи или компании друзей."
-          }
-        ];
-        
-        renderRentals(demoRentals);
-      }
-      
+
       // ====================
       // 7. ИЗБРАННОЕ
       // ====================

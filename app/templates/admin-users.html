@@ -1,287 +1,132 @@
-[file name]: admin-users.html
-[file content begin]
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Угол Комфорта — Пользователи</title>
-  
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&family=Lobster&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
-  
-  <!-- Основные стили -->
-  <link rel="stylesheet" href="/static/css/styles.css">
-  
-  <style>
-    .admin-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    
-    .page-title {
-      font-size: 32px;
-      color: #042018;
-      margin: 0 0 12px;
-      font-weight: 700;
-    }
-    
-    .page-subtitle {
-      color: #666;
-      font-size: 16px;
-      margin: 0 0 32px;
-    }
-    
-    .users-grid {
-      display: grid;
-      gap: 20px;
-    }
-    
-    .user-card {
-      background: white;
-      border-radius: 12px;
-      padding: 24px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
-    }
-    
-    .user-avatar {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-    
-    .user-info {
-      flex: 1;
-    }
-    
-    .user-name {
-      font-weight: 600;
-      color: #042018;
-      font-size: 18px;
-      margin: 0 0 4px;
-    }
-    
-    .user-email {
-      color: #666;
-      font-size: 14px;
-      margin: 0 0 4px;
-    }
-    
-    .user-role {
-      display: inline-block;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 500;
-      margin: 8px 0;
-    }
-    
-    .role-user {
-      background: #f0f9f7;
-      color: #044036;
-    }
-    
-    .role-admin {
-      background: #042018;
-      color: white;
-    }
-    
-    .role-moderator {
-      background: #ff9800;
-      color: white;
-    }
-    
-    .user-stats {
-      display: flex;
-      gap: 20px;
-      margin-top: 12px;
-      font-size: 14px;
-    }
-    
-    .stat-item {
-      text-align: center;
-    }
-    
-    .stat-value {
-      font-weight: 700;
-      color: #042018;
-    }
-    
-    .stat-label {
-      color: #666;
-      font-size: 12px;
-    }
-    
-    .user-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      min-width: 150px;
-    }
-    
-    .search-box {
-      margin-bottom: 24px;
-    }
-    
-    .search-input {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 16px;
-    }
-    
-    .stats-section {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      margin-bottom: 32px;
-    }
-    
-    .stat-card {
-      background: white;
-      border-radius: 12px;
-      padding: 24px;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
-    
-    .stat-value {
-      font-size: 32px;
-      color: #044036;
-      font-weight: 700;
-      margin: 0 0 8px;
-    }
-    
-    .stat-label {
-      color: #666;
-      font-size: 14px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление пользователями</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+        .header { background: #2c3e50; color: white; padding: 1rem; }
+        .nav { display: flex; gap: 1rem; }
+        .nav a { color: white; text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px; }
+        .nav a:hover { background: #34495e; }
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+        .user-card { background: white; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .user-header { display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; }
+        .role-badge { padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
+        .role-user { background: #e3f2fd; color: #1976d2; }
+        .role-admin { background: #ffebee; color: #d32f2f; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin: 1rem 0; }
+        .stat { text-align: center; padding: 1rem; background: #f8f9fa; border-radius: 6px; }
+        .change-role-btn { padding: 0.5rem 1rem; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .to-admin { background: #4caf50; color: white; }
+        .to-user { background: #ff9800; color: white; }
+        .footer { background: #2c3e50; color: white; padding: 2rem 1rem; margin-top: 3rem; }
+        .footer-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
+        .footer-col h4 { margin-bottom: 1rem; }
+        .footer-col a { color: #bdc3c7; text-decoration: none; display: block; margin-bottom: 0.5rem; }
+        .footer-col a:hover { color: white; }
+    </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="brand">
-      <div class="logo" aria-hidden="false">
-        <a href="/" class="logo-link" aria-label="Перейти на главную">
-          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
-        </a>
-      </div>
+    <header class="header">
+        <nav class="nav">
+            <a href="/web/rent.html">Арендовать</a>
+            <a href="/web/admin-users.html" class="active">Управление пользователями</a>
+            <a href="/web/admin-questions.html">Ответы на вопросы</a>
+            <a href="/web/profile.html">Профиль</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>Управление пользователями</h1>
+        <div id="users-container">
+            <p>Загрузка пользователей...</p>
+        </div>
     </div>
-    <form id="searchForm" class="search-form" aria-label="Поиск аренды">
-      <input id="q" name="q" type="search" placeholder="Поиск по городу, району или опции" />
-      <button type="submit" class="btn">
-        <i data-feather="search"></i> Найти
-      </button>
-    </form>
-    <nav class="top-tabs" aria-label="Главная навигация">
-      <button class="tab" data-tab="rent">Арендовать</button>
-      <button class="tab" data-tab="list">Сдать в аренду</button>
-      <button class="tab" data-tab="favorites">Избранное</button>
-      <button class="tab" data-tab="help">Помощь</button>
-      <button class="tab" data-tab="questions" style="display: none;">Вопросы</button>
-      <button class="tab" data-tab="users" style="display: none;">Пользователи</button>
-      <div class="auth">
-        <button class="tab primary" data-tab="profile">Профиль</button>
-      </div>
-    </nav>
-  </header>
 
-  <main class="container">
-    <div class="admin-container">
-      <div class="page-header">
-        <h1 class="page-title">Управление пользователями</h1>
-        <p class="page-subtitle">Просмотр и управление пользователями системы</p>
-      </div>
-
-      <div class="stats-section">
-        <div class="stat-card">
-          <div class="stat-value" id="totalUsers">0</div>
-          <div class="stat-label">Всего пользователей</div>
+    <footer class="footer">
+        <div class="footer-cols">
+            <div class="footer-col">
+                <h4>Меню</h4>
+                <a href="/web/rent.html">Арендовать</a>
+                <a href="/web/admin-users.html" class="active">Управление пользователями</a>
+                <a href="/web/admin-questions.html">Ответы на вопросы</a>
+                <a href="/web/profile.html">Профиль</a>
+            </div>
+            <div class="footer-col">
+                <h4>О проекте</h4>
+                <a href="http://127.0.0.1:8000/#team">Команда</a>
+                <a href="http://127.0.0.1:8000/#history">Наша история</a>
+                <a href="http://127.0.0.1:8000/#mission">Миссия проекта</a>
+            </div>
+            <div class="footer-col">
+                <h4>Мы в соцсетях</h4>
+                <a href="http://127.0.0.1:8000/web/rents#">ВК</a>
+                <a href="http://127.0.0.1:8000/web/rents#">Телеграмм</a>
+                <a href="http://127.0.0.1:8000/web/rents#">Одноклассники</a>
+            </div>
         </div>
-        <div class="stat-card">
-          <div class="stat-value" id="activeUsers">0</div>
-          <div class="stat-label">Активных сегодня</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="adminUsers">0</div>
-          <div class="stat-label">Администраторов</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="newUsers">0</div>
-          <div class="stat-label">Новых за месяц</div>
-        </div>
-      </div>
+    </footer>
 
-      <div class="search-box">
-        <input type="text" class="search-input" id="userSearch" placeholder="Поиск пользователей по имени или email..." onkeyup="searchUsers()">
-      </div>
+    <script>
+        // Загрузка пользователей
+        async function loadUsers() {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/admin/users');
+                const users = await response.json();
+                
+                const container = document.getElementById('users-container');
+                container.innerHTML = users.map(user => `
+                    <div class="user-card">
+                        <div class="user-header">
+                            <h3>${user.name} (${user.email})</h3>
+                            <span class="role-badge role-${user.role.name}">
+                                ${user.role.name === 'admin' ? 'Администратор' : 'Пользователь'}
+                            </span>
+                            <button class="change-role-btn ${user.role.name === 'admin' ? 'to-user' : 'to-admin'}"
+                                    onclick="changeRole(${user.id}, '${user.role.name === 'admin' ? 'user' : 'admin'}')">
+                                ${user.role.name === 'admin' ? 'Сделать пользователем' : 'Сделать админом'}
+                            </button>
+                        </div>
+                        <div class="stats">
+                            <div class="stat">
+                                <strong>${user.rents?.length || 0}</strong><br>Объявления
+                            </div>
+                            <div class="stat">
+                                <strong>${user.bookings?.length || 0}</strong><br>Бронирования
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                document.getElementById('users-container').innerHTML = 
+                    '<p>Ошибка загрузки пользователей</p>';
+            }
+        }
 
-      <div class="users-grid" id="usersList">
-        <!-- Пользователи будут загружены динамически -->
-        <div class="loading">Загрузка пользователей...</div>
-      </div>
-    </div>
-  </main>
+        // Смена роли
+        async function changeRole(userId, newRole) {
+            if (!confirm(`Сделать пользователя ${newRole}?`)) return;
+            
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/admin/users/${userId}/role`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ role: newRole })
+                });
+                
+                if (response.ok) {
+                    loadUsers(); // Перезагрузить список
+                }
+            } catch (error) {
+                alert('Ошибка смены роли');
+            }
+        }
 
-  <!-- Футер -->
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <div class="footer-col">
-        <div class="footer-brand">
-          <img src="/static/freepik_assistant_1762764092507.png" alt="Угол Комфорта" class="footer-logo">
-          <div>
-            <div class="company-name">Угол Комфорта</div>
-            <div style="color:#666;font-size:14px;">Платформа для аренды жилья</div>
-          </div>
-        </div>
-        <p class="footer-address">Москва, ул. Примерная, д. 1</p>
-      </div>
-      <div class="footer-col">
-        <h4 class="footer-heading">Меню</h4>
-        <ul>
-          <li><a href="/web/rent" data-nav="rent">Арендовать</a></li>
-          <li><a href="/web/list" data-nav="list">Сдать в аренду</a></li>
-          <li><a href="#" data-nav="help" id="footerHelpLink">Помощь</a></li>
-          <li><a href="/web/index" data-nav="home">Главная</a></li>
-          <li><a href="/web/auth" data-nav="signup">Зарегистрироваться</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4 class="footer-heading">Контакты</h4>
-        <ul>
-          <li>support@ugolkomforta.ru</li>
-          <li>+7 (999) 123-45-67</li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4 class="footer-heading">Мы в соцсетях</h4>
-        <ul>
-          <li><a href="#" style="color:#0077ff;">ВКонтакте</a></li>
-          <li><a href="#" style="color:#0088cc;">Телеграм</a></li>
-          <li><a href="#" style="color:#ff8800;">Одноклассники</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bar">
-      © 2024 Угол Комфорта. Все права защищены.
-    </div>
-  </footer>
-
-  <!-- Подключение библиотек и скриптов -->
-  <!-- Feather Icons -->
-  <script src="https://unpkg.com/feather-icons"></script>
-  
-  <script type="module" src="/static/js/api.js"></script>
-  <script type="module" src="/static/js/common.js"></script>
-  <script type="module" src="/static/js/admin-users.js"></script>
-  
-
+        // Загрузка при старте
+        loadUsers();
+    </script>
 </body>
 </html>
-[file content end]
