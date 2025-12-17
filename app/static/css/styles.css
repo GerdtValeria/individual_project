@@ -1540,7 +1540,7 @@ body{
 #helpBlock .overlay-dialog .help-close,
 #helpModal .modal-header button#closeHelp,
 #closeHelpBlock {
-  background-image: url('/cancel_17767265.png');
+  background-image: url('static/img/cancel_17767265.png');
   background-repeat: no-repeat;
   background-position: center;
   background-size: 22px 22px;
@@ -1819,4 +1819,54 @@ img {
     border: none;
     background: transparent;
     padding: 0;
+  }
+
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+@media (max-width: 880px) {
+  .site-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .site-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .search-form {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-header {
+    padding: 10px 12px;
+  }
+
+  .logo {
+    width: 56px;
+    height: 56px;
+  }
+
+  .logo img {
+    width: 48px;
+    height: 48px;
+  }
+
+  .brand h1 {
+    font-size: 16px;
+  }
+
+  .search-form {
+    max-width: 100%;
   }
