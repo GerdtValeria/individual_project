@@ -199,10 +199,14 @@ async function loadMyBookings() {
     const user = getUserFromStorage();
     if (!user?.id) return;
     
-    // В реальности: fetch(`/bookings/?id_user=${user.id}`)
-    // Пока заглушка
-    const bookings = [];
-    renderMyBookings(bookings);
+    const response = await fetch(`/bookings/?id_user=${user.id}`, {
+      credentials: 'include'
+    });
+    
+    if (response.ok) {
+      const bookings = await response.json();
+      renderMyBookings(bookings);
+    }
   } catch (error) {
     console.error('Ошибка загрузки бронирований:', error);
   }

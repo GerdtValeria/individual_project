@@ -1,6 +1,7 @@
 from typing import List, Optional
-from app.api.dependencies import DBDep, PaginationDep
-from fastapi import APIRouter, HTTPException, Query
+from app.api.dependencies import DBDep, PaginationDep, get_current_user_id
+from fastapi import APIRouter, Depends, HTTPException, Query
+from app.models.users import UserModel
 from app.schemas.rents import SRentAdd, SRentGet, SRentGetWithRels
 from app.services.rents import RentService
 from exceptions.rents import InvalidRentFilterException
@@ -53,11 +54,15 @@ async def get_rent(db: DBDep,id:int,):
     return rent
 
 
-
-@router.put("/{id}")
-async def edit_rent(id:int, rent_data: SRentAdd):
-    await RentService().edit_rent(id,rent_data)
-    return {"message": "Rent updated successfully"}
+@router.put("/{rent_id}")
+async def edit_rent(
+    rent_id: int,
+    rent_data: SRentAdd,
+    current_user: UserModel = Depends(get_current_user_id),
+    service: RentService = Depends()
+):
+    await service.edit_rent(rent_id, rent_data)
+    return {"message": "Объявление обновлено"}
 
 
 @router.delete("/{id}")
