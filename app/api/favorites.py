@@ -16,7 +16,11 @@ async def add_rent(rent_data: SFavoriteRentAdd, db: DBDep,) -> dict[str, str]:
     await FavoritesService(db).add_favorite_rent(rent_data)
     return {"message": "Favorite rent updated successfully"}
 
-@router.delete("/{id}")
-async def delete_rent(id:int, db: DBDep,) -> dict[str, str]:
-     await FavoritesService(db).delete_favorite_rent(id=id)  
-     return {"message": "Fvorite rent deleted successfully"} 
+@router.delete("/{rent_id}")
+async def delete_rent(
+    rent_id: int,
+    db: DBDep,
+    user_id: int = Depends(get_current_user_id),
+) -> dict[str, str]:
+    await FavoritesService(db).delete_rent(user_id=user_id, rent_id=rent_id)
+    return {"message": "Favorite rent deleted successfully"}
