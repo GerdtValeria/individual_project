@@ -293,7 +293,7 @@ function setupLogout() {
       console.error('Ошибка выхода:', error);
       // Принудительно очищаем и перенаправляем
       localStorage.removeItem('ugol_user');
-      window.location.href = '/web/index';
+      window.location.href = '/web/';
     }
   });
 }
