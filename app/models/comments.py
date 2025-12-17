@@ -16,3 +16,7 @@ class CommentsModel(Base):
     
     rent: Mapped["RentsModel"] = relationship(back_populates="comments")
     user: Mapped["UserModel"] = relationship(back_populates="comments")
+    
+    @property
+    def username(self) -> str:
+        return self.user.username if self.user else ""

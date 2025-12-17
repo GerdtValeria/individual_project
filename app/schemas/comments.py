@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 class SComment(BaseModel):
     id:int
     id_user: int 
+    username: str 
     id_rent: int
     content: str = Field(...,min_length=10, max_length=1000)
 
