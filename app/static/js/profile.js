@@ -383,8 +383,13 @@ function showEditModal(rent) {
         </div>
       </form>
     </div>
-  `;
+  `;}
   
+function closeEditModal() {
+  const modal = document.getElementById('editRentModal');
+  if (modal) modal.remove();
+}
+
   document.body.appendChild(modal);
   
   // Обработчик сохранения

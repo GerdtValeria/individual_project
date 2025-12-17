@@ -54,12 +54,12 @@ async def get_rent(db: DBDep,id:int,):
     return rent
 
 
-@router.put("/{rent_id}")
+@router.put("/{rent_id}", response_model=dict)
 async def edit_rent(
     rent_id: int,
     rent_data: SRentAdd,
     current_user: UserModel = Depends(get_current_user_id),
-    service: RentService = Depends()
+    service: RentService = Depends(),
 ):
     await service.edit_rent(rent_id, rent_data)
     return {"message": "Объявление обновлено"}
