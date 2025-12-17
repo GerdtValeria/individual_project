@@ -49,7 +49,7 @@ class RentService(BaseService):
 
     async def get_all_rents(self) -> list[SRentGet]:
         rents = await self.db.rents.get_all()
-        return rents
+        return [SRentGet.model_validate(r) for r in rents]
     
     async def add_rent(self, rent_data: SRentAdd) -> SRentGet:
         rent = await self.db.rents.add_rent(rent_data)

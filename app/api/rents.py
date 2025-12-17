@@ -9,7 +9,7 @@ from exceptions.rents import InvalidRentFilterException
 router = APIRouter(prefix="/rents",tags=["Rent"])
 
 
-@router.get("/")
+@router.get("/", response_model=list[SRentGetWithRels])
 async def get_rents(
     db: DBDep,
     q: Optional[str] = Query(None, description="Поисковый запрос"),
