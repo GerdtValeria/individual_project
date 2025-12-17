@@ -351,7 +351,10 @@ function initCategoryCarousel() {
 
   function renderRentCard(rent) {
   const isFavorite = currentFavorites.has(rent.id);
-  const mainPhoto = (rent.photos && rent.photos[0]) || rent.img || '/static/rents/';
+  const mainPhoto =
+    (rent.images && rent.images.image_url) ||
+    rent.img ||
+    `/static/rents/${rent.id}.jpg`;
   
   return `
     <article class="card" data-id="${rent.id}">
