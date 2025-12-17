@@ -1,5 +1,5 @@
 from typing import Optional
-from app.api.dependencies import DBDep, PaginationDep, get_current_user_id
+from app.api.dependencies import DBDep, PaginationDep, UserIdDep, get_current_user_id
 from fastapi import APIRouter, Depends, HTTPException, Query
 from app.models.users import UserModel
 from app.schemas.rents import SRentAdd, SRentGet, SRentGetWithRels
@@ -55,12 +55,12 @@ async def get_rent(db: DBDep,id:int,):
 
 @router.put("/{id}")
 async def edit_rent(
+    db: DBDep,
     rent_id: int,
     rent_data: SRentAdd,
-    current_user_id: int = Depends(get_current_user_id),
-    service: RentService = Depends(),
+    current_user_id: int = UserIdDep,
 ):
-    await service.edit_rent(rent_id, rent_data)
+    await RentService(db).edit_rent(rent_id, rent_data)
     return {"message": "Объявление обновлено"}
 
 
