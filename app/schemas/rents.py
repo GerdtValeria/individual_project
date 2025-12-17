@@ -36,11 +36,12 @@ class SRentGet(SRentAdd):
 
 class SRentGetWithRels(SRentAdd):
     id: int
-    id_image: Optional[int] = None  # Поле из модели
+    id_image: Optional[int] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
-    model_config = ConfigDict(from_attributes=True)
 
     category: SCategoriesGet | None
     images: list[SImagesGet] | None
     user: SUserGet | None
+
+    model_config = ConfigDict(from_attributes=True)
