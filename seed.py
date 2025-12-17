@@ -298,7 +298,7 @@ class DataSeeder:
                     price=random.randint(1000, 10000),
                     id_category=random.randint(1, 10),
                     id_user=random.randint(1, 49),
-                    id_images=image_id,  # Привязываем изображение
+                    id_image=image_id,  # Привязываем изображение
                     active=random.random() > 0.1
                 )
                 session.add(rent)
