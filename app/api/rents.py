@@ -43,10 +43,9 @@ async def get_rents(
 
     return rents
 
-@router.post("/",response_model=SRentGet)
-async def add_rent(rent_data: SRentAdd, db: DBDep,) -> dict[str, str]:
-    rent = await RentService(db).add_rent(rent_data)
-    return rent
+@router.post("/", response_model=SRentGet)
+async def add_rent(rent_data: SRentAdd, db: DBDep):
+    return await RentService(db).add_rent(rent_data)
 
 @router.get("/{id}", response_model=SRentGet)
 async def get_rent(db: DBDep,id:int,):
