@@ -7,10 +7,18 @@ let allRentListings = [];
 let categoriesCache = {};
 let isLoading = false;
 
-// ==================== Инициализация ====================
-console.log('Rent handler initialized');
-initPage();
+// ==================== Утилиты ====================
+function getUserData() {
+  try {
+    const userData = localStorage.getItem('ugol_user');
+    return userData ? JSON.parse(userData) : null;
+  } catch (error) {
+    console.error('Ошибка при чтении данных пользователя:', error);
+    return null;
+  }
+} 
 
+// ==================== Инициализация ====================
 async function initPage() {
   await checkAuth();
   await loadFavorites();
@@ -20,6 +28,10 @@ async function initPage() {
   setupEventHandlers();
   initCategoryCarousel();      // рисуем после загрузки категорий
 }
+
+console.log('Rent handler initialized');
+initPage();
+
 
 // ==================== Загрузка категорий ====================
 async function loadCategories() {
@@ -246,46 +258,7 @@ function initCategoryCarousel() {
     }
   }
 
-  async function toggleFavorite(button) {
-    const card = button.closest('.card');
-    const rentId = parseInt(card.dataset.id);
-  
-    const user = getUserData(); // твоя функция из index.js
-  if (!user?.id) {
-    alert('Нужно войти в аккаунт');
-    window.location.href = '/web/auth';
-    return;
-  }
 
-  const isFavorite = button.getAttribute('aria-pressed') === 'true';
-
-  try {
-    if (isFavorite) {
-      // DELETE /favorites/{rent_id}
-      const res = await fetch(`/favorites/${rentId}`, { method: 'DELETE', credentials: 'include' });
-      if (res.ok) {
-        button.setAttribute('aria-pressed', 'false');
-        button.classList.remove('active');
-        currentFavorites.delete(rentId); // обновляем локальный Set
-      }
-    } else {
-      // POST /favorites/ с add_rent
-      const res = await fetch('/favorites/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_rent: rentId }),
-        credentials: 'include'
-      });
-      if (res.ok) {
-        button.setAttribute('aria-pressed', 'true');
-        button.classList.add('active');
-        currentFavorites.add(rentId);
-      }
-    }
-  } catch (error) {
-    console.error('Ошибка избранного:', error);
-  }
-}
   // ==================== Загрузка объявлений ====================
   async function loadAllRents() {
     if (isLoading) return;
@@ -342,21 +315,39 @@ function initCategoryCarousel() {
   container.innerHTML = rents.map(rent => renderRentCard(rent)).join('');
 
   // Универсальные обработчики для всех карточек
-  container.querySelectorAll('.btn.small').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const rentId = parseInt(btn.id.replace('details_', ''));
-      navigateToRentDetail(rentId);
-    });
-  });
+  container.addEventListener('click', (e) => {
+  if (e.target.closest('.fav')) {
+    e.stopPropagation();
+    const favBtn = e.target.closest('.fav');
+    const card = favBtn.closest('.card');
+    const rentId = parseInt(card.dataset.id);
+    
+    // Быстрый toggleFavorite прямо тут
+    const isFavorite = favBtn.getAttribute('aria-pressed') === 'true';
+    const user = getUserData();
+    
+    if (!user?.id) {
+      alert('Нужно войти в аккаунт');
+      window.location.href = '/web/auth';
+      return;
+    }
+    
+    // API запрос
+    fetch(isFavorite ? `/favorites/${rentId}` : '/favorites/', {
+      method: isFavorite ? 'DELETE' : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: !isFavorite ? JSON.stringify({ id_rent: rentId }) : undefined,
+      credentials: 'include'
+    }).then(res => {
+      if (res.ok) {
+        favBtn.setAttribute('aria-pressed', !isFavorite);
+        favBtn.classList.toggle('active');
+        currentFavorites[isFavorite ? 'delete' : 'add'](rentId);
+      }
+    }).catch(err => console.error('Избранное:', err));
+  }
+});
 
-  container.querySelectorAll('.fav').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const card = btn.closest('.card');
-      toggleFavorite(btn); // используем data-id из карточки
-    });
-  });
-}
 
   function renderRentCard(rent) {
   const isFavorite = currentFavorites.has(rent.id);
@@ -378,6 +369,23 @@ function initCategoryCarousel() {
       </div>
     </article>
   `;
+}
+
+  container.innerHTML = rents.map(rent => renderRentCard(rent)).join('');
+
+  // 1. Сердечки (уже есть)
+  container.addEventListener('click', (e) => {
+    if (e.target.closest('.fav')) { /* ... твой код ... */ }
+  });
+
+  // 2. Кнопки "Подробнее" ← ДОБАВЬ ЭТО!
+  container.querySelectorAll('.btn.small').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const rentId = parseInt(btn.id.replace('details_', ''));
+      navigateToRentDetail(rentId);
+    });
+  });
 }
 
   function navigateToRentDetail(rentId) {
