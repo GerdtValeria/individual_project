@@ -11,5 +11,4 @@ class SImagesAdd(BaseModel):
     
 class SImagesGet(SImagesAdd):
     id: int
-    id_rent: int
     model_config = ConfigDict(from_attributes=True)
