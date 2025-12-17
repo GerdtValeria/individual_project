@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Depends, Request
 from app.services.rents import RentService
-from app.api.dependencies import DBDep
+from app.api.dependencies import DBDep, get_current_user_id
 
 from fastapi.templating import Jinja2Templates
 
@@ -38,14 +38,26 @@ async def get_rent_html(id: int, request: Request, db: DBDep):
     )
 
 
-@router.get("/favorites")
-async def get_favorites_html(request: Request):
-    return templates.TemplateResponse(name="favorites.html", context={"request": request})
-
-
 @router.get("/list")
-async def get_list_html(request: Request):
-    return templates.TemplateResponse(name="list.html", context={"request": request})
+async def get_list_html(
+    request: Request,
+    user_id: int = Depends(get_current_user_id),
+):
+    return templates.TemplateResponse(
+        name="list.html",
+        context={"request": request, "user_id": user_id},
+    )
+
+
+@router.get("/favorites")
+async def get_favorites_html(
+    request: Request,
+    user_id: int = Depends(get_current_user_id),
+):
+    return templates.TemplateResponse(
+        name="favorites.html",
+        context={"request": request, "user_id": user_id},
+    )
 
 
 @router.get("/profile")
