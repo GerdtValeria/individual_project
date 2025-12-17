@@ -345,7 +345,7 @@ function initCategoryCarousel() {
     const isFavorite = currentFavorites.has(rent.id);
     
     const mainPhoto =
-      (rent.photos && rent.photos[0]) || rent.img || '/static/img/';
+      (rent.photos && rent.photos[0]) || rent.img || '/static/rents/';
 
     return `
       <article class="card">
