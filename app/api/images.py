@@ -22,7 +22,7 @@ class ImageOut(BaseModel):
     id_rent: int
     path: str
 
-@router.post("/", response_model=dict, status_code=201)
+@router.post("/")
 async def add_image(
     rent_id: int = Form(...),
     image: UploadFile = File(...),
@@ -69,7 +69,7 @@ async def add_image(
             file_path.unlink()
         raise HTTPException(status_code=500, detail=f"Ошибка сохранения: {e}")
 
-@router.get("/{id}", response_model=dict)
+@router.get("/{id}", response_model=None)
 async def get_image(id: int, db: Session = Depends(get_db)):
     """Получение информации об изображении"""
     image = await ImageService(db).get_image(id=id)
@@ -79,7 +79,7 @@ async def get_image(id: int, db: Session = Depends(get_db)):
         "id": image.id,
         "path": image.image_url
     }
-@router.get("/", response_model=dict)
+@router.get("/", response_model=None)
 async def get_rent_image(rent_id: int, db: Session = Depends(get_db)):
     """Получение информации об изображении"""
     image = await ImageService(db).get_image(rent_id=rent_id)

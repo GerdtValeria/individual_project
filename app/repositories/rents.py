@@ -1,5 +1,5 @@
 from sqlalchemy import or_, select, and_
-from typing import List, Optional
+from typing import Optional
 from app.models.rents import RentsModel
 from app.repositories.base import BaseRepository
 from app.schemas.rents import SRentAdd, SRentGet
@@ -22,7 +22,7 @@ class RentsRepository(BaseRepository):
         active: Optional[bool] = None,  # Добавлено
         limit: int = 100,
         offset: int = 0,
-    ) -> List[RentsModel]:
+    ) -> list[RentsModel]:
         """
         Получение отфильтрованного списка аренд с отношениями
         """

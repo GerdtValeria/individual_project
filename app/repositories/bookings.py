@@ -3,7 +3,7 @@ from sqlite3 import IntegrityError
 from asyncpg import UniqueViolationError
 from pydantic import BaseModel
 from sqlalchemy import insert, select, and_
-from typing import List, Optional
+from typing import Optional
 from datetime import date
 from app.schemas.bookings import SBookingAdd, SBookingGet
 from exceptions.base import ObjectAlreadyExistsException
@@ -14,7 +14,7 @@ class BookingsRepository(BaseRepository):
     model = BookingsModel
     schema = SBookingGet
 
-    async def get_all(self) -> List[BookingsModel]:
+    async def get_all(self) -> list[BookingsModel]:
         return await super().get_all()
     
     async def get_user_bookings(self, user_id: int):

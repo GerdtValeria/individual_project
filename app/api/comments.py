@@ -16,7 +16,7 @@ async def add_comment(
     db: DBDep,
     user_id: UserIdDep,
     content: str = Body(..., embed=True),
-) -> dict[str, str]:
+) -> SComment:
     comment_data = SCommentAdd(        
         id_user=user_id,
         id_rent=rent_id,

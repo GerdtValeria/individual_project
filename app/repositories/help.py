@@ -1,5 +1,5 @@
 from sqlalchemy import select, desc
-from typing import List, Optional
+from typing import Optional
 from app.schemas.help import SHelpAdd, SHelp
 from app.models.help import HelpModel
 from app.repositories.base import BaseRepository
@@ -9,7 +9,7 @@ class HelpRepository(BaseRepository):
     model = HelpModel
     schema = SHelp
 
-    async def get_all(self) -> List[SHelp]:
+    async def get_all(self) -> list[SHelp]:
         return await super().get_all()
 
     async def get_user_help(self, user_id: int):

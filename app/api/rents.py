@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 from app.api.dependencies import DBDep, PaginationDep, get_current_user_id
 from fastapi import APIRouter, Depends, HTTPException, Query
 from app.models.users import UserModel
@@ -9,7 +9,7 @@ from exceptions.rents import InvalidRentFilterException
 router = APIRouter(prefix="/rents",tags=["Rent"])
 
 
-@router.get("/", response_model=List[SRentGetWithRels])
+@router.get("/", response_model=list[SRentGetWithRels])
 async def get_rents(
     db: DBDep,
     q: Optional[str] = Query(None, description="Поисковый запрос"),
@@ -22,7 +22,7 @@ async def get_rents(
     active: Optional[bool] = Query(True, description="Только активные"),
     page: int = Query(1, ge=1, description="Номер страницы"),
     size: int = Query(20, ge=1, le=100, description="Количество на странице")
-) -> List[SRentGetWithRels]:
+) -> list[SRentGetWithRels]:
     """
     Получить все объявления с возможностью фильтрации.
     """
@@ -53,7 +53,7 @@ async def get_rent(db: DBDep,id:int,):
     return rent
 
 
-@router.put("/{rent_id}", response_model=dict)
+@router.put("/{rent_id}", response_model=None)
 async def edit_rent(
     rent_id: int,
     rent_data: SRentAdd,

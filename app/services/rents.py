@@ -1,5 +1,5 @@
 from datetime import date
-from typing import List, Optional
+from typing import Optional
 from app.schemas.rents import SRentAdd, SRentGet, SRentGetWithRels
 from app.services.base import BaseService
 from app.repositories.rents import RentsRepository
@@ -18,7 +18,7 @@ class RentService(BaseService):
         id_category: Optional[int] = None,
         id_user: Optional[int] = None,
         active: Optional[bool] = None,
-    ) -> List[SRentGetWithRels]:
+    ) -> list[SRentGetWithRels]:
         """
         Получить отфильтрованные объявления об аренде.
         """
