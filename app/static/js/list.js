@@ -123,7 +123,7 @@ async function handleAddRent(e) {
     form.reset();
     closePostModal();
     setTimeout(() => {
-      window.location.href = '/web/rent';
+      window.location.href = '/web/rents';
     }, 800);
   } catch (err) {
     console.error('Не удалось создать объявление:', err);
