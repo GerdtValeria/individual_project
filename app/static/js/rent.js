@@ -251,41 +251,41 @@ function initCategoryCarousel() {
     const rentId = parseInt(card.dataset.id);
   
     const user = getUserData(); // твоя функция из index.js
-    if (!user?.id) {
-      alert('Нужно войти в аккаунт');
-      window.location.href = '/web/auth';
-      return;
-    }
-
-    const isFavorite = button.getAttribute('aria-pressed') === 'true';
-
-    try {
-      f (isFavorite) {
-      // DELETE /favorites/{rent_id}
-        const res = await fetch(`/favorites/${rentId}`, { method: 'DELETE', credentials: 'include' });
-        if (res.ok) {
-          button.setAttribute('aria-pressed', 'false');
-          button.classList.remove('active');
-          currentFavorites.delete(rentId); // обновляем локальный Set
-        }
-      } else {
-      // POST /favorites/ с add_rent
-        const res = await fetch('/favorites/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id_rent: rentId }),
-          credentials: 'include'
-        });
-        if (res.ok) {
-          button.setAttribute('aria-pressed', 'true');
-          button.classList.add('active');
-          currentFavorites.add(rentId);
-        }
-      }
-    } catch (error) {
-      console.error('Ошибка избранного:', error);
-    }
+  if (!user?.id) {
+    alert('Нужно войти в аккаунт');
+    window.location.href = '/web/auth';
+    return;
   }
+
+  const isFavorite = button.getAttribute('aria-pressed') === 'true';
+
+  try {
+    if (isFavorite) {
+      // DELETE /favorites/{rent_id}
+      const res = await fetch(`/favorites/${rentId}`, { method: 'DELETE', credentials: 'include' });
+      if (res.ok) {
+        button.setAttribute('aria-pressed', 'false');
+        button.classList.remove('active');
+        currentFavorites.delete(rentId); // обновляем локальный Set
+      }
+    } else {
+      // POST /favorites/ с add_rent
+      const res = await fetch('/favorites/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id_rent: rentId }),
+        credentials: 'include'
+      });
+      if (res.ok) {
+        button.setAttribute('aria-pressed', 'true');
+        button.classList.add('active');
+        currentFavorites.add(rentId);
+      }
+    }
+  } catch (error) {
+    console.error('Ошибка избранного:', error);
+  }
+}
   // ==================== Загрузка объявлений ====================
   async function loadAllRents() {
     if (isLoading) return;
