@@ -195,20 +195,23 @@ function renderMyRents(rents) {
  * Загрузка бронирований пользователя (заглушка)
  */
 async function loadMyBookings() {
+  const user = getUserFromStorage();
+  if (!user?.id) return;
+  
   try {
-    const user = getUserFromStorage();
-    if (!user?.id) return;
-    
-    const response = await fetch(`/bookings/?id_user=${user.id}`, {
-      credentials: 'include'
-    });
-    
-    if (response.ok) {
-      const bookings = await response.json();
-      renderMyBookings(bookings);
+    const res = await fetch(`/bookings/?id_user=${user.id}`, {credentials: 'include'});
+    if (res.ok) {
+      const bookings = await res.json();
+      renderMyBookings(bookings.map(b => ({
+        id: b.id,
+        rent_title: b.rent?.title || 'Жилье',
+        from: b.date_start,
+        to: b.date_end,
+        guests: b.guests
+      })));
     }
-  } catch (error) {
-    console.error('Ошибка загрузки бронирований:', error);
+  } catch(e) {
+    console.error(e);
   }
 }
 
@@ -386,36 +389,36 @@ function showEditModal(rent) {
   
   // Обработчик сохранения
   document.getElementById('editRentForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData);
-    
-    try {
-      await fetch(`/rents/${rent.id}`, {
-        method: 'PUT',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-      closeEditModal();
-      await loadMyRents(); // перезагрузка
-    } catch (error) {
-      alert('Ошибка сохранения');
-    }
-  });
-}
+  e.preventDefault();
+  const formData = new FormData(e.target);
 
-function closeEditModal() {
-  const modal = document.getElementById('editRentModal');
-  if (modal) modal.remove();
-}
+  const payload = {
+    ...currentEditRent,                     // пришло с /rents/{id}
+    title: formData.get('title'),
+    price: Number(formData.get('price')),
+    address: formData.get('city') || currentEditRent.address,
+  };
 
-async function deleteRent(rentId) {
-  if (!confirm('Удалить объявление?')) return;
   try {
-    await fetch(`/rents/${rentId}`, { method: 'DELETE', credentials: 'include' });
-    await loadMyRents(); // перезагрузка списка
+    const res = await fetch(`/rents/${currentEditRent.id}`, {
+      method: 'PUT',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      console.error('Edit error status', res.status);
+      const text = await res.text();
+      console.error(text);
+      alert('Ошибка сохранения');
+      return;
+    }
+
+    closeEditModal();
+    await loadMyRents();
   } catch (error) {
-    alert('Ошибка удаления');
+    console.error(error);
+    alert('Ошибка сохранения');
   }
-}
+});
