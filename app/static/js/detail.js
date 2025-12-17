@@ -137,6 +137,10 @@ function renderRentDetails(rentData) {
     <p style="margin:0 0 12px;font-size:14px;color:var(--muted)">${categoryName}</p>
     <div style="font-size: 32px; font-weight: 700; color: #044036; margin-bottom: 8px;">
       ${rentData.price} ₽ / ночь
+      <div style="display:flex;gap:12px;align-items:center;margin:16px 0">
+        <button id="rentButton" class="btn primary" style="flex:1">Арендовать</button>
+        <button id="favoriteMainBtn" class="fav small-fav" style="flex:0 0 44px" aria-label="В избранное"></button>
+      </div>
     </div>
     <p style="margin:0;font-size:16px;line-height:1.5">${rentData.description || 'Описание отсутствует'}</p>
   `;
