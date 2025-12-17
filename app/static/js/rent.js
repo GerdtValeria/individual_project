@@ -247,54 +247,45 @@ function initCategoryCarousel() {
   }
 
   async function toggleFavorite(button) {
-  const card = button.closest('.card');
-  if (!card || !card.dataset.id) return;
+    const card = button.closest('.card');
+    const rentId = parseInt(card.dataset.id);
   
-  const rentId = parseInt(card.dataset.id);
-  const user = getUserData(); // из index.js / common.js
-  if (!user?.id) {
-    alert('Нужно войти в аккаунт');
-    window.location.href = '/web/auth';
-    return;
-  }
-  
-  const isFavorite = button.getAttribute('aria-pressed') === 'true';
-  
-  try {
-    if (isFavorite) {
-      // Удаляем из избранного DELETE /favorites/{rent_id}
-      const response = await fetch(`/favorites/${rentId}`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include'
-      });
-      
-      if (response.ok) {
-        button.setAttribute('aria-pressed', 'false');
-        button.classList.remove('active');
-        showNotification('Удалено из избранного', 'info');
-      }
-    } else {
-      // Добавляем в избранное POST /favorites/
-      const response = await fetch('/favorites/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_rent: rentId }),
-        credentials: 'include'
-      });
-      
-      if (response.ok) {
-        button.setAttribute('aria-pressed', 'true');
-        button.classList.add('active');
-        showNotification('Добавлено в избранное', 'success');
-      }
+    const user = getUserData(); // твоя функция из index.js
+    if (!user?.id) {
+      alert('Нужно войти в аккаунт');
+      window.location.href = '/web/auth';
+      return;
     }
-  } catch (error) {
-    console.error('Ошибка избранного:', error);
-    showNotification('Ошибка при работе с избранным', 'error');
-  }
-}
 
+    const isFavorite = button.getAttribute('aria-pressed') === 'true';
+
+    try {
+      f (isFavorite) {
+      // DELETE /favorites/{rent_id}
+        const res = await fetch(`/favorites/${rentId}`, { method: 'DELETE', credentials: 'include' });
+        if (res.ok) {
+          button.setAttribute('aria-pressed', 'false');
+          button.classList.remove('active');
+          currentFavorites.delete(rentId); // обновляем локальный Set
+        }
+      } else {
+      // POST /favorites/ с add_rent
+        const res = await fetch('/favorites/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id_rent: rentId }),
+          credentials: 'include'
+        });
+        if (res.ok) {
+          button.setAttribute('aria-pressed', 'true');
+          button.classList.add('active');
+          currentFavorites.add(rentId);
+        }
+      }
+    } catch (error) {
+      console.error('Ошибка избранного:', error);
+    }
+  }
   // ==================== Загрузка объявлений ====================
   async function loadAllRents() {
     if (isLoading) return;
@@ -340,55 +331,54 @@ function initCategoryCarousel() {
 
   // ==================== Рендер карточек ====================
   function renderRentListings(rents) {
-    const container = document.getElementById('rentListings');
-    if (!container) return;
+  const container = document.getElementById('rentListings');
+  if (!container) return;
 
-    if (rents.length === 0) {
-      container.innerHTML =
-        '<div class="empty-state">Объявлений не найдено</div>';
-      return;
-    }
-
-    container.innerHTML = rents.map(rent => renderRentCard(rent)).join('');
-
-    rents.forEach(rent => {
-      const detailsBtn = document.getElementById(`details_${rent.id}`);
-      if (detailsBtn) {
-        detailsBtn.addEventListener('click', () =>
-          navigateToRentDetail(rent.id)
-        );
-      }
-      const favoriteBtn = document.getElementById(`favorite_${rent.id}`);
-      if (favoriteBtn) {
-        favoriteBtn.addEventListener('click', () => toggleFavorite(rent.id));
-      }
-    });
+  if (rents.length === 0) {
+    container.innerHTML = '<div class="empty-state">Объявлений не найдено</div>';
+    return;
   }
+
+  container.innerHTML = rents.map(rent => renderRentCard(rent)).join('');
+
+  // Универсальные обработчики для всех карточек
+  container.querySelectorAll('.btn.small').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const rentId = parseInt(btn.id.replace('details_', ''));
+      navigateToRentDetail(rentId);
+    });
+  });
+
+  container.querySelectorAll('.fav').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const card = btn.closest('.card');
+      toggleFavorite(btn); // используем data-id из карточки
+    });
+  });
+}
 
   function renderRentCard(rent) {
-    // console.log(rent)
-    const isFavorite = currentFavorites.has(rent.id);
-    
-    const mainPhoto =
-      (rent.photos && rent.photos[0]) || rent.img || '/static/rents/';
-
-    return `
-      <article class="card">
-        <img src="${mainPhoto}" alt="${rent.title}" class="thumb">
-        <div class="card-body">
-          <h3>${rent.title || 'Без названия'}</h3>
-          <p class="desc-snippet">${rent.category.name} · ${rent.rooms || '1к'}</p>
-          <div class="card-footer">
-            <div class="price">₽${rent.price || 0}/ночь</div>
-            <div class="actions">
-              <button id="details_${rent.id}" class="btn small">Подробнее</button>
-              <button id="favorite_${rent.id}" class="fav small-fav ${isFavorite ? 'active' : ''}"></button>
-            </div>
+  const isFavorite = currentFavorites.has(rent.id);
+  const mainPhoto = (rent.photos && rent.photos[0]) || rent.img || '/static/rents/';
+  
+  return `
+    <article class="card" data-id="${rent.id}">
+      <img src="${mainPhoto}" alt="${rent.title}" class="thumb">
+      <div class="card-body">
+        <h3>${rent.title || 'Без названия'}</h3>
+        <p class="desc-snippet">${rent.category.name} · ${rent.rooms || '1к'}</p>
+        <div class="card-footer">
+          <div class="price">₽${rent.price || 0}/ночь</div>
+          <div class="actions">
+            <button id="details_${rent.id}" class="btn small">Подробнее</button>
+            <button id="favorite_${rent.id}" class="fav small-fav ${isFavorite ? 'active' : ''}" aria-pressed="${isFavorite}"></button>
           </div>
         </div>
-      </article>
-`;
-  }
+      </div>
+    </article>
+  `;
+}
 
   function navigateToRentDetail(rentId) {
     window.location.href = `/web/rents/${rentId}`; 
