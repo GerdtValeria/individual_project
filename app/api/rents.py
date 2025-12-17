@@ -57,7 +57,7 @@ async def get_rent(db: DBDep,id:int,):
 async def edit_rent(
     rent_id: int,
     rent_data: SRentAdd,
-    current_user: UserModel = Depends(get_current_user_id),
+    current_user = Depends(get_current_user_id),
     service: RentService = Depends(),
 ):
     await service.edit_rent(rent_id, rent_data)
