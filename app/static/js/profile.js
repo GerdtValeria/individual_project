@@ -11,13 +11,8 @@ document.addEventListener('DOMContentLoaded', async () => {
  * Инициализация профиля (данные пользователя + объявления + бронирования)
  */
 async function initializeProfile() {
-  // 1. Загружаем данные текущего пользователя через /auth/me
   await loadCurrentUser();
-  
-  // 2. Загружаем объявления пользователя
   await loadMyRents();
-  
-  // 3. Загружаем бронирования пользователя
   await loadMyBookings();
 }
 
@@ -228,7 +223,7 @@ function renderMyBookings(bookings) {
   
   container.innerHTML = '';
   
-  if (!bookings || !Array.isArray(bookings) || bookings.length === 0) {
+  if (!bookings?.length) {
     if (emptyMsg) emptyMsg.style.display = 'block';
     return;
   }
@@ -238,45 +233,55 @@ function renderMyBookings(bookings) {
   bookings.forEach(booking => {
     const card = document.createElement('article');
     card.className = 'card';
+    card.dataset.bookingId = booking.id;
+    
     card.innerHTML = `
-      <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:16px">
-        <div>
-          <h3 style="font-size:16px;margin:0 0 8px">${escapeHtml(booking.rent_title || 'Жилье')}</h3>
-          <div style="color:var(--muted);margin-bottom:4px">
-            ${booking.from || ''} — ${booking.to || ''}
-          </div>
-          <div>Гостей: ${booking.guests || 1}</div>
+      <div class="card-body">
+        <h4>${booking.rent?.title || 'Объявление удалено'}</h4>
+        <p>Гостей: ${booking.guests} | ${booking.date_start} - ${booking.date_end}</p>
+        <p>Стоимость: ${booking.total_cost || booking.cost} ₽</p>
+        <div style="margin-top: 16px;">
+          <button class="btn cancel-booking-btn" data-booking-id="${booking.id}">
+            Отменить бронирование
+          </button>
         </div>
-        <button class="btn cancel-booking" data-id="${booking.id || ''}" 
-                style="background:var(--danger);color:white;padding:8px 16px">
-          Отменить
-        </button>
       </div>
     `;
-    container.appendChild(card);
-  });
-  
-  // Обработчики отмены бронирования
-  document.querySelectorAll('.cancel-booking').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const bookingId = this.dataset.id;
-      if (bookingId && confirm('Отменить бронирование?')) {
-        cancelBooking(bookingId);
+    
+    // Обработчик отмены
+    const cancelBtn = card.querySelector('.cancel-booking-btn');
+    cancelBtn.onclick = async function(e) {
+      e.preventDefault();
+      if (confirm('Отменить бронирование?')) {
+        await cancelBooking(booking.id);
       }
-    });
+    };
+    
+    container.appendChild(card);
   });
 }
 
-/**
- * Отмена бронирования (заглушка)
- */
+// Функция отмены бронирования
 async function cancelBooking(bookingId) {
   try {
-    // В реальности: DELETE /bookings/${bookingId}
-    alert('Бронирование отменено (демо)');
-    await loadMyBookings(); // Перезагрузка списка
+    const token = localStorage.getItem('token');
+    const response = await fetch(`/api/favorites/${bookingId}`, {  // роут из favorites.py
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    if (response.ok) {
+      alert('Бронирование отменено!');
+      await loadMyBookings();  // перезагрузить список
+    } else {
+      alert('Ошибка отмены');
+    }
   } catch (error) {
-    console.error('Ошибка отмены бронирования:', error);
+    console.error('Ошибка:', error);
+    alert('Ошибка сети');
   }
 }
 
