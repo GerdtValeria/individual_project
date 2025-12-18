@@ -13,7 +13,7 @@ async def get_rents(db: DBDep, user_id: int = Depends(get_current_user_id),):
 
 @router.post("/", response_model=SFavoriteRentGet)
 async def add_rent(rent_data: SFavoriteRentAdd, db: DBDep,) -> dict[str, str]:
-    await FavoritesService(db).add_favorite_rent(rent_data)
+    await FavoritesService(db).add_rent(rent_data)
     return {"message": "Favorite rent updated successfully"}
 
 @router.delete("/{rent_id}")
