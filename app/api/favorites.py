@@ -11,7 +11,7 @@ async def get_rents(db: DBDep, user_id: int = Depends(get_current_user_id),):
     favorite_rents = await FavoritesService(db).get_all_favorite_rents(user_id)
     return favorite_rents
 
-@router.post("/", response_model=SFavoriteRentAdd)
+@router.post("/", response_model=dict)
 async def add_rent(rent_data: SFavoriteRentAdd, db: DBDep,) -> dict[str, str]:
     await FavoritesService(db).add_rent(rent_data)
     return {"message": "Favorite rent updated successfully"}
