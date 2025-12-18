@@ -199,7 +199,7 @@ async function loadMyBookings() {
   if (!user?.id) return;
   
   try {
-    const res = await fetch(`/bookings/?id_user=${user.id}`, {credentials: 'include'});
+    const response = await fetch('/booking/me', { credentials: 'include' });
     if (res.ok) {
       const bookings = await res.json();
       renderMyBookings(bookings.map(b => ({

@@ -12,7 +12,7 @@
   <div class="brand">
     <div class="logo" aria-hidden="false">
       <a href="/" class="logo-link" aria-label="Перейти на главную">
-        <img src="/static/img/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип">
+        <img src="/static/img/logo.png" alt="Угол Комфорта логотип">
       </a>
     </div>
   </div>
@@ -94,7 +94,7 @@
         <input type="hidden" id="pricePerNightInput" name="price_per_night" value="0">
 
         <fieldset style="border:1px solid rgba(0,0,0,0.06);padding:12px;border-radius:8px;">
-          <legend style="font-weight:700;color:#042018">Онлайн оплата (демо)</legend>
+          <legend style="font-weight:700;color:#042018">Онлайн оплата</legend>
           <label style="font-size:13px">Способ оплаты
             <select name="payment_method" id="paymentMethod"
                     style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)">
@@ -123,12 +123,12 @@
           </div>
 
           <div id="paymentNotice" style="color:var(--muted);font-size:13px;margin-top:8px">
-            В демонстрационной версии происходит имитация платёжной операции — реальные списания не выполняются.
+            Вы успешно оформили бронирование!
           </div>
         </fieldset>
 
         <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
-          <a class="btn" href="/web/rent">Отмена</a>
+          <a class="btn" href="/web/rents">Отмена</a>
           <button class="btn primary" type="submit">Подтвердить бронирование</button>
         </div>
       </form>
@@ -138,27 +138,6 @@
     </div>
   </section>
 </main>
-
-<footer class="site-footer" aria-label="Сайт футер" style="margin-top:28px">
-  <div class="footer-inner">
-    <div class="footer-col footer-contact">
-      <div class="footer-brand">
-        <img src="/static/img/freepik_assistant_1762764092507.png" alt="Угол Комфорта логотип" class="footer-logo">
-        <div class="company-name">Угол Комфорта</div>
-      </div>
-    </div>
-    <div class="footer-col">
-      <h4 class="footer-heading">О проекте</h4>
-      <ul>
-        <li><a href="/web/rent">Арендовать</a></li>
-        <li><a href="/web/list">Сдать в аренду</a></li>
-        <li><a href="/#team">Команда</a></li>
-        <li><a href="/#history">Наша история</a></li>
-        <li><a href="/#mission">Миссия проекта</a></li>
-      </ul>
-    </div>
-  </div>
-</footer>
 
 <script src="/static/js/booking.js" type="module"></script>
 <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
