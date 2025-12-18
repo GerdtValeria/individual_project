@@ -11,7 +11,7 @@ class BookingsRepository(BaseRepository):
         return await super().get_all()
     
     async def get_user_bookings(self, user_id: int):
-        return await self.get_filtered(id_user=user_id, options=[joinedload(BookingsModel.rent)])
+        return await self.get_filtered(options=[joinedload(BookingsModel.rent)],filter_by={'id_user': user_id})
 
     async def get_rent_bookings(self, rent_id: int):
         return await self.get_filtered(id_rents=rent_id)
