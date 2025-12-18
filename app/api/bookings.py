@@ -24,3 +24,11 @@ async def add_booking(
     
     return await BookingService(db).add_booking(booking_data, user_id)
 
+@router.delete("/{booking_id}", status_code=204)
+async def delete_booking(
+    booking_id: int,
+    db: DBDep,
+    user_id: UserIdDep,
+):
+    await BookingService(db).delete_booking(booking_id, user_id)
+    return None

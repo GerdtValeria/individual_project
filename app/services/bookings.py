@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from app.api.bookings import SBookingAddRequest
 from app.schemas.bookings import SBookingAdd, SBookingGet
 from app.schemas.categories import SCategoriesGet
@@ -35,3 +36,8 @@ class BookingService(BaseService):
         await self.db.commit()
         return booking 
         
+    async def delete_booking(self, rent_id: int, user_id: int):
+        deleted = await self.db.bookings.delete_by_rent_and_user(rent_id, user_id)
+        if not deleted:
+            raise HTTPException(status_code=404, detail="Бронь не найдена")
+        await self.db.commit()
