@@ -26,9 +26,9 @@ async def add_booking(
 
 @router.delete("/{booking_id}", status_code=204)
 async def delete_booking(
-    booking_id: int,
+    rent_id: int,
     db: DBDep,
     user_id: UserIdDep,
 ):
-    await BookingService(db).delete_booking(booking_id, user_id)
+    await BookingService(db).delete_booking(rent_id, user_id)
     return None
