@@ -1,4 +1,3 @@
-from os import sync
 from fastapi import HTTPException
 from sqlalchemy import select
 from app.api.bookings import SBookingAddRequest
