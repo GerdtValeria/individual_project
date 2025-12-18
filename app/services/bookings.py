@@ -36,8 +36,8 @@ class BookingService(BaseService):
         await self.db.commit()
         return booking 
         
-    async def delete_booking(self, rent_id: int, user_id: int):
-        deleted = await self.db.bookings.delete_by_rent_and_user(rent_id, user_id)
+    async def delete_booking(self, booking_id: int, user_id: int):
+        deleted = await self.db.bookings.delete_by_id_and_user(booking_id, user_id)
         if not deleted:
             raise HTTPException(status_code=404, detail="Бронь не найдена")
         await self.db.commit()

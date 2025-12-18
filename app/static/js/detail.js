@@ -193,12 +193,17 @@ function renderSimilarRents(rents) {
 // ==================== Избранное ====================
 async function checkFavoriteStatus(rentId) {
   if (!currentUser) return;
-  
+
   try {
-    // Пока без проверки статуса - просто показываем кнопку
-    const mainBtn = document.getElementById('favoriteMainBtn');
-    if (mainBtn) {
-      mainBtn.style.opacity = '1';
+    const res = await fetch('/favorites/', { credentials: 'include' });
+    if (!res.ok) return;
+    const favorites = await res.json();        // SFavoriteRentGet[]
+    const isFav = favorites.some(f => f.id_rent === Number(rentId));
+
+    const btn = document.getElementById('favoriteMainBtn');
+    if (btn) {
+      btn.classList.toggle('active', isFav);
+      btn.setAttribute('aria-pressed', String(isFav));
     }
   } catch (e) {
     console.error('Ошибка проверки избранного:', e);

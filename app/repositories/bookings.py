@@ -26,6 +26,6 @@ class BookingsRepository(BaseRepository):
     async def add_booking(self, data: SBookingAdd) -> SBookingGet:
         return await super().add(data)
     
-    async def delete_by_rent_and_user(self, rent_id: int, user_id: int) -> int:
-        return await self.delete(id_rents=rent_id, id_user=user_id)
+    async def delete_by_id_and_user(self, booking_id: int, user_id: int) -> int:
+        return await self.delete(id=booking_id, id_user=user_id)
 
