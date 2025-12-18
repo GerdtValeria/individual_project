@@ -289,20 +289,7 @@
   <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
   
   <script>
-    // Основной скрипт для index.html
-    document.addEventListener('DOMContentLoaded', function() {
-      // ====================
-      // 1. НАВИГАЦИЯ
-      // ====================
-      
-      // Логотип → Главная (используем роутер из web.py)
-      const logoLink = document.querySelector('.logo a');
-      if (logoLink) {
-        logoLink.addEventListener('click', function(e) {
-          e.preventDefault();
-          window.location.href = '/';
-        });
-      }
+   
       
       // Кнопка "Арендовать" (используем роутер из web.py)
       const rentButton = document.querySelector('[data-tab="rent"]');

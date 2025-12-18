@@ -62,13 +62,13 @@ function initNavigation() {
 }
 
   // Логотип - переход на главную
-  const logoLink = document.querySelector('.logo-link');
-  if (logoLink) {
-    logoLink.addEventListener('click', function(e) {
-      e.preventDefault();
-      navigateToIndexPage();
-    });
-  }
+//   const logoLink = document.querySelector('.logo-link');
+//   if (logoLink) {
+//     logoLink.addEventListener('click', function(e) {
+//       e.preventDefault();
+//       navigateToIndexPage();
+//     });
+//   }
 
   // Ссылки в футере - ИСПРАВЛЕНО
   const footerLinks = document.querySelectorAll('.site-footer a');
@@ -77,11 +77,9 @@ function initNavigation() {
       const href = this.getAttribute('href');
       if (href && href !== '#') {
         e.preventDefault();
-        if (href === '/index.html' || href === '/') {
-          navigateToIndexPage();  // /web/index
-        } else if (href === '/rent.html') {
+        
           navigateToRentPage();   // /web/rent
-        } else if (href === '/list.html') {
+        if (href === '/list.html') {
             const user = getUserData();
             if (!user) {
                 alert('Нужно войти в аккаунт');
@@ -119,7 +117,7 @@ async function navigateToListPage() { window.location.href = '/web/list'; }
 async function navigateToFavoritesPage() { window.location.href = '/web/favorites'; }
 async function navigateToProfilePage() { window.location.href = '/web/profile'; }
 async function navigateToRegistrationPage() { window.location.href = '/web/auth'; }
-async function navigateToIndexPage() { window.location.href = '/web/'; }
+// async function navigateToIndexPage() { window.location.href = '/web/'; }
 /**
  * Инициализация кнопки авторизации/профиля
  */
@@ -481,14 +479,14 @@ async function navigateToRegistrationPage() {
 /**
  * Навигация на главную страницу через get_index_html
  */
-async function navigateToIndexPage() {
-    try {
-        window.location.href = '/web/index';
-    } catch (error) {
-        console.error('Ошибка при переходе на главную страницу:', error);
-        window.location.href = '/web/index';
-    }
-}
+// async function navigateToIndexPage() {
+//     try {
+//         window.location.href = '/web/index';
+//     } catch (error) {
+//         console.error('Ошибка при переходе на главную страницу:', error);
+//         window.location.href = '/web/index';
+//     }
+// }
 
 /**
  * Поиск аренды по запросу через роутер get_rents с методом get_filtered_rents

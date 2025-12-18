@@ -212,7 +212,7 @@ async function addToFavorites(rentId) {
   }
   
   try {
-    const response = await fetch('/comments/', {
+    const response = await fetch('/favorites/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -406,7 +406,7 @@ function setupEventHandlers() {
       e.preventDefault();
       
       switch(tabType) {
-        case 'rent': window.location.href = '/web/rent'; break;
+        case 'rent': window.location.href = '/web/rents'; break;
         case 'list': window.location.href = '/web/list'; break;
         case 'favorites': window.location.href = '/web/favorites'; break;
         case 'help': window.location.href = '/'; break;
@@ -417,7 +417,7 @@ function setupEventHandlers() {
   // Логотип
   document.querySelector('.logo-link')?.addEventListener('click', (e) => {
     e.preventDefault();
-    window.location.href = '/';
+    window.location.href = '/web';
   });
   
   // Похожие объявления + главное избранное
