@@ -2,20 +2,14 @@
 
 document.addEventListener('DOMContentLoaded', async () => {
   if (typeof feather !== 'undefined') feather.replace();
-  
-  // common.js уже настроил навигацию, поиск и помощь
   await initializeProfile();
 });
 
-/**
- * Инициализация профиля (данные пользователя + объявления + бронирования)
- */
 async function initializeProfile() {
   await loadCurrentUser();
   await loadMyRents();
   await loadMyBookings();
 }
-
 /**
  * Получение текущего пользователя через API /auth/me
  */
@@ -201,45 +195,47 @@ async function loadMyBookings() {
     const bookings = await res.json();
     console.log('bookings', bookings);
 
-    renderMyBookings(bookings.map(b => ({
+    // Маппим только нужные поля в удобный вид
+    const viewBookings = bookings.map(b => ({
       id: b.id,
-      rent_title: b.rent?.title || 'Жилье',
+      rent_title: b.rent?.title || 'Объявление удалено',
       from: b.date_start,
       to: b.date_end,
-      guests: b.guests
-    })));
+      guests: b.guests,
+      cost: b.total_cost || b.cost
+    }));
+
+    renderMyBookings(viewBookings);
   } catch (e) {
-    console.error(e);
+    console.error('Ошибка загрузки бронирований:', e);
   }
 }
-/**
- * Отображение бронирований
- */
+
+// Отображение бронирований
 function renderMyBookings(bookings) {
   const container = document.getElementById('myBookings');
   const emptyMsg = document.getElementById('myBookingsEmpty');
-  
+
   if (!container) return;
-  
   container.innerHTML = '';
-  
+
   if (!bookings?.length) {
     if (emptyMsg) emptyMsg.style.display = 'block';
     return;
   }
-  
+
   if (emptyMsg) emptyMsg.style.display = 'none';
-  
+
   bookings.forEach(booking => {
     const card = document.createElement('article');
     card.className = 'card';
     card.dataset.bookingId = booking.id;
-    
+
     card.innerHTML = `
       <div class="card-body">
-        <h4>${booking.rent?.title || 'Объявление удалено'}</h4>
-        <p>Гостей: ${booking.guests} | ${booking.date_start} - ${booking.date_end}</p>
-        <p>Стоимость: ${booking.total_cost || booking.cost} ₽</p>
+        <h4>${escapeHtml(booking.rent_title)}</h4>
+        <p>Гостей: ${booking.guests} | ${booking.from} - ${booking.to}</p>
+        <p>Стоимость: ${booking.cost ?? '—'} ₽</p>
         <div style="margin-top: 16px;">
           <button class="btn cancel-booking-btn" data-booking-id="${booking.id}">
             Отменить бронирование
@@ -247,36 +243,35 @@ function renderMyBookings(bookings) {
         </div>
       </div>
     `;
-    
-    // Обработчик отмены
+
     const cancelBtn = card.querySelector('.cancel-booking-btn');
-    cancelBtn.onclick = async function(e) {
+    cancelBtn.onclick = async e => {
       e.preventDefault();
       if (confirm('Отменить бронирование?')) {
         await cancelBooking(booking.id);
       }
     };
-    
+
     container.appendChild(card);
   });
 }
-
 // Функция отмены бронирования
 async function cancelBooking(bookingId) {
   try {
     const token = localStorage.getItem('token');
-    const response = await fetch(`/booking/${bookingId}`, {   // роут из favorites.py
+    const response = await fetch(`/booking/${bookingId}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       }
     });
-    
+
     if (response.ok) {
       alert('Бронирование отменено!');
-      await loadMyBookings();  // перезагрузить список
+      await loadMyBookings();
     } else {
+      console.error('Delete status', response.status);
       alert('Ошибка отмены');
     }
   } catch (error) {
@@ -284,7 +279,6 @@ async function cancelBooking(bookingId) {
     alert('Ошибка сети');
   }
 }
-
 /**
  * Кнопка "Выйти" — использует роутер /auth/logout
  */
