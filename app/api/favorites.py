@@ -4,7 +4,7 @@ from app.schemas.comments import SCommentAdd
 from app.schemas.favorites import SFavoriteRentAdd, SFavoriteRentGet
 from app.services.favorites import FavoritesService
 
-router = APIRouter(prefix="/comments",tags=["Comment"])
+router = APIRouter(prefix="/favorites",tags=["Comment"])
 
 @router.get("/", response_model=list[SFavoriteRentGet])
 async def get_rents(db: DBDep, user_id: int = Depends(get_current_user_id),):
