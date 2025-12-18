@@ -322,7 +322,6 @@ function initCategoryCarousel() {
     const card = favBtn.closest('.card');
     const rentId = parseInt(card.dataset.id);
     
-    // Быстрый toggleFavorite прямо тут
     const isFavorite = favBtn.getAttribute('aria-pressed') === 'true';
     const user = getUserData();
     
@@ -332,12 +331,15 @@ function initCategoryCarousel() {
       return;
     }
     
-    // API запрос
+    // API запрос с id_user и id_rent
     fetch(isFavorite ? `/favorites/${rentId}` : '/favorites/', {
       method: isFavorite ? 'DELETE' : 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: !isFavorite ? JSON.stringify({ id_rent: rentId }) : undefined,
-      credentials: 'include'
+      credentials: 'include',
+      body: !isFavorite ? JSON.stringify({ 
+        id_rent: rentId, 
+        id_user: user.id  // ← ДОБАВЛЯЕМ id_user
+      }) : undefined,
     }).then(res => {
       if (res.ok) {
         favBtn.setAttribute('aria-pressed', !isFavorite);

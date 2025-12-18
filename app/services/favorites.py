@@ -12,8 +12,7 @@ class FavoritesService(RentService):
         await self.db.commit()
         return favorite_rent
     
-    async def delete_rent(self, id: int) -> None:
-        await self.db.favorites.delete_favorite_rent(id)
+    async def delete_rent(self, user_id: int, rent_id: int) -> None:
+        await self.db.favorites.delete_favorite_rent(user_id=user_id, rent_id=rent_id)
         await self.db.commit()
-        return {"message": f"Объявление с id={id} успешно удалено из избранного"} 
     
