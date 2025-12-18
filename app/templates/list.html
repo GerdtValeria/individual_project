@@ -9,28 +9,32 @@
 </head>
 <body>
   <header class="site-header">
-    <div class="brand">
-      <div class="logo" aria-hidden="false">
-        <a href="/" class="logo-link" aria-label="Перейти на главную">
-          <img src="/static/img/logo.png" alt="Угол Комфорта логотип">
-        </a>
-      </div>
+  <div class="brand">
+    <div class="logo" aria-hidden="false">
+      <a href="/" class="logo-link" aria-label="Перейти на главную">
+        <img src="/static/img/logo.png" alt="Угол Комфорта логотип">
+      </a>
     </div>
-    <form id="searchForm" class="search-form" aria-label="Поиск аренды" style="margin-left:12px;">
-      <input id="q" name="q" type="search" placeholder="Поиск по городу, району или опции" />
-    </form>
-    <nav class="top-tabs" aria-label="Главная навигация">
-      <button class="tab" data-tab="rent">Арендовать</button>
-      <button class="tab active" data-tab="list">
-        <span class="two-line">Сдать<br>в аренду</span>
-      </button>
-      <button class="tab" data-tab="favorites">Избранное</button>
-      <button class="tab" data-tab="help">Помощь</button>
-      <div class="auth">
-        <button class="tab primary" data-tab="signup">Зарегистрироваться</button>
-      </div>
-    </nav>
-  </header>
+    <!-- Мобильная кнопка бургера -->
+    <button class="mobile-menu-toggle" aria-label="Открыть меню">☰</button>
+  </div>
+  
+  <form id="searchForm" class="search-form" aria-label="Поиск аренды">
+    <input id="q" name="q" type="search" placeholder="Поиск по городу, району или опции" />
+  </form>
+  
+  <nav class="top-tabs" aria-label="Главная навигация">
+    <button class="tab" data-tab="rent">Арендовать</button>
+    <button class="tab active" data-tab="list">
+      <span class="two-line">Сдать<br>в аренду</span>
+    </button>
+    <button class="tab" data-tab="favorites">Избранное</button>
+    <button class="tab" data-tab="help">Помощь</button>
+    <div class="auth">
+      <button class="tab primary" data-tab="signup">Зарегистрироваться</button>
+    </div>
+  </nav>
+</header>
 
   <main class="container" style="padding:18px;">
     <section style="max-width:900px;margin:0 auto">

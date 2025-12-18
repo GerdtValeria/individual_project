@@ -16,9 +16,16 @@
         </a>
       </div>
     </div>
+
+    <!-- КНОПКА БУРГЕРА ДЛЯ МОБИЛКИ -->
+    <button class="mobile-menu-toggle" aria-label="Открыть меню">
+      ☰
+    </button>
+
     <form id="searchForm" class="search-form" aria-label="Поиск аренды" style="margin-left:12px;">
       <input id="q" name="q" type="search" placeholder="Поиск по городу, району или опции" />
     </form>
+
     <nav class="top-tabs" aria-label="Главная навигация">
       <button class="tab active" data-tab="rent">Арендовать</button>
       <button class="tab" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
@@ -82,7 +89,9 @@
     <div class="overlay-dialog" role="dialog" aria-label="Помощь">
       <header class="modal-header">
         <h3>Помощь</h3>
-        <button id="closeHelpBlock" class="help-close" aria-label="Закрыть"><i data-feather="x"></i></button>
+        <button id="closeHelpBlock" class="help-close" aria-label="Закрыть">
+  <img src="/static/img/cancel_17767265.png" alt="Закрыть">
+</button>
       </header>
       <div class="post-form" style="max-width:520px;">
         <p style="margin:0 0 8px;color:var(--muted)">Здесь вы найдёте ответы на частые вопросы, инструкции по бронированию и контакты службы поддержки.</p>

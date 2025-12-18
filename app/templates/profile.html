@@ -8,27 +8,35 @@
   <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
-  <header class="site-header">
-    <div class="brand">
-      <div class="logo" aria-hidden="false">
-        <a href="/" class="logo-link" aria-label="Перейти на главную">
-          <img src="/static/img/logo.png" alt="Угол Комфорта логотип">
-        </a>
-      </div>
+<header class="site-header">
+  <div class="brand">
+    <div class="logo" aria-hidden="false">
+      <a href="/" class="logo-link" aria-label="Перейти на главную">
+        <img src="/static/img/logo.png" alt="Угол Комфорта логотип">
+      </a>
     </div>
-    <form id="searchForm" class="search-form" aria-label="Поиск аренды" style="margin-left:12px;">
-      <input id="q" name="q" type="search" placeholder="Поиск по городу, району или опции" />
-    </form>
-    <nav class="top-tabs" aria-label="Главная навигация">
-      <button class="tab" data-tab="rent">Арендовать</button>
-      <button class="tab" data-tab="list">Сдать в аренду</button>
-      <button class="tab" data-tab="favorites">Избранное</button>
-      <button class="tab" data-tab="help">Помощь</button>
-      <div class="auth">
-        <button class="tab primary" data-tab="signup">Зарегистрироваться</button>
-      </div>
-    </nav>
-  </header>
+    
+    <!-- Мобильная кнопка меню -->
+    <button class="mobile-menu-toggle" aria-label="Открыть меню">
+      ☰
+    </button>
+  </div>
+  
+  <form id="searchForm" class="search-form" aria-label="Поиск аренды" style="margin-left:12px;">
+    <input id="q" name="q" type="search" placeholder="Поиск по городу, району или опции" />
+  </form>
+  
+  <nav class="top-tabs" aria-label="Главная навигация">
+    <button class="tab" data-tab="rent">Арендовать</button>
+    <button class="tab" data-tab="list">Сдать в аренду</button>
+    <button class="tab" data-tab="favorites">Избранное</button>
+    <button class="tab" data-tab="help">Помощь</button>
+    <div class="auth">
+      <button class="tab primary" data-tab="signup">Зарегистрироваться</button>
+    </div>
+  </nav>
+</header>
+
 
   <main class="container" style="padding:18px;">
     <section style="max-width:900px;margin:0 auto">
@@ -58,6 +66,18 @@
         <div id="myListingsEmpty" class="card" style="padding:18px;text-align:center;color:var(--muted)">
           У вас пока нет опубликованных объявлений. 
           <a href="/web/list" style="color:var(--primary)">Перейти к размещению</a>
+        </div>
+      </div>
+
+      <div id="editModal" class="modal" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-header">
+            <h3>Редактировать объявление</h3>
+            <button id="closeEditModal">✕</button>
+          </div>
+          <form id="editRentForm">
+            <button type="submit">Сохранить</button>
+          </form>
         </div>
       </div>
 

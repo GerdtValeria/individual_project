@@ -5,53 +5,44 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Угол Комфорта — Главная</title>
 
-  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
 
-  <!-- Styles -->
   <link rel="stylesheet" href="/static/css/styles.css">
 
-  <!-- Import map (keeps options open for future libs) -->
   <script type="importmap">
   {
     "imports": {}
   }
   </script>
-  <!-- Basil icons (CDN)
-  <script src="https://unpkg.com/basil-icons@1.0.2/dist/basil.min.js"></script> -->
 </head>
 <body>
   <header class="site-header">
-    <div class="brand">
-      <div class="logo" aria-hidden="false">
-        <a href="/web/" class="logo-link" aria-label="Перейти на главную">
-          <img src="/static/img/logo.png" alt="Угол Комфорта логотип">
-        </a>
-      </div>
-      <div>
-        <!-- service name removed -->
-        <!-- tag paragraph removed as requested -->
-      </div>
+  <div class="brand">
+    <div class="logo" aria-hidden="false">
+      <a href="/web/" class="logo-link" aria-label="Перейти на главную">
+        <img src="/static/img/logo.png" alt="Угол Комфорта логотип">
+      </a>
     </div>
+    
+    <!-- Мобильная кнопка бургера -->
+    <button class="mobile-menu-toggle" aria-label="Открыть меню">☰</button>
+  </div>
 
-    <form id="searchForm" class="search-form" aria-label="Поиск аренды">
-      <input id="q" name="q" type="search" placeholder="Поиск по городу, району или опции" />
-      <!-- search and add buttons removed; form can be submitted via Enter -->
-    </form>
+  <form id="searchForm" class="search-form" aria-label="Поиск аренды">
+    <input id="q" name="q" type="search" placeholder="Поиск по городу, району или опции" />
+  </form>
 
-    <!-- Removed: Sort control block -->
-
-    <nav class="top-tabs" aria-label="Главная навигация">
-      <a class="tab" href="/web/rents">Арендовать</a>
-      <button class="tab" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
-      <a class="tab" href="/web/favorites">Избранное</a>
-      <button class="tab" data-tab="help">Помощь</button>
-      <div class="auth">
-        <button class="tab primary" data-tab="signup">Зарегистрироваться</button>
-      </div>
-    </nav>
-  </header>
+  <nav class="top-tabs" aria-label="Главная навигация">
+    <a class="tab" href="/web/rents">Арендовать</a>
+    <button class="tab" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
+    <a class="tab" href="/web/favorites">Избранное</a>
+    <button class="tab" data-tab="help">Помощь</button>
+    <div class="auth">
+      <button class="tab primary" data-tab="signup">Зарегистрироваться</button>
+    </div>
+  </nav>
+</header>
 
   <!-- NEW: Compact service block (from provided selection) -->
   <section class="service-cta" aria-label="О сервисе">
@@ -120,12 +111,10 @@
     <div id="pages">
       <section id="rentPage" class="page" aria-live="polite">
         <section class="listings" id="listings">
-          <!-- Listing cards will be inserted by JS -->
         </section>
       </section>
 
       <!-- NEW: Favorites page -->
-      <!-- favorites moved to a dedicated page /web/favorites -->
     </div>
   </main>
 

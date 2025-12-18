@@ -476,4 +476,21 @@ function initCategoryCarousel() {
   function fallbackNavigation(tab) {
     window.location.href = navButtons[tab];
   }
+
+  document.addEventListener('DOMContentLoaded', function() {
+  const burger = document.createElement('button');
+burger.className = 'mobile-menu-toggle';
+burger.innerHTML = '☰';
+burger.style.cssText = `
+  display:flex !important; position:fixed; top:20px; right:20px; 
+  z-index:9999; background:red; color:white; border:none; 
+  padding:10px; font-size:20px; cursor:pointer;
+`;
+document.body.appendChild(burger);
+
+burger.onclick = () => {
+  const menu = document.querySelector('.top-tabs');
+  menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+   }
+  })
 });

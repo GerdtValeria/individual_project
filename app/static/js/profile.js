@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function initializeProfile() {
   await loadCurrentUser();
   await loadMyRents();
-  await loadMyBookings();
+  //await loadMyBookings();
 }
 /**
  * Получение текущего пользователя через API /auth/me
@@ -49,6 +49,7 @@ async function loadCurrentUser() {
     showAuthRequired();
   }
 }
+
 
 /**
  * Обновление информации о пользователе в профиле
@@ -182,6 +183,40 @@ function renderMyRents(rents) {
   });
 }
 
+function setupRentActions() {
+  // Изменить
+  document.querySelectorAll('.edit-rent').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      const rentId = e.target.dataset.id;
+      const user = getUserFromStorage();
+      
+      // Открываем модалку редактирования (создай её в HTML)
+      showEditModal(rentId);
+    });
+  });
+
+  // Удалить
+  document.querySelectorAll('.delete-rent').forEach(btn => {
+  btn.addEventListener('click', async (e) => {
+    if (!confirm('Удалить объявление?')) return;
+    
+    const rentId = e.target.dataset.id;
+    try {
+      const response = await fetch(`/rents/${rentId}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        await loadMyRents(); // Перезагружаем список
+      } else {
+        alert('Ошибка удаления');
+      }
+    } catch (error) {
+      console.error('Ошибка:', error);
+    }
+  });
+});
 /**
  * Загрузка бронирований пользователя (заглушка)
  */
@@ -369,22 +404,25 @@ function openEditModal(rentId) {
     });
 }
 
-function showEditModal(rent) {
-  const modal = document.createElement('div');
-  modal.id = 'editRentModal';
-  modal.className = 'modal';
-  modal.style.cssText =
-    'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center';
-
-  card.innerHTML = `
-  <div class="card-body">
-    <h4>${escapeHtml(booking.rent_title)}</h4>
-    <p>${escapeHtml(booking.address)}</p>
-    <p>Гостей: ${booking.guests} | ${booking.from} - ${booking.to}</p>
-    <p>Стоимость: ${booking.cost ?? '—'} ₽ (₽${formatPrice(booking.price)} за ночь)</p>
-    ...
-  </div>
-`;
+async function showEditModal(rentId) {
+  try {
+    // ✅ Загружаем объявление
+    const response = await fetch(`/rents/${rentId}`);
+    const rent = await response.json();
+    
+    // Заполняем форму
+    document.getElementById('editTitle').value = rent.title;
+    document.getElementById('editAddress').value = rent.address;
+    document.getElementById('editPrice').value = rent.price;
+    document.getElementById('editDescription').value = rent.description;
+    document.getElementById('editRentId').value = rentId;
+    
+    // Показываем модалку
+    document.getElementById('editModal').classList.remove('hidden');
+  } catch (error) {
+    console.error('Ошибка загрузки:', error);
+  }
+}
 
   document.body.appendChild(modal);
 

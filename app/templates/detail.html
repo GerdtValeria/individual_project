@@ -23,21 +23,25 @@
 </head>
 <body>
   <header class="site-header">
-    <div class="brand">
-      <div class="logo">
-        <a href="/web/" class="logo-link" aria-label="Перейти на главную">
-          <img src="/static/img/logo.png" alt="Угол Комфорта логотип">
-        </a>
-      </div>
+  <div class="brand">
+    <div class="logo">
+      <a href="/web/" class="logo-link" aria-label="Перейти на главную">
+        <img src="/static/img/logo.png" alt="Угол Комфорта логотип">
+      </a>
     </div>
-    <nav class="top-tabs" aria-label="Главная навигация">
-      <button class="tab" data-tab="rent">Арендовать</button>
-      <button class="tab" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
-      <button class="tab" data-tab="favorites" href="/web/favorites">Избранное</button>
-      <button class="tab" data-tab="help">Помощь</button>
-      <div class="auth" id="authContainer"></div>
-    </nav>
-  </header>
+    
+    <!-- Мобильная кнопка бургера -->
+    <button class="mobile-menu-toggle" aria-label="Открыть меню">☰</button>
+  </div>
+  
+  <nav class="top-tabs" aria-label="Главная навигация">
+    <button class="tab" data-tab="rent">Арендовать</button>
+    <button class="tab" data-tab="list"><span class="two-line">Сдать<br>в аренду</span></button>
+    <button class="tab" data-tab="favorites">Избранное</button>
+    <button class="tab" data-tab="help">Помощь</button>
+    <div class="auth" id="authContainer"></div>
+  </nav>
+</header>
 
   <main class="container" style="padding: 24px; max-width: 1200px;">
   <!-- Основное объявление - по ширине навигации -->

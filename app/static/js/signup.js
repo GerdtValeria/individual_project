@@ -285,4 +285,30 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   console.log('Signup handler initialized');
+
+  document.addEventListener('DOMContentLoaded', function() {
+  const burgerBtn = document.querySelector('.mobile-menu-toggle');
+  const menu = document.querySelector('.top-tabs');
+  
+  if (burgerBtn && menu) {
+    burgerBtn.addEventListener('click', function() {
+      menu.classList.toggle('is-open');
+      
+      // Меняем иконку бургера на крестик
+      if (menu.classList.contains('is-open')) {
+        burgerBtn.textContent = '✕';
+      } else {
+        burgerBtn.textContent = '☰';
+      }
+    });
+    
+    // Закрываем меню при клике вне его
+    document.addEventListener('click', function(e) {
+      if (!menu.contains(e.target) && !burgerBtn.contains(e.target)) {
+        menu.classList.remove('is-open');
+        burgerBtn.textContent = '☰';
+      }
+    });
+  }
+});
 });
