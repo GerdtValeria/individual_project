@@ -346,7 +346,6 @@ function formatPrice(price) {
  * Экранирование HTML
  */
 function escapeHtml(text) {
-  if (text == null) return '';
   const map = {
     '&': '&amp;',
     '<': '&lt;',
