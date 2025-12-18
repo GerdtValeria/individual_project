@@ -14,7 +14,7 @@ class BookingService(BaseService):
     
     async def get_user_bookings(self, user_id: int) -> list[SBookingGet]:
         bookings = await self.db.bookings.get_user_bookings(user_id)
-        return bookings or [] 
+        await self.db.refresh(bookings, ['rent'])
     
     async def add_booking(self, data: SBookingAddRequest, user_id: int) -> SBookingGet:
        
