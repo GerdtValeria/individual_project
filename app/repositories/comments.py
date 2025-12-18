@@ -1,18 +1,28 @@
 from sqlalchemy import select, desc
 from typing import List, Optional
+from app.repositories.rents import engine
 from app.schemas.comments import SCommentAdd, SComment
 from exceptions.bookings import RealtyNotAvailableException
 from app.models.comments import CommentsModel
 from app.repositories.base import BaseRepository
 from app.repositories.utils import rooms_ids_free
 from app.schemas.bookings import SBookingAdd
+from sqlalchemy.orm import selectinload
 
 class CommentsRepository(BaseRepository):
     model = CommentsModel
     schema = SComment
 
     async def get_rent_comments(self, rent_id: int):
-        return await self.get_filtered(id_rent=rent_id)
+        
+        query = select(self.model).filter_by(id_rent=rent_id).options(selectinload(self.model.user))
+        result = await self.session.execute(query)
+        result = [
+            self.schema.model_validate(model)
+            for model in result.scalars().all()
+        ]
+
+        return result
 
     async def get_user_comments(self, user_id: int):
         return await self.get_filtered(id_user=user_id)

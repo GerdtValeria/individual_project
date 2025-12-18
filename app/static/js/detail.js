@@ -256,7 +256,7 @@ function renderComments() {
     <article class="comment-item" data-comment-id="${comment.id}">
       <div class="comment-header">
         <span class="comment-author">
-          ${comment.username}
+          ${comment.user.name}
         </span>
       </div>
       <p class="comment-content">${escapeHtml(comment.content)}</p>
