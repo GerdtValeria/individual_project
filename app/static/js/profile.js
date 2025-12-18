@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function initializeProfile() {
   await loadCurrentUser();
   await loadMyRents();
-  //await loadMyBookings();
+  await loadMyBookings();
 }
 /**
  * Получение текущего пользователя через API /auth/me
@@ -98,9 +98,13 @@ function showAuthRequired() {
         Войти в аккаунт
       </a>
     `;
-    mainSection.appendChild(authMsg);
   }
 }
+
+/**
+ * Загрузка объявлений пользователя
+ */
+// Замени ВСЕ функции ниже в profile.js (остальное не трогай)
 
 /**
  * Загрузка объявлений пользователя
@@ -171,55 +175,166 @@ function renderMyRents(rents) {
     container.appendChild(card);
   });
 
-  // Обработчики кнопок
- container.querySelectorAll('.edit-rent-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    console.log('edit click', btn.dataset.rentId);  // лог
-    openEditModal(btn.dataset.rentId);
+  // ✅ Обработчики кнопок (только здесь!)
+  container.querySelectorAll('.edit-rent-btn').forEach(btn => {
+    btn.addEventListener('click', () => openEditModal(btn.dataset.rentId));
   });
-});
+  
   container.querySelectorAll('.delete-rent-btn').forEach(btn => {
     btn.addEventListener('click', () => deleteRent(btn.dataset.rentId));
   });
 }
 
-function setupRentActions() {
-  // Изменить
-  document.querySelectorAll('.edit-rent').forEach(btn => {
-    btn.addEventListener('click', async (e) => {
-      const rentId = e.target.dataset.id;
-      const user = getUserFromStorage();
-      
-      // Открываем модалку редактирования (создай её в HTML)
-      showEditModal(rentId);
-    });
-  });
-
-  // Удалить
-  document.querySelectorAll('.delete-rent').forEach(btn => {
-  btn.addEventListener('click', async (e) => {
-    if (!confirm('Удалить объявление?')) return;
-    
-    const rentId = e.target.dataset.id;
-    try {
-      const response = await fetch(`/rents/${rentId}`, {
-        method: 'DELETE',
-        credentials: 'include'
-      });
-      
-      if (response.ok) {
-        await loadMyRents(); // Перезагружаем список
-      } else {
-        alert('Ошибка удаления');
-      }
-    } catch (error) {
-      console.error('Ошибка:', error);
-    }
-  });
-});
 /**
- * Загрузка бронирований пользователя (заглушка)
+ * Удаление объявления
  */
+async function deleteRent(rentId) {
+  if (!confirm('Удалить объявление навсегда?')) return;
+  
+  try {
+    const response = await fetch(`/rents/${rentId}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    });
+    
+    if (response.ok) {
+      alert('Объявление удалено!');
+      await loadMyRents();
+    } else {
+      const error = await response.text();
+      alert('Ошибка удаления: ' + error);
+    }
+  } catch (error) {
+    console.error('Ошибка:', error);
+    alert('Ошибка сети');
+  }
+}
+
+/**
+ * Открытие модального окна редактирования
+ */
+let currentEditRent = null;
+
+async function openEditModal(rentId) {
+  try {
+    // Загружаем данные объявления
+    const response = await fetch(`/rents/${rentId}`);
+    if (!response.ok) throw new Error('Объявление не найдено');
+    
+    const rent = await response.json();
+    currentEditRent = rent;
+    
+    // Создаем модальное окно
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.style.cssText = `
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+      background: rgba(0,0,0,0.5); display: flex; align-items: center; 
+      justify-content: center; z-index: 10000; backdrop-filter: blur(4px);
+    `;
+    
+    modal.innerHTML = `
+      <div class="modal-dialog" style="background: white; border-radius: 16px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+        <div class="modal-header" style="padding: 24px 24px 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee;">
+          <h3 style="margin: 0; font-size: 20px;">Редактировать "${escapeHtml(rent.title)}"</h3>
+          <button id="editCancelBtn" style="background: none; border: none; font-size: 24px; cursor: pointer; padding: 8px; border-radius: 8px;">✕</button>
+        </div>
+        <form id="editRentForm" style="padding: 24px;">
+          <input type="hidden" name="id_category" value="${rent.id_category}">
+          <input type="hidden" name="id_user" value="${rent.id_user}">
+          
+          <div style="margin-bottom: 16px;">
+            <label style="display: block; margin-bottom: 6px; font-weight: 600;">Название</label>
+            <input id="editTitle" name="title" value="${escapeHtml(rent.title)}" style="width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 8px; font-size: 16px;" required>
+          </div>
+          
+          <div style="margin-bottom: 16px;">
+            <label style="display: block; margin-bottom: 6px; font-weight: 600;">Адрес</label>
+            <input id="editAddress" name="address" value="${escapeHtml(rent.address)}" style="width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 8px; font-size: 16px;" required>
+          </div>
+          
+          <div style="margin-bottom: 16px;">
+            <label style="display: block; margin-bottom: 6px; font-weight: 600;">Цена за ночь (₽)</label>
+            <input id="editPrice" name="price" type="number" min="0" value="${rent.price}" style="width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 8px; font-size: 16px;" required>
+          </div>
+          
+          <div style="margin-bottom: 24px;">
+            <label style="display: block; margin-bottom: 6px; font-weight: 600;">Описание</label>
+            <textarea id="editDescription" name="description" style="width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 8px; font-size: 16px; min-height: 100px; resize: vertical;">${escapeHtml(rent.description || '')}</textarea>
+          </div>
+          
+          <div style="display: flex; gap: 12px; justify-content: flex-end;">
+            <button type="button" id="editCancelBtn2" class="btn" style="padding: 12px 24px; background: #f0f0f0; color: #333;">Отмена</button>
+            <button type="submit" class="btn primary" style="padding: 12px 24px;">Сохранить</button>
+          </div>
+        </form>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+
+
+// ✅ ДОБАВЬ ЭТИ 5 СТРОК:
+    const cancelBtns = modal.querySelectorAll('#editCancelBtn, #editCancelBtn2');
+    cancelBtns.forEach(btn => btn.onclick = () => modal.remove());
+
+    modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+
+// ✅ Закрытие по ESC
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') modal.remove();
+    });
+    
+    
+    // Закрытие по клику на фон
+    modal.onclick = (e) => {
+      if (e.target === modal) modal.remove();
+    };
+    
+    // Сохранение
+    modal.querySelector('#editRentForm').onsubmit = async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(e.target);
+      const payload = {
+        id_category: Number(formData.get('id_category')),
+        id_user: Number(formData.get('id_user')),
+        title: formData.get('title'),
+        address: formData.get('address'),
+        price: Number(formData.get('price')),
+        description: formData.get('description') || ''
+      };
+      
+      try {
+        const res = await fetch(`/rents/${rentId}`, {
+          method: 'PUT',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        
+        if (res.ok) {
+          modal.remove();
+          alert('Объявление обновлено!');
+          await loadMyRents();
+        } else {
+          const error = await res.text();
+          alert('Ошибка сохранения: ' + error);
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Ошибка сети');
+      }
+    };
+    
+  } catch (error) {
+    console.error('Ошибка загрузки объявления:', error);
+    alert('Объявление не найдено');
+  }
+}
+
+
 async function loadMyBookings() {
   const user = getUserFromStorage();
   if (!user?.id) return;
@@ -391,77 +506,4 @@ setupLogout();
 function closeEditModal() {
   const modal = document.getElementById('editRentModal');
   if (modal) modal.remove();
-}
-
-let currentEditRent = null;
-function openEditModal(rentId) {
-  // Загружаем данные объявления
-  fetch(`/rents/${rentId}`)
-    .then(res => res.json())
-    .then(rent => {
-      currentEditRent = rent;
-      showEditModal(rent);
-    });
-}
-
-async function showEditModal(rentId) {
-  try {
-    // ✅ Загружаем объявление
-    const response = await fetch(`/rents/${rentId}`);
-    const rent = await response.json();
-    
-    // Заполняем форму
-    document.getElementById('editTitle').value = rent.title;
-    document.getElementById('editAddress').value = rent.address;
-    document.getElementById('editPrice').value = rent.price;
-    document.getElementById('editDescription').value = rent.description;
-    document.getElementById('editRentId').value = rentId;
-    
-    // Показываем модалку
-    document.getElementById('editModal').classList.remove('hidden');
-  } catch (error) {
-    console.error('Ошибка загрузки:', error);
-  }
-}
-
-  document.body.appendChild(modal);
-
-  // кнопка «Отмена»
-  modal.querySelector('#editCancelBtn').addEventListener('click', closeEditModal);
-
-  // обработчик сохранения
-  modal.querySelector('#editRentForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-
-    const payload = {
-      ...currentEditRent,
-      title: formData.get('title'),
-      price: Number(formData.get('price')),
-      address: formData.get('city') || currentEditRent.address,
-    };
-
-    try {
-      const res = await fetch(`/rents/${currentEditRent.id}`, {
-        method: 'PUT',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        console.error('Edit error status', res.status);
-        const text = await res.text();
-        console.error(text);
-        alert('Ошибка сохранения');
-        return;
-      }
-
-      closeEditModal();
-      await loadMyRents();
-    } catch (error) {
-      console.error(error);
-      alert('Ошибка сохранения');
-    }
-  });
 }
