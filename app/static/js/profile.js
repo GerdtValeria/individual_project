@@ -199,22 +199,24 @@ async function loadMyBookings() {
   if (!user?.id) return;
 
   try {
-    const res = await fetch('/booking/me', { credentials: 'include' }); 
-    if (res.ok) {                                  // было if (res.ok), но res не объявлен
-      const bookings = await res.json();
-      renderMyBookings(bookings.map(b => ({
-        id: b.id,
-        rent_title: b.rent?.title || 'Жилье',
-        from: b.date_start,
-        to: b.date_end,
-        guests: b.guests
-      })));
-    }
+    const res = await fetch('/booking/me', { credentials: 'include' });
+    console.log('booking status', res.status);
+    if (!res.ok) return;
+
+    const bookings = await res.json();
+    console.log('bookings', bookings);
+
+    renderMyBookings(bookings.map(b => ({
+      id: b.id,
+      rent_title: b.rent?.title || 'Жилье',
+      from: b.date_start,
+      to: b.date_end,
+      guests: b.guests
+    })));
   } catch (e) {
     console.error(e);
   }
 }
-
 /**
  * Отображение бронирований
  */
