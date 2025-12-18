@@ -451,8 +451,27 @@ function initCategoryCarousel() {
   }
 
   function openHelpBlock() {
-    // Логика помощи
+    const helpBlock = document.getElementById('helpBlock');
+
+    const user = getUserData();
+    if (!user) {
+      alert('Чтобы задать вопрос, нужно войти или зарегистрироваться');
+      window.location.href = '/web/auth';
+      return;
+    }
+    const closeHelpBlock = document.getElementById('closeHelpBlock');
+      if (closeHelpBlock) {
+        closeHelpBlock.addEventListener('click', (e) => {
+          e.preventDefault();
+          const helpBlock = document.getElementById('helpBlock');
+          if (helpBlock) helpBlock.setAttribute('aria-hidden', 'true');
+        });
+      }
+
+  if (helpBlock) {
+    helpBlock.setAttribute('aria-hidden', 'false');
   }
+}
 
   function fallbackNavigation(tab) {
     window.location.href = navButtons[tab];

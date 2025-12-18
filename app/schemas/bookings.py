@@ -1,6 +1,8 @@
 from datetime import date
 from pydantic import BaseModel, ConfigDict
 
+from app.schemas.rents import SRentGet
+
 
 class SBookingAddRequest(BaseModel):
     id_rents: int 
@@ -16,10 +18,16 @@ class SBookingAdd(SBookingAddRequest):
     
 
 
-class SBookingGet(SBookingAdd):
+class SBookingGet(BaseModel):
     id: int
     id_rents: int
+    guests: int
+    date_start: date
+    date_end: date
+    id_user: int
+    cost: int
     total_cost: int | None = None
+    rent: SRentGet | None = None
     model_config = ConfigDict(from_attributes=True)
 
 

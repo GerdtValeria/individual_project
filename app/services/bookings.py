@@ -1,10 +1,14 @@
+from os import sync
 from fastapi import HTTPException
+from sqlalchemy import select
 from app.api.bookings import SBookingAddRequest
+from app.models.bookings import BookingsModel
 from app.schemas.bookings import SBookingAdd, SBookingGet
 from app.schemas.categories import SCategoriesGet
 from app.services.base import BaseService
 from app.repositories.bookings import BookingsRepository
 from app.services.rents import RentService
+from sqlalchemy.orm import selectinload
 
 
 class BookingService(BaseService):
@@ -13,8 +17,14 @@ class BookingService(BaseService):
         return bookings or []
     
     async def get_user_bookings(self, user_id: int) -> list[SBookingGet]:
-        bookings = await self.db.bookings.get_user_bookings(user_id)
-        return bookings or [] 
+        stmt = (
+            select(BookingsModel)
+            .where(BookingsModel.id_user == user_id)
+            .options(selectinload(BookingsModel.rent))
+        )
+        result = await self.db.session.execute(stmt)  # session/async_session
+        bookings = result.scalars().all()
+        return bookings or []
     
     async def add_booking(self, data: SBookingAddRequest, user_id: int) -> SBookingGet:
        

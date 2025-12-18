@@ -199,13 +199,15 @@ async function loadMyBookings() {
 
     // Маппим только нужные поля в удобный вид
     const viewBookings = bookings.map(b => ({
-      id: b.id,
-      rent_title: b.rent?.title || 'Объявление удалено',
-      from: b.date_start,
-      to: b.date_end,
-      guests: b.guests,
-      cost: b.total_cost || b.cost
-    }));
+    id: b.id,
+    rent_title: b.rent?.title || 'Без названия',
+    price: b.rent?.price ?? b.cost,        // цена за ночь из объявления
+    address: b.rent?.city || b.rent?.address || 'Не указан',
+    from: b.date_start,
+    to: b.date_end,
+    guests: b.guests,
+    cost: b.total_cost || b.cost
+  }));
 
     renderMyBookings(viewBookings);
   } catch (e) {
@@ -344,6 +346,7 @@ function formatPrice(price) {
  * Экранирование HTML
  */
 function escapeHtml(text) {
+  if (text == null) return '';
   const map = {
     '&': '&amp;',
     '<': '&lt;',
@@ -380,23 +383,15 @@ function showEditModal(rent) {
   modal.style.cssText =
     'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center';
 
-  modal.innerHTML = `
-    <div class="modal-content" style="background:white;border-radius:12px;padding:24px;max-width:500px;width:90%;max-height:90vh;overflow:auto">
-      <h3 style="margin:0 0 20px">Редактировать "${escapeHtml(rent.title)}"</h3>
-      <form id="editRentForm">
-        <input name="title" value="${escapeHtml(rent.title || '')}" placeholder="Название"
-               style="width:100%;padding:12px;margin-bottom:12px;border:1px solid #ddd;border-radius:6px">
-        <input name="price" type="number" value="${rent.price || ''}" placeholder="Цена за ночь"
-               style="width:100%;padding:12px;margin-bottom:12px;border:1px solid #ddd;border-radius:6px">
-        <input name="city" value="${escapeHtml(rent.city || '')}" placeholder="Город"
-               style="width:100%;padding:12px;margin-bottom:20px;border:1px solid #ddd;border-radius:6px">
-        <div style="display:flex;gap:12px">
-          <button type="submit" class="btn primary" style="flex:1;padding:12px">Сохранить</button>
-          <button type="button" class="btn" id="editCancelBtn" style="flex:1;padding:12px;background:#eee">Отмена</button>
-        </div>
-      </form>
-    </div>
-  `;
+  card.innerHTML = `
+  <div class="card-body">
+    <h4>${escapeHtml(booking.rent_title)}</h4>
+    <p>${escapeHtml(booking.address)}</p>
+    <p>Гостей: ${booking.guests} | ${booking.from} - ${booking.to}</p>
+    <p>Стоимость: ${booking.cost ?? '—'} ₽ (₽${formatPrice(booking.price)} за ночь)</p>
+    ...
+  </div>
+`;
 
   document.body.appendChild(modal);
 
