@@ -1,5 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Request
-from fastapi.responses import RedirectResponse
+from fastapi import APIRouter, Depends, Request
 from app.services.rents import RentService
 from app.api.dependencies import DBDep, get_current_user_id
 
@@ -40,11 +39,15 @@ async def get_rent_html(id: int, request: Request, db: DBDep):
 
 
 @router.get("/list")
-async def get_list_html(request: Request, user_id: int = Depends(get_current_user_id)):
+async def get_list_html(
+    request: Request,
+    user_id: int = Depends(get_current_user_id),
+):
     return templates.TemplateResponse(
-        "list.html",
-        {"request": request, "user_id": user_id},
+        name="list.html",
+        context={"request": request, "user_id": user_id},
     )
+
 
 @router.get("/favorites")
 async def get_favorites_html(
