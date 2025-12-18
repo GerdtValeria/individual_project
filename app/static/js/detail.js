@@ -402,6 +402,29 @@ function setupRentButton() {
   });
 }
 
+ // ==================== Поиск ====================
+  const searchForm = document.getElementById('searchForm');
+  if (searchForm) {
+    searchForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      await performSearch();
+    });
+  }
+
+  async function performSearch() {
+  const query = document.getElementById('q')?.value || '';
+  try {
+    const response = await fetch(
+      `/rents/?q=${encodeURIComponent(query)}`
+    );
+    if (response.ok) {
+      const results = await response.json();
+      renderRentListings(results);
+    }
+  } catch (error) {
+    console.error('Ошибка поиска:', error);
+  }
+}
 // ==================== Обработчики событий ====================
 function setupEventHandlers() {
   // Навигация в хедере

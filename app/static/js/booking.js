@@ -109,7 +109,7 @@ async function showPaymentProcessing() {
     overlay.innerHTML = `
       <div style="background:#fff;padding:24px;border-radius:10px;box-shadow:var(--card-shadow);text-align:center">
         <h3 style="margin-bottom:8px">Обработка платежа…</h3>
-        <p style="color:var(--muted);font-size:14px">В демо-версии платеж не выполняется</p>
+        <p style="color:var(--muted);font-size:14px">
       </div>
     `;
     document.body.appendChild(overlay);

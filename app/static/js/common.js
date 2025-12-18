@@ -167,18 +167,28 @@ function setupNavigation() {
   });
 }
 
-/** Настройка поиска */
-function setupSearch() {
+ // ==================== Поиск ====================
   const searchForm = document.getElementById('searchForm');
-  if (!searchForm) return;
-  
-  searchForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-    const query = document.getElementById('q')?.value.trim();
-    if (query) {
-      window.location.href = `/web/rents?q=${encodeURIComponent(query)}`;
+  if (searchForm) {
+    searchForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      await performSearch();
+    });
+  }
+
+  async function performSearch() {
+  const query = document.getElementById('q')?.value || '';
+  try {
+    const response = await fetch(
+      `/rents/?q=${encodeURIComponent(query)}`
+    );
+    if (response.ok) {
+      const results = await response.json();
+      renderRentListings(results);
     }
-  });
+  } catch (error) {
+    console.error('Ошибка поиска:', error);
+  }
 }
 
 /** Настройка помощи */

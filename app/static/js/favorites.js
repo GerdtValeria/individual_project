@@ -62,19 +62,6 @@ function updateAuthUI(user = null) {
   }
 }
 
-/* ==================== ПОИСК ==================== */
-const searchForm = document.getElementById('searchForm');
-if (searchForm) {
-  searchForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const searchInput = document.getElementById('q');
-    const searchQuery = searchInput ? searchInput.value.trim() : '';
-    if (searchQuery) {
-      window.location.href = `/web/rents?q=${encodeURIComponent(searchQuery)}`;
-    }
-  });
-}
-
 /* ==================== API: ИЗБРАННОЕ ==================== */
 async function loadFavorites() {
   try {
@@ -336,4 +323,27 @@ function loadFavoritesFromLocalStorage() {
 
 function removeFavoriteFromLocalStorage(id) {
   console.log('Удаление из localStorage:', id);
+}
+ // ==================== Поиск ====================
+  const searchForm = document.getElementById('searchForm');
+  if (searchForm) {
+    searchForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      await performSearch();
+    });
+  }
+
+  async function performSearch() {
+  const query = document.getElementById('q')?.value || '';
+  try {
+    const response = await fetch(
+      `/rents/?q=${encodeURIComponent(query)}`
+    );
+    if (response.ok) {
+      const results = await response.json();
+      renderRentListings(results);
+    }
+  } catch (error) {
+    console.error('Ошибка поиска:', error);
+  }
 }

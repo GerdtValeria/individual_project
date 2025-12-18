@@ -407,19 +407,19 @@ function initCategoryCarousel() {
   }
 
   async function performSearch() {
-    const query = document.getElementById('searchInput')?.value || '';
-    try {
-      const response = await fetch(
-        `/rents/?search=${encodeURIComponent(query)}`
-      );
-      if (response.ok) {
-        const results = await response.json();
-        renderRentListings(results);
-      }
-    } catch (error) {
-      console.error('Ошибка поиска:', error);
+  const query = document.getElementById('q')?.value || '';
+  try {
+    const response = await fetch(
+      `/rents/?q=${encodeURIComponent(query)}`
+    );
+    if (response.ok) {
+      const results = await response.json();
+      renderRentListings(results);
     }
+  } catch (error) {
+    console.error('Ошибка поиска:', error);
   }
+}
 
   // ==================== Недавно просмотренные ====================
   function loadRecentlyViewed() {

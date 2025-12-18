@@ -281,6 +281,7 @@ async function cancelBooking(bookingId) {
     alert('Ошибка сети');
   }
 }
+
 /**
  * Кнопка "Выйти" — использует роутер /auth/logout
  */
