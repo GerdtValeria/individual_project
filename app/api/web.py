@@ -40,15 +40,7 @@ async def get_rent_html(id: int, request: Request, db: DBDep):
 
 
 @router.get("/list")
-async def get_list_html(request: Request):
-    try:
-        user_id = await get_current_user_id(request)
-    except HTTPException as exc:
-        # редирект только при "нет токена/не авторизован"
-        if exc.status_code in (401, 403):
-            return RedirectResponse("/web/auth", status_code=307)
-        raise  # остальные ошибки пробрасываем
-
+async def get_list_html(request: Request, user_id: int = Depends(get_current_user_id)):
     return templates.TemplateResponse(
         "list.html",
         {"request": request, "user_id": user_id},
