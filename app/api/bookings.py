@@ -21,9 +21,6 @@ async def add_booking(
     db: DBDep,
     user_id: UserIdDep,
 ):
-    booking_full = SBookingAdd(
-        **booking_data.model_dump(),
-        id_user=user_id,
-    )
-    return await BookingService(db).add_booking(booking_full)
+    
+    return await BookingService(db).add_booking(booking_data, user_id)
 

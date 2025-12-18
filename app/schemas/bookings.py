@@ -13,6 +13,7 @@ class SBookingAdd(SBookingAddRequest):
     id_user: int  
     guests: int
     cost: int
+    
 
 
 class SBookingGet(SBookingAdd):
