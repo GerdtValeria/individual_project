@@ -1,7 +1,6 @@
 from app.schemas.bookings import SBookingAdd, SBookingGet
 from app.models.bookings import BookingsModel
 from app.repositories.base import BaseRepository
-from sqlalchemy.orm import joinedload
 
 class BookingsRepository(BaseRepository):
     model = BookingsModel
@@ -10,11 +9,8 @@ class BookingsRepository(BaseRepository):
     async def get_all(self) -> list[BookingsModel]:
         return await super().get_all()
     
-    async def get_user_bookings(self, user_id: int) -> list[SBookingGet]:
-        bookings = await self.db.bookings.get_user_bookings(user_id)
-        for booking in bookings:
-            await self.db.refresh(booking, attribute_names=['rent'])
-        return bookings or []
+    async def get_user_bookings(self, user_id: int):
+        return await self.get_filtered(id_user=user_id)
 
     async def get_rent_bookings(self, rent_id: int):
         return await self.get_filtered(id_rents=rent_id)
@@ -23,5 +19,5 @@ class BookingsRepository(BaseRepository):
         return await super().add(data)
     
     async def delete_by_id_and_user(self, booking_id: int, user_id: int) -> int:
-        return await self.delete(id=booking_id, id_user=user_id)
+    return await self.delete(id=booking_id, id_user=user_id)
 
