@@ -40,24 +40,17 @@ async def get_rent_html(id: int, request: Request, db: DBDep):
 
 
 @router.get("/list")
-async def get_list_html(request: Request):
-    try:
-        user_id = await get_current_user_id(request)
-    except HTTPException:
-        return RedirectResponse(url="/web/auth", status_code=307)
-
+async def get_list_html(request: Request, user_id: int = Depends(get_current_user_id)):
     return templates.TemplateResponse(
-        name="list.html",
-        context={"request": request, "user_id": user_id},
+        "list.html",
+        {"request": request, "user_id": user_id},
     )
 
 @router.get("/favorites")
-async def get_favorites_html(request: Request):
-    try:
-        user_id = await get_current_user_id(request)
-    except HTTPException:
-        return RedirectResponse(url="/web/auth", status_code=307)
-
+async def get_favorites_html(
+    request: Request,
+    user_id: int = Depends(get_current_user_id),
+):
     return templates.TemplateResponse(
         name="favorites.html",
         context={"request": request, "user_id": user_id},
