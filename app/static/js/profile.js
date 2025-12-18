@@ -171,10 +171,12 @@ function renderMyRents(rents) {
   });
 
   // Обработчики кнопок
-  container.querySelectorAll('.edit-rent-btn').forEach(btn => {
-    btn.addEventListener('click', () => openEditModal(btn.dataset.rentId));
+ container.querySelectorAll('.edit-rent-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    console.log('edit click', btn.dataset.rentId);  // лог
+    openEditModal(btn.dataset.rentId);
   });
-  
+});
   container.querySelectorAll('.delete-rent-btn').forEach(btn => {
     btn.addEventListener('click', () => deleteRent(btn.dataset.rentId));
   });
@@ -353,6 +355,11 @@ function escapeHtml(text) {
 
 // Инициализация кнопки выхода при загрузке
 setupLogout();
+
+function closeEditModal() {
+  const modal = document.getElementById('editRentModal');
+  if (modal) modal.remove();
+}
 
 let currentEditRent = null;
 function openEditModal(rentId) {

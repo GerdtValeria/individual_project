@@ -108,8 +108,13 @@ function setupNavigation() {
           goTo('favorites');
           break;
         case 'help':
-          openHelpModal();
-          break;
+  if (!user) {
+    alert('Нужно войти в аккаунт');
+      goTo('auth');
+    return;
+  }
+  openHelpModal();
+  break;
         case 'profile':
           if (!user) {
             goTo('auth');
