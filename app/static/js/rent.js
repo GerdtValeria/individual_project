@@ -251,7 +251,7 @@ function initCategoryCarousel() {
       });
       if (response.ok) {
         const favorites = await response.json();
-        currentFavorites = new Set(favorites.map(fav => fav.rent_id));
+        currentFavorites = new Set(favorites.map(fav => fav.id_rent));
       }
     } catch (error) {
       console.error('Ошибка при загрузке избранного:', error);
