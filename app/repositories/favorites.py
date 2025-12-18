@@ -14,8 +14,7 @@ class FavoritesRepository(BaseRepository):
     async def get_all_favorite_rents(self, user_id: int):
         return await self.get_filtered(id_user=user_id)
 
-    async def add_favorite_rent(self, user_id: int, rent_id: int) -> SFavoriteRentGet:
-        data = SFavoriteRentAdd(id_user=user_id, id_rent=rent_id)
+    async def add_favorite_rent(self, data: SFavoriteRentAdd) -> SFavoriteRentGet:
         return await super().add(data)
 
     async def delete_favorite_rent(self, user_id: int, rent_id: int) -> None:

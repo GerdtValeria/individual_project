@@ -6,9 +6,9 @@ class FavoritesService(RentService):
     async def get_all_favorite_rents(self, user_id: int) -> list[SFavoriteRentGet]:
         favorite_rents = await self.db.favorites.get_all_favorite_rents(user_id)
         return favorite_rents
-    
-    async def add_rent(self, favorite_rent__data: SFavoriteRentAdd) -> SFavoriteRentGet:
-        favorite_rent = await self.db.favorites.add_favorite_rent(favorite_rent__data)
+
+    async def add_rent(self, favorite_rent_data: SFavoriteRentAdd) -> SFavoriteRentGet:
+        favorite_rent = await self.db.favorites.add_favorite_rent(favorite_rent_data)
         await self.db.commit()
         return favorite_rent
     
