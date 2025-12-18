@@ -262,21 +262,15 @@ function renderMyBookings(bookings) {
 // Функция отмены бронирования
 async function cancelBooking(bookingId) {
   try {
-    const token = localStorage.getItem('token');
-    const response = await fetch(`/booking/${bookingId}/`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
+    const response = await fetch(`/booking/${bookingId}`, {
+      method: 'DELETE'
     });
 
     if (response.ok) {
       alert('Бронирование отменено!');
       await loadMyBookings();
     } else {
-      console.error('Delete status', response.status);
-      alert('Ошибка отмены');
+      await loadMyBookings();
     }
   } catch (error) {
     console.error('Ошибка:', error);

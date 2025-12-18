@@ -26,8 +26,8 @@ class SBookingGet(BaseModel):
     date_end: date
     id_user: int
     cost: int
-    total_cost: int | None = None
-    rent: SRentGet | None = None
+ 
+    # rent: SRentGet | None = None
     model_config = ConfigDict(from_attributes=True)
 
 
