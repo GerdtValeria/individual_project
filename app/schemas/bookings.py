@@ -26,14 +26,13 @@ class SBookingGet(BaseModel):
     date_end: date
     id_user: int
     cost: int
-    rent: SRentGet | None = None
     model_config = ConfigDict(from_attributes=True)
 
 
 class SBookingWithRent(SBookingGet):
     rent: SRentGet | None = None
 
-    
+
 class SBookingPatchRequest(BaseModel):
     id_rents: int | None = None
     date_start: date | None = None
