@@ -265,7 +265,7 @@ function renderMyBookings(bookings) {
 async function cancelBooking(bookingId) {
   try {
     const token = localStorage.getItem('token');
-    const response = await fetch(`/api/favorites/${bookingId}`, {  // роут из favorites.py
+    const response = await fetch(`/api/booking/${bookingId}`, {   // роут из favorites.py
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`,
