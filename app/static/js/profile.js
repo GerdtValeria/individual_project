@@ -200,7 +200,7 @@ async function loadMyBookings() {
 
   try {
     const res = await fetch('/booking/me', { credentials: 'include' }); 
-    if (res.ok) {   
+    if (res.ok) {                                  // было if (res.ok), но res не объявлен
       const bookings = await res.json();
       renderMyBookings(bookings.map(b => ({
         id: b.id,
@@ -368,62 +368,65 @@ function showEditModal(rent) {
   const modal = document.createElement('div');
   modal.id = 'editRentModal';
   modal.className = 'modal';
-  modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center';
-  
+  modal.style.cssText =
+    'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center';
+
   modal.innerHTML = `
     <div class="modal-content" style="background:white;border-radius:12px;padding:24px;max-width:500px;width:90%;max-height:90vh;overflow:auto">
       <h3 style="margin:0 0 20px">Редактировать "${escapeHtml(rent.title)}"</h3>
       <form id="editRentForm">
-        <input name="title" value="${escapeHtml(rent.title || '')}" placeholder="Название" style="width:100%;padding:12px;margin-bottom:12px;border:1px solid #ddd;border-radius:6px">
-        <input name="price" type="number" value="${rent.price || ''}" placeholder="Цена за ночь" style="width:100%;padding:12px;margin-bottom:12px;border:1px solid #ddd;border-radius:6px">
-        <input name="city" value="${escapeHtml(rent.city || '')}" placeholder="Город" style="width:100%;padding:12px;margin-bottom:20px;border:1px solid #ddd;border-radius:6px">
+        <input name="title" value="${escapeHtml(rent.title || '')}" placeholder="Название"
+               style="width:100%;padding:12px;margin-bottom:12px;border:1px solid #ddd;border-radius:6px">
+        <input name="price" type="number" value="${rent.price || ''}" placeholder="Цена за ночь"
+               style="width:100%;padding:12px;margin-bottom:12px;border:1px solid #ddd;border-radius:6px">
+        <input name="city" value="${escapeHtml(rent.city || '')}" placeholder="Город"
+               style="width:100%;padding:12px;margin-bottom:20px;border:1px solid #ddd;border-radius:6px">
         <div style="display:flex;gap:12px">
           <button type="submit" class="btn primary" style="flex:1;padding:12px">Сохранить</button>
-          <button type="button" class="btn" onclick="closeEditModal()" style="flex:1;padding:12px;background:#eee">Отмена</button>
+          <button type="button" class="btn" id="editCancelBtn" style="flex:1;padding:12px;background:#eee">Отмена</button>
         </div>
       </form>
     </div>
-  `;}
-  
-function closeEditModal() {
-  const modal = document.getElementById('editRentModal');
-  if (modal) modal.remove();
-}
+  `;
 
   document.body.appendChild(modal);
-  
-  // Обработчик сохранения
-  document.getElementById('editRentForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const formData = new FormData(e.target);
 
-  const payload = {
-    ...currentEditRent,                     // пришло с /rents/{id}
-    title: formData.get('title'),
-    price: Number(formData.get('price')),
-    address: formData.get('city') || currentEditRent.address,
-  };
+  // кнопка «Отмена»
+  modal.querySelector('#editCancelBtn').addEventListener('click', closeEditModal);
 
-  try {
-    const res = await fetch(`/rents/${currentEditRent.id}`, {
-      method: 'PUT',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
+  // обработчик сохранения
+  modal.querySelector('#editRentForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
 
-    if (!res.ok) {
-      console.error('Edit error status', res.status);
-      const text = await res.text();
-      console.error(text);
+    const payload = {
+      ...currentEditRent,
+      title: formData.get('title'),
+      price: Number(formData.get('price')),
+      address: formData.get('city') || currentEditRent.address,
+    };
+
+    try {
+      const res = await fetch(`/rents/${currentEditRent.id}`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        console.error('Edit error status', res.status);
+        const text = await res.text();
+        console.error(text);
+        alert('Ошибка сохранения');
+        return;
+      }
+
+      closeEditModal();
+      await loadMyRents();
+    } catch (error) {
+      console.error(error);
       alert('Ошибка сохранения');
-      return;
     }
-
-    closeEditModal();
-    await loadMyRents();
-  } catch (error) {
-    console.error(error);
-    alert('Ошибка сохранения');
-  }
-});
+  });
+}
