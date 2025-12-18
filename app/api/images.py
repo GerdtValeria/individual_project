@@ -43,7 +43,7 @@ async def add_image(
 
     timestamp = int(time.time())
     file_stem = f"rent_{rent_id}_{timestamp}"
-    file_name = f"{file_stem}{suffix}"
+    file_name = f"{rent_id}{suffix}"
     file_path = STATIC_IMG_DIR / file_name
 
     try:
