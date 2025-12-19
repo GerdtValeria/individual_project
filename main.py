@@ -26,3 +26,8 @@ app.include_router(router_users)
 app.include_router(router_favorites)
 app.include_router(router_help)
 app.include_router(router_web)
+
+if __name__ == "_main_":
+    import uvicorn 
+
+    uvicorn.run("main:app")

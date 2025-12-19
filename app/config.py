@@ -14,7 +14,7 @@ class Settings(BaseSettings):
 
     @property
     def db_url(self) -> str:
-        return 'sqlite+aiosqlite:///db.sqlite3'
+        return 'sqlite+aiosqlite:///acc.sqlite3'
 
     @property
     def auth_data(self) -> dict:
