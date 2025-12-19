@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = 'ej08rj4wg09dnviesr03wjg'
     ALGORITHM: str = 'HS256'
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
-    DB_NAME: str = 'test.db'
+    DB_NAME: str = 'acc.sqlite3'
 
     model_config = SettingsConfigDict(
         env_file=os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env")
