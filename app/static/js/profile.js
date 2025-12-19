@@ -150,7 +150,7 @@ function renderMyRents(rents) {
     card.dataset.rentId = rent.id;
     card.innerHTML = `
       <div style="display:grid;grid-template-columns:80px 1fr auto;gap:16px;align-items:start;padding:16px">
-        <img src="${rent.images?.image_url || '/static/rents/default.jpg'}" 
+        <img src="${mainPhoto}" alt="${rent.title}" class="thumb"> 
              alt="${escapeHtml(rent.title || '')}" 
              style="width:80px;height:60px;object-fit:cover;border-radius:8px">
         <div style="flex:1">
@@ -388,6 +388,7 @@ function renderMyBookings(bookings) {
     card.innerHTML = `
       <div class="card-body">
         <h4>${escapeHtml(booking.rent_title)}</h4>
+        <img src="${mainPhoto}" alt="${rent.title}" class="thumb">
         <p>Гостей: ${booking.guests} | ${booking.from} - ${booking.to}</p>
         <p>Стоимость: ${booking.cost ?? '—'} ₽</p>
         <div style="margin-top: 16px;">
